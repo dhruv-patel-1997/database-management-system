@@ -18,10 +18,10 @@ public class QueryEngine {
                 qc.registerUser();
                 break;
             case 3:
-                System.out.println("Today is Sunday");
+                //Code for forget password
                 break;
             default:
-                System.out.println("Looking forward to the Weekend");
+                //Code for wrong input
         }
 
     }
