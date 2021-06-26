@@ -12,7 +12,9 @@ public class QueryEngine {
         int choice = sc.nextInt();
         switch (choice) {
             case 1:
-               //Code for Log in
+                if (qc.loginUser()){
+                    System.out.println("Login was successful.");
+                }
                 break;
             case 2:
                 qc.registerUser();

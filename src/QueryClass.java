@@ -1,6 +1,8 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.security.MessageDigest;
+import java.util.Random;
 import java.util.Scanner;
 
 public class QueryClass {
@@ -75,6 +77,98 @@ public class QueryClass {
             System.out.println(e);
         }
     }
+
+
+    public boolean loginUser() {
+        String response = "1";
+        Scanner sc = new Scanner(System.in);
+
+        while (response.equals("1")) {
+
+            System.out.println("Please enter username: ");
+            String uname = sc.next();
+            System.out.println("Please enter password: ");
+            String pw = sha256(sc.next());
+            String pwFromFile;
+            sc.nextLine();
+
+            try {
+                pwFromFile = getPassword(uname);
+
+                if (pwFromFile.equals(pw)) {
+                    String[] securityQuestion = getSecurityQuestion(uname);
+                    System.out.println(securityQuestion[0]);
+                    String ans = sc.nextLine();
+
+                    if (ans.equalsIgnoreCase(securityQuestion[1])) {
+                        return true;
+                    } else {
+                        System.out.println("Incorrect answer");
+                    }
+
+                } else {
+                    System.out.println("Incorrect password.");
+                }
+
+            } catch (FileNotFoundException e) {
+                System.out.println("Username does not exist.");
+            }
+            System.out.println("Enter 1 to try to login again, else enter any other key.");
+            response = sc.next();
+        }
+        return false;
+    }
+
+    /*
+     * Returns the encrypted password from the file for the given username
+     */
+    private String getPassword(String uname) throws FileNotFoundException {
+        File file = new File("Databases/Users/" + uname + ".txt");
+        Scanner sc = new Scanner(file);
+        String pw = null;
+        while (sc.hasNext() && pw==null) {
+            String line = sc.nextLine();
+            if (line.contains("Password:")) {
+                pw = line.split("Password:")[1];
+            }
+        }
+        return pw;
+    }
+
+    /*
+     * Returns a random security question and answer pair for the given username
+     */
+    private String[] getSecurityQuestion(String uname) throws FileNotFoundException {
+        File file = new File("Databases/Users/" + uname + ".txt");
+        Scanner sc = new Scanner(file);
+        int question = new Random().nextInt(4)+1;
+        String[] ans = null;
+
+        while (sc.hasNext() && ans==null) {
+            String line = (sc.nextLine());
+            if (line.contains("Q" + question + ":")) {
+                ans = line.split("Q" + question + ":");
+            }
+        }
+
+        switch (question) {
+            case 1:
+                ans[0] = "What is your favourite colour? ";
+                break;
+            case 2:
+                ans[0] = "What is your mother's maiden name?";
+                break;
+            case 3:
+                ans[0] = "What primary school did you attend?";
+                break;
+            case 4:
+                ans[0] = "What was the house number you lived in as a child? ";
+                break;
+        }
+        return ans;
+    }
+
+
     /*
      * Used for creating hashes of the mobile user's identity
      *
