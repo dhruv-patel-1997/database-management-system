@@ -18,7 +18,6 @@ public class QueryClass {
             File file = new File("Databases/Users/" + uname + ".txt"); //gets the file into file object.
             if (file.exists()) {
                 System.out.println("Username already exist, try something else");
-                file.delete();
                 registerUser();
                 return;
             } else {
@@ -65,8 +64,10 @@ public class QueryClass {
                     fw.write("Password:"+sha256(password)+"\nQ1:"+q1+"\nQ2:"+q2+"\nQ3:"+q3+"\nQ4:"+q4);
                     fw.close();
                     System.out.println("User Created Successfully ");
+                    QueryEngine.main(null);
                 }else
                 {
+                    fw.close();
                     file.delete();
                     registerUser();
                     return;
