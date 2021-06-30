@@ -15,12 +15,21 @@ public class QueryEngine {
                 if (qc.loginUser()){
                     System.out.println("Login was successful.");
                 }
+                else{
+                    System.out.println("Login was not successful. Please press [y/Y] if you wish to change your password");
+                    Scanner forgot_password = new Scanner(System.in);
+                    String input=forgot_password.nextLine();
+                    if(input.equals("y")||input.equals("Y")){
+                        qc.forgotPassword();
+                    }
+                }
                 break;
             case 2:
                 qc.registerUser();
                 break;
             case 3:
                 //Code for forget password
+                qc.forgotPassword();
                 break;
             default:
                 //Code for wrong input

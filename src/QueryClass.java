@@ -1,6 +1,4 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.*;
 import java.security.MessageDigest;
 import java.util.Random;
 import java.util.Scanner;
@@ -190,6 +188,77 @@ public class QueryClass {
             System.out.println("Couldn't create SHA256 Hash");
             System.exit(0);
             return ""	;
+        }
+    }
+
+    public void forgotPassword() {
+        while (true) {
+            Scanner sc = new Scanner(System.in);
+
+            System.out.println("Please confirm your username: ");
+            String uname = sc.nextLine();
+            boolean securityFlag = true;
+            try {
+                String[] securityQuestion1 = getSecurityQuestion(uname);
+                System.out.println(securityQuestion1[0]);
+                String ans = sc.nextLine();
+
+                if (ans.equalsIgnoreCase(securityQuestion1[1])) {
+                    while (securityFlag) {
+
+                        String[] securityQuestion2 = getSecurityQuestion(uname);
+                        if (!securityQuestion2[0].equals(securityQuestion1[0])) {
+                            System.out.println(securityQuestion2[0]);
+                            String ans2 = sc.nextLine();
+                            if (ans2.equalsIgnoreCase(securityQuestion2[1])) {
+                                System.out.println("Please enter your password: ");
+                                String password = sc.nextLine();
+                                System.out.println("Please re-enter the password: ");
+                                String p2 = sc.nextLine();
+
+                                while (!p2.equals(password)) {
+                                    System.out.println("You must have made mistake writing the password, please add it again ");
+                                    System.out.println("Please enter your password: ");
+                                    password = sc.nextLine();
+                                    System.out.println("Please re-enter the password: ");
+                                    p2 = sc.nextLine();
+                                }
+
+                                File f = new File("Databases/Users/" + uname + ".txt");
+                                Scanner sc_file = new Scanner(f);
+                                StringBuilder sb=new StringBuilder();
+
+                                while (sc_file.hasNext()) {
+                                    String line = sc_file.nextLine();
+                                    if (line.contains("Password:")) {
+                                        line ="Password:"+sha256(password);
+                                    }
+                                    sb.append(line).append("\n");
+                                }
+                                BufferedWriter fileWriter = new BufferedWriter(new FileWriter("Databases/Users/" + uname + ".txt"));
+                                fileWriter.write(sb.toString());
+                                fileWriter.close();
+                                System.out.println("Password Update successful");
+                                QueryEngine.main(null);
+                                return;
+                            } else {
+                                System.out.println("Incorrect answer");
+                                securityFlag = true;
+                            }
+                        } else {
+                            securityFlag = true;
+                        }
+                    }
+
+                } else {
+                    System.out.println("Incorrect answer");
+                }
+            } catch (Exception e) {
+                System.out.println("Username does not exist. Press 0 to exit");
+                int zero=sc.nextInt();
+                if(zero==0)
+                    break;
+            }
         }
     }
 }
