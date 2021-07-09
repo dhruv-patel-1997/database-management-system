@@ -37,10 +37,6 @@ public class Tokenizer {
                 curr = reader.read();
             }
             switch(curr) {
-                case '(':
-                    return new Token(Token.Type.OPENRND, "(");
-                case ')':
-                    return new Token(Token.Type.CLOSERND, ")");
                 case ';':
                     return new Token(Token.Type.SEMICOLON, ";");
                 case '*':
@@ -49,6 +45,10 @@ public class Tokenizer {
                     return new Token(Token.Type.EQUAL, "=");
                 case ',':
                     return new Token(Token.Type.COMMA, ",");
+                case '(':
+                    return new Token(Token.Type.OPENRND, "(");
+                case ')':
+                    return new Token(Token.Type.CLOSERND, ")");
                 case '"':
                 case '\'':
                     // See if String
@@ -84,16 +84,11 @@ public class Tokenizer {
                         } else if (curr == '+'|| curr == '-') {
                             //starts with +/-
                             tokenString.append((char)curr);
+                            reader.mark(1);
                             curr = reader.read();
-                            if (curr == '.') {
-                                readDecimal = true;
-                                //check that next char is digit
-                                reader.mark(1);
-                                curr = reader.read();
-                                if (curr < '0' || curr > '9') {
-                                    tokenString.append((char) curr);
-                                    throw new Exception("Invalid token " + tokenString);
-                                }
+                            if ((curr < '0' || curr > '9')&&(curr != '.')) {
+                                reader.reset();
+                                throw new Exception("Invalid token " + tokenString);
                             }
                         }
 
@@ -105,11 +100,9 @@ public class Tokenizer {
                                 //make sure next char is digit
                                 curr = reader.read();
                                 if (curr < '0' || curr > '9') {
-                                    reader.reset();
-                                    return new Token(Token.Type.NUM,tokenString.toString());
-                                } else {
-                                    tokenString.append(".");
+                                    break;
                                 }
+                                tokenString.append(".");
                             }
                             tokenString.append((char)curr);
                             reader.mark(2);
@@ -117,10 +110,14 @@ public class Tokenizer {
                         } while ((curr >= '0' && curr <= '9')||(curr == '.' && !readDecimal));
 
                             reader.reset();
-                           // curr = reader.read();
-                            return new Token(Token.Type.NUM,tokenString.toString());
+                            if (readDecimal) {
+                                return new Token(Token.Type.DEC,tokenString.toString());
+                            } else {
+                                return new Token(Token.Type.INT,tokenString.toString());
+                            }
 
                         } else {
+
                         //see if keyword, boolean or identifier
                         if ((curr < 'A' || curr > 'Z')&&(curr < 'a' || curr > 'z')&&curr!='_'){
                             throw new Exception("Invalid token " + (char)curr);

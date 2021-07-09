@@ -1,7 +1,7 @@
 public class Token {
 
     public static enum Type {
-        IDENTIFIER, KEYWORD, STRING, COMMA, PERIOD, NUM, BOOLEAN, SEMICOLON, OPENRND, CLOSERND, STAR, EQUAL
+        IDENTIFIER, KEYWORD, STRING, COMMA, PERIOD, INT, DEC, BOOLEAN, SEMICOLON, OPENRND, CLOSERND, STAR, EQUAL
     }
 
     private final String stringValue;
