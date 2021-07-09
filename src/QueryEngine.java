@@ -13,8 +13,10 @@ public class QueryEngine {
         switch (choice) {
             case 1:
                 if (qc.loginUser()){
-                    System.out.println("Login was successful.");
+                    System.out.println("Login was successful.\n");
+                    System.out.println("Enter query:");
                 }
+
                 else{
                     System.out.println("Login was not successful. Please press [y/Y] if you wish to change your password");
                     Scanner forgot_password = new Scanner(System.in);
