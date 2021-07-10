@@ -28,15 +28,14 @@ public class Tokenizer {
         StringBuilder tokenString = new StringBuilder();
         try {
             int curr = reader.read();
-            if (curr == -1){
-                //end of input
-                //no syntax error has been found
-                return null;
-            }
-            while (Character.toString(curr).matches("\s")){
+            while (curr!= -1 && Character.toString(curr).matches("[\s\n\t]")){
                 curr = reader.read();
             }
             switch(curr) {
+                case -1:
+                    //end of input
+                    //no syntax error has been found
+                    return null;
                 case ';':
                     return new Token(Token.Type.SEMICOLON, ";");
                 case '*':
@@ -93,7 +92,6 @@ public class Tokenizer {
                         }
 
                         //continue to read until end of number is reached
-
                         do {
                             if (curr == '.'){
                                 readDecimal = true;
