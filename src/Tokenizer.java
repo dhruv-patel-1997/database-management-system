@@ -89,6 +89,16 @@ public class Tokenizer {
                                 reader.reset();
                                 throw new Exception("Invalid token " + tokenString);
                             }
+                            if (curr == '.'){
+                                readDecimal = true;
+                                //make sure next char is digit
+                                curr = reader.read();
+                                if (curr < '0' || curr > '9') {
+                                    reader.reset();
+                                    throw new Exception("Invalid token " + tokenString);
+                                }
+                                tokenString.append(".");
+                            }
                         }
 
                         //continue to read until end of number is reached
