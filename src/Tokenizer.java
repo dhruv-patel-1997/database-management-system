@@ -1,22 +1,13 @@
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
 
 
 public class Tokenizer {
 
     private final BufferedReader reader;
-    private static HashSet<String> keywords;
 
     public Tokenizer(BufferedReader reader) {
         this.reader = reader;
-        keywords = new HashSet<>();
-        keywords.addAll(Arrays.asList(
-                "CREATE", "DROP", "DATABASE", "TABLE", "PRIMARY",
-                "FOREIGN", "KEY", "REFERENCES", "NOT", "NULL", "SELECT",
-                "FROM", "WHERE", "INSERT", "INTO", "VALUES", "ADD", "DELETE",
-                "VARCHAR", "INT", "DECIMAL", "TEXT"));
     }
 
     /*
@@ -45,9 +36,9 @@ public class Tokenizer {
                 case ',':
                     return new Token(Token.Type.COMMA, ",");
                 case '(':
-                    return new Token(Token.Type.OPENRND, "(");
+                    return new Token(Token.Type.OPEN, "(");
                 case ')':
-                    return new Token(Token.Type.CLOSERND, ")");
+                    return new Token(Token.Type.CLOSED, ")");
                 case '"':
                 case '\'':
                     // See if String
@@ -119,7 +110,7 @@ public class Tokenizer {
 
                             reader.reset();
                             if (readDecimal) {
-                                return new Token(Token.Type.DEC,tokenString.toString());
+                                return new Token(Token.Type.DECIMAL,tokenString.toString());
                             } else {
                                 return new Token(Token.Type.INT,tokenString.toString());
                             }
@@ -139,8 +130,9 @@ public class Tokenizer {
 
                         reader.reset();
                         String s = tokenString.toString().toUpperCase();
-                        if (keywords.contains(s)){
-                            return new Token(Token.Type.KEYWORD,tokenString.toString().toUpperCase());
+                        Token token = Token.getTokenOfType(s);
+                        if (token!=null){
+                            return token;
                         } else if (s.equals("TRUE")||s.equals("FALSE")){
                             return new Token(Token.Type.BOOLEAN,s);
                         }

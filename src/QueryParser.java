@@ -1,3 +1,7 @@
+import java.util.LinkedList;
+import java.util.List;
+
+
 public class QueryParser {
     private Tokenizer tokenizer;
 
@@ -12,37 +16,47 @@ public class QueryParser {
             return null;
         }
 
-        if (token.getType() != Token.Type.KEYWORD){
-            throw new Exception("Invalid query");
-        }
-
+        Token.Type tokenType = token.getType();
         String tokenValue = token.getStringValue();
-        switch (tokenValue) {
-            case "CREATE":
-                //validate query
-                break;
-            case "DROP":
-                //validate query
-                break;
-            case "INSERT":
-                //validate query
-                break;
-            case "UPDATE":
-                //validate query
-                break;
-            case "DELETE":
-                //validate query
-                break;
-            case "ALTER":
-                //validate query
-                break;
-            case "SELECT":
-                //validate query
-                break;
-        }
 
+        switch (tokenType){
+            case CREATE:
+                //validate query
+                break;
+            case DROP:
+                //validate query
+                break;
+            case INSERT:
+                //validate query
+                break;
+            case UPDATE:
+                //validate query
+                break;
+            case DELETE:
+                //validate query
+                break;
+            case ALTER:
+                //validate query
+                break;
+            case SELECT:
+                //validate query
+                break;
+            default:
+                throw new Exception("Syntax error: "+tokenValue);
+        }
 
         // need to add return type
         return null;
+    }
+
+    private boolean matchesTokenList(List<Token.Type> tokenTypes) throws Exception {
+        Token token;
+        for (Token.Type type : tokenTypes){
+            token = tokenizer.next();
+            if (token == null || token.getType() != type){
+                return false;
+            }
+        }
+        return true;
     }
 }
