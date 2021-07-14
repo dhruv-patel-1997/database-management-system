@@ -1,6 +1,6 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 
 public class QueryParser {
     private Tokenizer tokenizer;
@@ -49,14 +49,21 @@ public class QueryParser {
         return null;
     }
 
-    private boolean matchesTokenList(List<Token.Type> tokenTypes) throws Exception {
+    /*
+    * Compares each element in tokenTypes with the next token
+    * If a mismatch occurs returns NULL
+    * Otherwise returns the list of values held by each token in order.
+    * */
+    private List<String> matchesTokenList(List<Token.Type> tokenTypes) throws Exception {
         Token token;
+        ArrayList<String> values = new ArrayList<>();
         for (Token.Type type : tokenTypes){
             token = tokenizer.next();
             if (token == null || token.getType() != type){
-                return false;
+                return null;
             }
+            values.add(token.getStringValue());
         }
-        return true;
+        return values;
     }
 }
