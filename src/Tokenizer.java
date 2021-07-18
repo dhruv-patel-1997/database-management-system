@@ -10,12 +10,12 @@ public class Tokenizer {
         this.reader = reader;
     }
 
-    /*
-    Returns the next available token that can be read from the buffered reader
-    Null when there are no more tokens to be read
-    Throws exception if an invalid token occurs
+    /**
+     * parses input for the next valid token
+     * @return the next valid token or Null when there are no more tokens to be read
+     * @throws  Exception if invalid token occurs
      */
-    public Token next() throws Exception {
+    public Token next() throws InvalidQueryException {
         StringBuilder tokenString = new StringBuilder();
         try {
             int curr = reader.read();
@@ -51,7 +51,7 @@ public class Tokenizer {
                     } while (curr != -1 && (curr != quote ||  prev == '\\'));
                     if (curr == -1) {
                         //reached end of input without a closing quote
-                        throw new Exception("Invalid token " + tokenString);
+                        throw new InvalidQueryException("Invalid token " + tokenString);
                     }
                     //closing quote was found
                     tokenString.append(Character.toString(curr));
@@ -78,7 +78,7 @@ public class Tokenizer {
                             curr = reader.read();
                             if ((curr < '0' || curr > '9')&&(curr != '.')) {
                                 reader.reset();
-                                throw new Exception("Invalid token " + tokenString);
+                                throw new InvalidQueryException("Invalid token " + tokenString);
                             }
                             if (curr == '.'){
                                 readDecimal = true;
@@ -86,7 +86,7 @@ public class Tokenizer {
                                 curr = reader.read();
                                 if (curr < '0' || curr > '9') {
                                     reader.reset();
-                                    throw new Exception("Invalid token " + tokenString);
+                                    throw new InvalidQueryException("Invalid token " + tokenString);
                                 }
                                 tokenString.append(".");
                             }
@@ -119,7 +119,7 @@ public class Tokenizer {
 
                         //see if keyword, boolean or identifier
                         if ((curr < 'A' || curr > 'Z')&&(curr < 'a' || curr > 'z')&&curr!='_'){
-                            throw new Exception("Invalid token " + (char)curr);
+                            throw new InvalidQueryException("Invalid token " + (char)curr);
                         }
 
                         do {
