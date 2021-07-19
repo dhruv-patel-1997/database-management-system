@@ -1,3 +1,5 @@
+package queries;
+
 public class Column {
     public enum noArgDataType {
         TEXT,DECIMAL,INT,BOOLEAN

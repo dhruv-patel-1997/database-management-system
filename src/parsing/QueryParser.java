@@ -1,3 +1,6 @@
+package parsing;
+
+import queries.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -78,7 +81,7 @@ public class QueryParser {
     }
 
     private void createDatabase() throws InvalidQueryException {
-        ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER,Token.Type.SEMICOLON));
+        ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
         if (values != null && tokenizer.next() == null) {
             String dbName = values.get(0);
             System.out.println("creating db " + dbName);
@@ -129,7 +132,7 @@ public class QueryParser {
                     column = new Column(colName,Column.noArgDataType.INT);
                 } else if (tokenType == Token.Type.DECIMAL) {
                     System.out.println("column decimal");
-                    column = new Column(colName,Column.noArgDataType.DECIMAL);
+                    column = new Column(colName, Column.noArgDataType.DECIMAL);
                 } else if (tokenType == Token.Type.TEXT) {
                     System.out.println("column text");
                     column = new Column(colName,Column.noArgDataType.TEXT);

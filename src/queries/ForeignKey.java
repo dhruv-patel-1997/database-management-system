@@ -1,3 +1,5 @@
+package queries;
+
 public class ForeignKey {
     private final String colname;
     private final String referencedTable;
