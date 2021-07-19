@@ -3,7 +3,7 @@ import java.util.HashMap;
 public class Token {
 
     public enum Type {
-        IDENTIFIER, STRING, COMMA, PERIOD, INT, DECIMAL, BOOLEAN, SEMICOLON, OPEN, CLOSED, STAR, EQUAL,
+        IDENTIFIER, STRING, COMMA, PERIOD, INT, INTLITERAL, DECIMAL, DECIMALLITERAL, BOOLEAN, BOOLEANLITERAL, SEMICOLON, OPEN, CLOSED, STAR, EQUAL,
         CREATE, DROP, DATABASE, TABLE, PRIMARY, FOREIGN, KEY, REFERENCES, NOT, NULL, SELECT, FROM, WHERE,
         INSERT, INTO, VALUES, ALTER, UPDATE, ADD, DELETE, VARCHAR, TEXT
     }
@@ -61,6 +61,7 @@ public class Token {
         types.put("INT", Type.INT);
         types.put("DECIMAL", Type.DECIMAL);
         types.put("TEXT", Type.TEXT);
+        types.put("BOOLEAN", Type.BOOLEAN);
         return types;
     }
 }

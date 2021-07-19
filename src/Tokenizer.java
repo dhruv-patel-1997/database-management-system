@@ -110,9 +110,9 @@ public class Tokenizer {
 
                             reader.reset();
                             if (readDecimal) {
-                                return new Token(Token.Type.DECIMAL,tokenString.toString());
+                                return new Token(Token.Type.DECIMALLITERAL,tokenString.toString());
                             } else {
-                                return new Token(Token.Type.INT,tokenString.toString());
+                                return new Token(Token.Type.INTLITERAL,tokenString.toString());
                             }
 
                         } else {
@@ -135,7 +135,7 @@ public class Tokenizer {
                         if (token!=null){
                             return token;
                         } else if (s.equals("TRUE")||s.equals("FALSE")){
-                            return new Token(Token.Type.BOOLEAN,s);
+                            return new Token(Token.Type.BOOLEANLITERAL,s);
                         }
                         return new Token(Token.Type.IDENTIFIER,tokenString.toString());
                     }

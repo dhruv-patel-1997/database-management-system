@@ -117,7 +117,6 @@ public class QueryParser {
                 //Get data type
                 Token.Type tokenType = token.getType();
 
-                //why all showing an int and why no error
                 if (tokenType == Token.Type.VARCHAR) {
                     if ((values = matchesTokenList(Arrays.asList(Token.Type.OPEN, Token.Type.INT, Token.Type.CLOSED)))!= null) {
                         System.out.println("column varchar");
@@ -246,9 +245,9 @@ public class QueryParser {
             //parse list of values
             token = tokenizer.next();
             Token.Type tokenType;
-            while (token != null && ((tokenType = token.getType()) == Token.Type.INT
-                    || tokenType == Token.Type.DECIMAL || tokenType == Token.Type.STRING
-                    || tokenType == Token.Type.BOOLEAN || tokenType == Token.Type.NULL)){
+            while (token != null && ((tokenType = token.getType()) == Token.Type.INTLITERAL
+                    || tokenType == Token.Type.DECIMALLITERAL || tokenType == Token.Type.STRING
+                    || tokenType == Token.Type.BOOLEANLITERAL || tokenType == Token.Type.NULL)){
                 vals.add(token);
                 if ((token = tokenizer.next()) == null){
                     throw new InvalidQueryException("Invalid syntax in values list");
