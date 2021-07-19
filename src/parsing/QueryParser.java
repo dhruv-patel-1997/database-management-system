@@ -121,7 +121,7 @@ public class QueryParser {
                 Token.Type tokenType = token.getType();
 
                 if (tokenType == Token.Type.VARCHAR) {
-                    if ((values = matchesTokenList(Arrays.asList(Token.Type.OPEN, Token.Type.INT, Token.Type.CLOSED)))!= null) {
+                    if ((values = matchesTokenList(Arrays.asList(Token.Type.OPEN, Token.Type.INTLITERAL, Token.Type.CLOSED)))!= null) {
                         System.out.println("column varchar");
                         column = new Column(colName,Column.argDataType.VARCHAR, values.get(1));
                     } else {
