@@ -25,10 +25,8 @@ public class Token {
         return type;
     }
 
-    /*
-        Returns new token if the argument is a valid token type, else returns null
-         */
 
+    //Returns new token if the argument is a valid token type, else returns null
     public static Token getTokenOfType(String typeName){
         Type type = types.get(typeName);
         if (type == null){

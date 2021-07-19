@@ -126,7 +126,8 @@ public class Tokenizer {
                             reader.mark(1);
                             tokenString.append((char)curr);
                             curr = reader.read();
-                        } while ((curr >= 'A' && curr <= 'Z')||(curr >= 'a' && curr <= 'z')||curr == '_');
+                        } while ((curr >= 'A' && curr <= 'Z')||(curr >= 'a' && curr <= 'z')
+                                ||(curr>='0' && curr <= '9')||curr == '_');
 
                         reader.reset();
                         String s = tokenString.toString().toUpperCase();
