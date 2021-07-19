@@ -1,6 +1,8 @@
 package parsing;
 
 import queries.*;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -24,6 +26,9 @@ public class QueryParser {
         String tokenValue = token.getStringValue();
 
         switch (tokenType){
+            case USE:
+                use();
+                break;
             case CREATE:
                 create();
                 break;
@@ -68,6 +73,16 @@ public class QueryParser {
         return values;
     }
 
+    private void use() throws InvalidQueryException {
+        ArrayList<String> values;
+        if ((values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER,Token.Type.SEMICOLON))) != null && tokenizer.next() == null){
+            UseQuery query = new UseQuery();
+            query.useDataBase(values.get(0));
+            System.out.println("using database "+values.get(0));
+        } else {
+            throw new InvalidQueryException("Invalid syntax for USE query");
+        }
+    }
 
     private void create() throws InvalidQueryException {
         Token token = tokenizer.next();

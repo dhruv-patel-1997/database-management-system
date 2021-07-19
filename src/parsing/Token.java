@@ -6,7 +6,7 @@ public class Token {
 
     public enum Type {
         IDENTIFIER, STRING, COMMA, PERIOD, INT, INTLITERAL, DECIMAL, DECIMALLITERAL, BOOLEAN, BOOLEANLITERAL, SEMICOLON, OPEN, CLOSED, STAR, EQUAL,
-        CREATE, DROP, DATABASE, TABLE, PRIMARY, FOREIGN, KEY, REFERENCES, NOT, NULL, SELECT, FROM, WHERE,
+        USE, CREATE, DROP, DATABASE, TABLE, PRIMARY, FOREIGN, KEY, REFERENCES, NOT, NULL, SELECT, FROM, WHERE,
         INSERT, INTO, VALUES, ALTER, UPDATE, ADD, DELETE, VARCHAR, TEXT
     }
 
@@ -39,6 +39,7 @@ public class Token {
 
     private static HashMap<String, Type> initKeywords(){
         types = new HashMap<>();
+        types.put("USE", Type.USE);
         types.put("CREATE", Type.CREATE);
         types.put("DROP", Type.DROP);
         types.put("DATABASE", Type.DATABASE);
