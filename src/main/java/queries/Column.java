@@ -1,4 +1,4 @@
-package queries;
+package main.java.queries;
 
 public class Column {
     public enum noArgDataType {

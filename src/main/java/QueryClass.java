@@ -1,3 +1,5 @@
+package main.java;
+
 import java.io.*;
 import java.security.MessageDigest;
 import java.util.Random;
@@ -172,7 +174,7 @@ public class QueryClass {
      * Used for creating hashes of the mobile user's identity
      *
      */
-    public static String sha256(final String base) {
+    public  String sha256( String base) {
         try{
             final MessageDigest digest = MessageDigest.getInstance("SHA-256");
             final byte[] hash = digest.digest(base.getBytes("UTF-8"));

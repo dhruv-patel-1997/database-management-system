@@ -1,5 +1,5 @@
-package queries;
-import parsing.Token;
+package main.java.queries;
+import main.java.parsing.Token;
 import java.util.List;
 
 public class InsertQuery {

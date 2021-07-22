@@ -1,4 +1,4 @@
-package queries;
+package main.java.queries;
 
 public class ForeignKey {
     private final String colname;

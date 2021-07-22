@@ -1,8 +1,8 @@
-package parsing;
+package main.java.queries;
 
-import queries.*;
-
-import java.lang.reflect.Array;
+import main.java.parsing.InvalidQueryException;
+import main.java.parsing.Token;
+import main.java.parsing.Tokenizer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;

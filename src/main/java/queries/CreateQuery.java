@@ -1,4 +1,4 @@
-package queries;
+package main.java.queries;
 
 import java.util.List;
 
