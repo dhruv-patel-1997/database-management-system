@@ -22,4 +22,8 @@ public class ForeignKey {
     public String getReferencedColumn() {
         return referencedColumn;
     }
+
+    public String toString(){
+        return referencedTable + " " + referencedColumn;
+    }
 }
