@@ -32,8 +32,8 @@ public class QueryParser {
             case CREATE:
                 create();
                 break;
-            case DROP:
-                //validate query
+            case DROP:  
+                drop();
                 break;
             case INSERT:
                 insert();
@@ -49,6 +49,9 @@ public class QueryParser {
                 break;
             case SELECT:
                 //validate query
+                break;
+            case TRUNCATE:
+                truncate();
                 break;
             default:
                 throw new InvalidQueryException("Invalid syntax: "+tokenValue);
@@ -81,6 +84,54 @@ public class QueryParser {
             System.out.println("using database "+values.get(0));
         } else {
             throw new InvalidQueryException("Invalid syntax for USE query");
+        }
+    }
+
+    private void truncate() throws InvalidQueryException{
+        ArrayList<String> values;
+        if ((values = matchesTokenList(Arrays.asList(Token.Type.TABLE,Token.Type.IDENTIFIER,Token.Type.SEMICOLON))) != null && tokenizer.next() == null){
+            UseQuery query = new UseQuery();
+            query.useDataBase(values.get(1));
+            System.out.println("truncate table "+values.get(0));
+        } else {
+            throw new InvalidQueryException("Invalid syntax for USE query");
+        }
+    }
+
+    private void drop() throws InvalidQueryException{
+        Token token = tokenizer.next();
+        if (token!=null && token.getType() == Token.Type.DATABASE){
+            dropDatabase();
+        } else if (token!=null && token.getType() == Token.Type.TABLE){
+            dropTable();
+        } else {
+            throw new InvalidQueryException("Invalid CREATE query");
+        }
+    }
+
+    private void dropDatabase() throws InvalidQueryException{
+        ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
+        if (values != null && tokenizer.next() == null) {
+            String dbName = values.get(0);
+            System.out.println("dropping db " + dbName);
+            //SUCCESSFUL QUERY
+            CreateQuery query = new CreateQuery();
+            query.createDatabase(dbName);
+        } else {
+            throw new InvalidQueryException("Invalid Syntax for CREATE DATABASE query");
+        }
+    }
+
+    private void dropTable() throws InvalidQueryException{
+        ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
+        if (values != null && tokenizer.next() == null) {
+            String dbName = values.get(0);
+            System.out.println("droping table " + dbName);
+            //SUCCESSFUL QUERY
+            CreateQuery query = new CreateQuery();
+            query.createDatabase(dbName);
+        } else {
+            throw new InvalidQueryException("Invalid Syntax for CREATE DATABASE query");
         }
     }
 

@@ -13,7 +13,7 @@ public class QueryClass {
         uname = sc.next();
         try {
 
-            File file = new File("Databases/Users/" + uname + ".txt"); //gets the file into file object.
+            File file = new File("Databases/Users/users.txt"); //gets the file into file object.
             if (file.exists()) {
                 System.out.println("Username already exist, try something else");
                 registerUser();
@@ -59,7 +59,8 @@ public class QueryClass {
                 int x=sc.nextInt();
                 if(x==1)
                 {
-                    fw.write("Password:"+sha256(password)+"\nQ1:"+q1+"\nQ2:"+q2+"\nQ3:"+q3+"\nQ4:"+q4);
+					//Change here for single file structure.
+                    fw.append("Password:"+sha256(password)+"\nQ1:"+q1+"\nQ2:"+q2+"\nQ3:"+q3+"\nQ4:"+q4);
                     fw.close();
                     System.out.println("User Created Successfully ");
                     QueryEngine.main(null);
