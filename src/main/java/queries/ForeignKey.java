@@ -1,4 +1,4 @@
-package queries;
+package main.java.queries;
 
 public class ForeignKey {
     private final String colname;
@@ -21,5 +21,9 @@ public class ForeignKey {
 
     public String getReferencedColumn() {
         return referencedColumn;
+    }
+
+    public String toString(){
+        return referencedTable + " " + referencedColumn;
     }
 }

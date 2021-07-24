@@ -1,12 +1,10 @@
-package parsing;
+package main.java.queries;
 
-import queries.*;
+import main.java.parsing.InvalidQueryException;
+import main.java.parsing.Token;
+import main.java.parsing.Tokenizer;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class QueryParser {
     private Tokenizer tokenizer;
@@ -167,7 +165,7 @@ public class QueryParser {
         }
 
         String tableName = values.get(0);
-        LinkedList<Column> columns = new LinkedList<>();
+        HashMap<String,Column> columns = new HashMap<>();
         LinkedList<PrimaryKey> primaryKeys = new LinkedList<>();
         LinkedList<ForeignKey> foreignKeys = new LinkedList<>();
 
@@ -189,22 +187,22 @@ public class QueryParser {
                 if (tokenType == Token.Type.VARCHAR) {
                     if ((values = matchesTokenList(Arrays.asList(Token.Type.OPEN, Token.Type.INTLITERAL, Token.Type.CLOSED)))!= null) {
                         System.out.println("column varchar");
-                        column = new Column(colName,Column.argDataType.VARCHAR, values.get(1));
+                        column = new Column(colName,tokenType+" "+values.get(1));
                     } else {
                         throw new InvalidQueryException("Invalid Varchar argument");
                     }
                 } else if (tokenType == Token.Type.INT) {
                     System.out.println("column int");
-                    column = new Column(colName,Column.noArgDataType.INT);
+                    column = new Column(colName,tokenType.toString());
                 } else if (tokenType == Token.Type.DECIMAL) {
                     System.out.println("column decimal");
-                    column = new Column(colName, Column.noArgDataType.DECIMAL);
+                    column = new Column(colName, tokenType.toString());
                 } else if (tokenType == Token.Type.TEXT) {
                     System.out.println("column text");
-                    column = new Column(colName,Column.noArgDataType.TEXT);
+                    column = new Column(colName,tokenType.toString());
                 } else if (tokenType == Token.Type.BOOLEAN) {
                     System.out.println("column boolean");
-                    column = new Column(colName,Column.noArgDataType.BOOLEAN);
+                    column = new Column(colName,tokenType.toString());
                 } else {
                     throw new InvalidQueryException("Invalid data type for column: "+colName);
                 }
@@ -218,7 +216,7 @@ public class QueryParser {
                     }
                 }
                 //Column declaration is syntactically correct, add column to list
-                columns.add(column);
+                columns.put(colName,column);
             } else {
                 //KEY declaration
                 if (token != null && token.getType() == Token.Type.PRIMARY) {
@@ -268,6 +266,15 @@ public class QueryParser {
                 && (token = tokenizer.next()) != null && token.getType() == Token.Type.SEMICOLON && tokenizer.next() == null) {
             System.out.println("creating table "+tableName);
             //SUCCESSFUL QUERY
+            //add primary keys and foreign keys to cols
+            for (PrimaryKey pk : primaryKeys){
+                for (String colName : pk.getColumnNames()){
+                    columns.get(colName).setPrivateKey(true);
+                }
+            }
+            for (ForeignKey fk : foreignKeys){
+                columns.get(fk.getColname()).setForeignKey(fk);
+            }
             CreateQuery query = new CreateQuery();
             query.createTable(tableName, columns, primaryKeys, foreignKeys);
         } else {

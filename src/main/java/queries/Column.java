@@ -1,4 +1,6 @@
-package queries;
+package main.java.queries;
+
+import java.util.ArrayList;
 
 public class Column {
     public enum noArgDataType {
@@ -12,22 +14,36 @@ public class Column {
     private String dataType;
     private String dataTypeArg;
     private Boolean allowNulls;
+    private Boolean privateKey;
+    private ForeignKey foreignKey;
 
-    public Column(String colName, noArgDataType dataType){
+    public Column(String colName, String dataType){
         this.colName = colName;
-        this.dataType = dataType.toString();
+        this.dataType = dataType;
         allowNulls = true;
-    }
-
-    public Column(String colName, argDataType dataType, String dataTypeArg){
-        this.colName = colName;
-        this.dataType = dataType.toString();
-        this.dataTypeArg = dataTypeArg;
-        allowNulls = true;
+        privateKey = false;
+        foreignKey = null;
     }
 
     public void setAllowNulls(boolean allowNulls){
         this.allowNulls = allowNulls;
+    }
+
+    public void  setPrivateKey(Boolean bool){
+        privateKey = bool;
+        setAllowNulls(false);
+    }
+
+    public void setForeignKey(ForeignKey key){
+        this.foreignKey = key;
+    }
+
+    public ForeignKey getForeignKey(){
+        return foreignKey;
+    }
+
+    public Boolean isPrivateKey(){
+        return privateKey;
     }
 
     public String getColName() {
@@ -36,10 +52,6 @@ public class Column {
 
     public String getDataType() {
         return dataType;
-    }
-
-    public String getDataTypeArg() {
-        return dataTypeArg;
     }
 
     public Boolean getAllowNulls() {

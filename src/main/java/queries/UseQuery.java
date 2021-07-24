@@ -1,4 +1,4 @@
-package queries;
+package main.java.queries;
 
 public class UseQuery {
     public void useDataBase(String dbName) {

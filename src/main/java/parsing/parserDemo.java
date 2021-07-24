@@ -1,4 +1,6 @@
-package parsing;
+package main.java.parsing;
+
+import main.java.queries.QueryParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
