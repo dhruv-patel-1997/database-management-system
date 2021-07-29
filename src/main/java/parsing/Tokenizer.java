@@ -1,150 +1,114 @@
 package main.java.parsing;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class Tokenizer {
 
-    private final BufferedReader reader;
+    private final CharSequence input;
+    private final Pattern intPattern;
+    private final Pattern decPattern;
+    private final Pattern identifierPattern;
+    private final Pattern stringPattern;
+    private int start;
+    private final int end;
+    private int curr;
 
-    public Tokenizer(BufferedReader reader) {
-        this.reader = reader;
+
+    public Tokenizer(CharSequence input) {
+        this.input = input;
+        intPattern = Pattern.compile("[+-]?\\d+");
+        decPattern = Pattern.compile("[+-]?\\d*\\.\\d+");
+        identifierPattern = Pattern.compile("[a-zA-z_\\d]+");
+        stringPattern = Pattern.compile("\"([^'\"\\\\]*(\\\\')*(\\\\\")*)*\"|'([^'\"\\\\]*(\\\\')*(\\\\\")*)*'");
+        start = 0;
+        end = input.length();
+        curr = ' ';
     }
 
     /**
      * parses input for the next valid token
      * @return the next valid token or Null when there are no more tokens to be read
-     * @throws  Exception if invalid token occurs
+     * @throws  InvalidQueryException if invalid token occurs
      */
     public Token next() throws InvalidQueryException {
-        StringBuilder tokenString = new StringBuilder();
-        try {
-            int curr = reader.read();
-            while (curr!= -1 && Character.toString(curr).matches("[\s\n\t]")){
-                curr = reader.read();
+
+        if (start < end ) {
+            curr = input.charAt(start);
+            while (start < end - 1 && Character.isWhitespace(curr)) {
+                curr = input.charAt(++start);
             }
-            switch(curr) {
-                case -1:
-                    //end of input
-                    //no syntax error has been found
-                    return null;
-                case ';':
-                    return new Token(Token.Type.SEMICOLON, ";");
-                case '*':
-                    return new Token(Token.Type.STAR, "*");
-                case '=':
-                    return new Token(Token.Type.EQUAL, "=");
-                case ',':
-                    return new Token(Token.Type.COMMA, ",");
-                case '(':
-                    return new Token(Token.Type.OPEN, "(");
-                case ')':
-                    return new Token(Token.Type.CLOSED, ")");
-                case '"':
-                case '\'':
-                    // See if String
-                    int quote = curr;
-                    int prev;
-                    do {
-                        tokenString.append((char)curr);
-                        prev = curr;
-                        curr = reader.read();
-                    } while (curr != -1 && (curr != quote ||  prev == '\\'));
-                    if (curr == -1) {
-                        //reached end of input without a closing quote
-                        throw new InvalidQueryException("Invalid token " + tokenString);
-                    }
-                    //closing quote was found
-                    tokenString.append(Character.toString(curr));
-                    return new Token(Token.Type.STRING, tokenString.toString());
-
-                default:
-                    if (curr == '+'|| curr == '-'|| curr == '.'||(curr >= '0'&&curr <= '9')){
-                        //see if number
-                        boolean readDecimal = false;
-                        if (curr == '.'){
-                            tokenString.append((char)curr);
-                            readDecimal = true;
-                            //check that next char is a digit
-                            reader.mark(1);
-                            curr = reader.read();
-                            if (curr < '0' || curr > '9') {
-                                reader.reset();
-                                return new Token(Token.Type.PERIOD, ".");
-                            }
-                        } else if (curr == '+'|| curr == '-') {
-                            //starts with +/-
-                            tokenString.append((char)curr);
-                            reader.mark(1);
-                            curr = reader.read();
-                            if ((curr < '0' || curr > '9')&&(curr != '.')) {
-                                reader.reset();
-                                throw new InvalidQueryException("Invalid token " + tokenString);
-                            }
-                            if (curr == '.'){
-                                readDecimal = true;
-                                //make sure next char is digit
-                                curr = reader.read();
-                                if (curr < '0' || curr > '9') {
-                                    reader.reset();
-                                    throw new InvalidQueryException("Invalid token " + tokenString);
-                                }
-                                tokenString.append(".");
-                            }
-                        }
-
-                        //continue to read until end of number is reached
-                        do {
-                            if (curr == '.'){
-                                readDecimal = true;
-                                //make sure next char is digit
-                                curr = reader.read();
-                                if (curr < '0' || curr > '9') {
-                                    break;
-                                }
-                                tokenString.append(".");
-                            }
-                            tokenString.append((char)curr);
-                            reader.mark(2);
-                            curr = reader.read();
-                        } while ((curr >= '0' && curr <= '9')||(curr == '.' && !readDecimal));
-
-                            reader.reset();
-                            if (readDecimal) {
-                                return new Token(Token.Type.DECIMALLITERAL,tokenString.toString());
-                            } else {
-                                return new Token(Token.Type.INTLITERAL,tokenString.toString());
-                            }
-
-                        } else {
-
-                        //see if keyword, boolean or identifier
-                        if ((curr < 'A' || curr > 'Z')&&(curr < 'a' || curr > 'z')&&curr!='_'){
-                            throw new InvalidQueryException("Invalid token " + (char)curr);
-                        }
-
-                        do {
-                            reader.mark(1);
-                            tokenString.append((char)curr);
-                            curr = reader.read();
-                        } while ((curr >= 'A' && curr <= 'Z')||(curr >= 'a' && curr <= 'z')
-                                ||(curr>='0' && curr <= '9')||curr == '_');
-
-                        reader.reset();
-                        String s = tokenString.toString().toUpperCase();
-                        Token token = Token.getTokenOfType(s);
-                        if (token!=null){
-                            return token;
-                        } else if (s.equals("TRUE")||s.equals("FALSE")){
-                            return new Token(Token.Type.BOOLEANLITERAL,s);
-                        }
-                        return new Token(Token.Type.IDENTIFIER,tokenString.toString());
-                    }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return null;
+        if (start >= end - 1 && Character.isWhitespace(curr)){
+            //end of input
+            //no syntax error has been found
+            return null;
+        }
+        switch(curr) {
+            case ';':
+                start++;
+                return new Token(Token.Type.SEMICOLON, ";");
+            case '*':
+                start++;
+                return new Token(Token.Type.STAR, "*");
+            case '=':
+                start++;
+                return new Token(Token.Type.EQUAL, "=");
+            case ',':
+                start++;
+                return new Token(Token.Type.COMMA, ",");
+            case '(':
+                start++;
+                return new Token(Token.Type.OPEN, "(");
+            case ')':
+                start++;
+                return new Token(Token.Type.CLOSED, ")");
+            case '"':
+            case '\'':
+                // See if String
+                Matcher m = stringPattern.matcher(input);
+                m.region(start,end);
+                if (m.lookingAt()){
+                    //string found
+                    start = m.end();
+                    return new Token(Token.Type.STRING, m.group());
+                }
+            default:
+                //see if decimal
+                m = decPattern.matcher(input);
+                m.region(start,end);
+                if (m.lookingAt()) {
+                    start = m.end();
+                    return new Token(Token.Type.DECIMALLITERAL, m.group());
+                }
+
+                //see if integer
+                m = intPattern.matcher(input);
+                m.region(start,end);
+                if (m.lookingAt()) {
+                    start = m.end();
+                    return new Token(Token.Type.INTLITERAL, m.group());
+                }
+
+                //see if keyword, boolean or identifier
+                m = identifierPattern.matcher(input);
+                m.region(start,end);
+                if (m.lookingAt()) {
+                    start = m.end();
+                    String stringValue = m.group().toUpperCase();
+                    Token token = Token.getTokenOfType(stringValue);
+                    if (token == null) {
+                        if (stringValue.equals("TRUE") || stringValue.equals("FALSE")) {
+                            token = new Token(Token.Type.BOOLEANLITERAL, stringValue);
+                        } else {
+                            token = new Token(Token.Type.IDENTIFIER, stringValue);
+                        }
+                    }
+                    return token;
+                }
+        }
+        String invalid  = ((String)input.subSequence(start,end)).split(" ")[0];
+        throw new InvalidQueryException("Invalid token "+invalid);
     }
 }
