@@ -15,7 +15,7 @@ public class QueryClass {
         uname = sc.next();
         try {
 
-            File file = new File("Databases/Users/users.txt"); //gets the file into file object.
+            File file = new File("Users/users.txt"); //gets the file into file object.
             if (file.exists()) {
                 System.out.println("Username already exist, try something else");
                 registerUser();
@@ -125,7 +125,7 @@ public class QueryClass {
      * Returns the encrypted password from the file for the given username
      */
     private String getPassword(String uname) throws FileNotFoundException {
-        File file = new File("Databases/Users/" + uname + ".txt");
+        File file = new File("Users/" + uname + ".txt");
         Scanner sc = new Scanner(file);
         String pw = null;
         while (sc.hasNext() && pw==null) {
@@ -141,7 +141,7 @@ public class QueryClass {
      * Returns a random security question and answer pair for the given username
      */
     private String[] getSecurityQuestion(String uname) throws FileNotFoundException {
-        File file = new File("Databases/Users/" + uname + ".txt");
+        File file = new File("Users/" + uname + ".txt");
         Scanner sc = new Scanner(file);
         int question = new Random().nextInt(4)+1;
         String[] ans = null;
@@ -227,7 +227,7 @@ public class QueryClass {
                                     p2 = sc.nextLine();
                                 }
 
-                                File f = new File("Databases/Users/" + uname + ".txt");
+                                File f = new File("Users/" + uname + ".txt");
                                 Scanner sc_file = new Scanner(f);
                                 StringBuilder sb=new StringBuilder();
 
@@ -238,7 +238,7 @@ public class QueryClass {
                                     }
                                     sb.append(line).append("\n");
                                 }
-                                BufferedWriter fileWriter = new BufferedWriter(new FileWriter("Databases/Users/" + uname + ".txt"));
+                                BufferedWriter fileWriter = new BufferedWriter(new FileWriter("Users/" + uname + ".txt"));
                                 fileWriter.write(sb.toString());
                                 fileWriter.close();
                                 System.out.println("Password Update successful");
