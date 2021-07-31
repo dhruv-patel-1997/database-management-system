@@ -3,9 +3,11 @@ package test.java.queries;
 import main.java.queries.Column;
 import main.java.queries.DataDictionaryUtils;
 import main.java.queries.ForeignKey;
+import main.java.queries.LockTimeOutException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,7 +19,7 @@ import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DataDictionaryUtilsTest {
-    private static String dbName  = "testdb";
+    private static String dbName  = "ddtestdb";
     private static String tableName  = "testTable";
 
     @BeforeAll
@@ -69,7 +71,7 @@ public class DataDictionaryUtilsTest {
         try {
             HashMap<String,Column> columnHashMap = DataDictionaryUtils.getColumns(dbName,tableName);
             assertTrue(columnHashMap.containsKey("C1")&&columnHashMap.containsKey("C2")&&columnHashMap.containsKey("C3"));
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | LockTimeOutException e) {
             e.printStackTrace();
             fail();
         }
@@ -88,7 +90,7 @@ public class DataDictionaryUtilsTest {
                     && columnHashMap.get("colName").isPrivateKey()
                     && columnHashMap.get("colName").getForeignKey().getReferencedTable().equals("refTable")
                     && columnHashMap.get("colName").getForeignKey().getReferencedColumn().equals("refCol"));
-        } catch (IOException e) {
+        } catch (IOException | LockTimeOutException e) {
             e.printStackTrace();
             fail();
         }
@@ -101,7 +103,7 @@ public class DataDictionaryUtilsTest {
             DataDictionaryUtils.addColumn(dbName,tableName,new Column("colAdded2","TEXT"));
             assertTrue(DataDictionaryUtils.getColumns(dbName,tableName).containsKey("colAdded")
                     &&DataDictionaryUtils.getColumns(dbName,tableName).containsKey("colAdded2"));
-        } catch (IOException e) {
+        } catch (IOException | LockTimeOutException e) {
             e.printStackTrace();
             fail();
         }
@@ -113,7 +115,7 @@ public class DataDictionaryUtilsTest {
             DataDictionaryUtils.addColumn(dbName,tableName,new Column("colToBeRemoved","TEXT"));
             DataDictionaryUtils.dropDictionaryColumn(dbName,tableName,"colToBeRemoved");
             assertFalse(DataDictionaryUtils.getColumns(dbName,tableName).containsKey("colToBeRemoved"));
-        } catch (IOException e) {
+        } catch (IOException | LockTimeOutException e) {
             e.printStackTrace();
             fail();
         }
@@ -122,12 +124,101 @@ public class DataDictionaryUtilsTest {
     @Test
     public void dropDictionaryTableTest(){
         try {
-            DataDictionaryUtils.create("testdb","testTable2",null);
-            DataDictionaryUtils.dropDictionaryTable("testdb","testTable2");
-            assertFalse(DataDictionaryUtils.tableDictionaryExists("testdb","testTable2"));
-        } catch (IOException e) {
+            DataDictionaryUtils.create(dbName,"testTable2",null);
+            DataDictionaryUtils.dropDictionaryTable(dbName,"testTable2");
+            assertFalse(DataDictionaryUtils.tableDictionaryExists(dbName,"testTable2"));
+        } catch (IOException | LockTimeOutException e) {
             e.printStackTrace();
             fail();
         }
+    }
+
+    @Test
+    public void lockTableTest() throws LockTimeOutException {
+        DataDictionaryUtils.lockTable(dbName,tableName);
+        assertThrows(LockTimeOutException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                DataDictionaryUtils.lockTable(dbName,tableName);
+            }
+        });
+        DataDictionaryUtils.unlockTable(dbName,tableName);
+    }
+
+    @Test
+    public void lockLockedTableTest() throws LockTimeOutException {
+        DataDictionaryUtils.lockTable(dbName,tableName);
+        assertThrows(LockTimeOutException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                DataDictionaryUtils.lockTable(dbName, tableName);
+            }
+        });
+        DataDictionaryUtils.unlockTable(dbName,tableName);
+    }
+
+
+    @Test
+    public void unlockTableTest() {
+        try {
+            DataDictionaryUtils.lockTable(dbName,tableName);
+            DataDictionaryUtils.unlockTable(dbName,tableName);
+            DataDictionaryUtils.lockTable(dbName,tableName);
+        } catch (LockTimeOutException e) {
+            e.printStackTrace();
+            fail();
+        }
+        DataDictionaryUtils.unlockTable(dbName,tableName);
+    }
+
+    @Test
+    public void getColumnsFromLockedTableTest() throws LockTimeOutException {
+        DataDictionaryUtils.lockTable(dbName,tableName);
+        assertThrows(LockTimeOutException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                DataDictionaryUtils.getColumns(dbName,tableName);
+            }
+        });
+        DataDictionaryUtils.unlockTable(dbName,tableName);
+    }
+
+    @Test
+    public void addColumnToLockedTableTest() throws LockTimeOutException {
+        DataDictionaryUtils.lockTable(dbName,tableName);
+        Column column = new Column("colAdded4","TEXT");
+        assertThrows(LockTimeOutException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                DataDictionaryUtils.addColumn(dbName,tableName,column);
+            }
+        });
+        DataDictionaryUtils.unlockTable(dbName,tableName);
+    }
+
+    @Test
+    public void dropColumnFromLockedTableTest() throws IOException, LockTimeOutException {
+        Column column = new Column("colAdded5","TEXT");
+        DataDictionaryUtils.addColumn(dbName,tableName,column);
+        DataDictionaryUtils.lockTable(dbName,tableName);
+        assertThrows(LockTimeOutException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                DataDictionaryUtils.dropDictionaryColumn(dbName,tableName,"colAdded5");
+            }
+        });
+        DataDictionaryUtils.unlockTable(dbName,tableName);
+    }
+
+    @Test
+    public void dropLockedTableTest() throws LockTimeOutException {
+        DataDictionaryUtils.lockTable(dbName,tableName);
+        assertThrows(LockTimeOutException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                DataDictionaryUtils.dropDictionaryTable(dbName,tableName);
+            }
+        });
+        DataDictionaryUtils.unlockTable(dbName,tableName);
     }
 }
