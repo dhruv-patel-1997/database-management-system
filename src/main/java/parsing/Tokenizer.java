@@ -96,11 +96,11 @@ public class Tokenizer {
                 m.region(start,end);
                 if (m.lookingAt()) {
                     start = m.end();
-                    String stringValue = m.group().toUpperCase();
-                    Token token = Token.getTokenOfType(stringValue);
+                    String stringValue = m.group();
+                    Token token = Token.getTokenOfType(stringValue.toUpperCase());
                     if (token == null) {
-                        if (stringValue.equals("TRUE") || stringValue.equals("FALSE")) {
-                            token = new Token(Token.Type.BOOLEANLITERAL, stringValue);
+                        if (stringValue.equalsIgnoreCase("TRUE") || stringValue.equalsIgnoreCase("FALSE")) {
+                            token = new Token(Token.Type.BOOLEANLITERAL, stringValue.toUpperCase());
                         } else {
                             token = new Token(Token.Type.IDENTIFIER, stringValue);
                         }

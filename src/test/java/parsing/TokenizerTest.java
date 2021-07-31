@@ -143,7 +143,7 @@ public class TokenizerTest {
         Token t = tokenizer.next();
         System.out.println(t.getStringValue());
         assertTrue(t.getType() == Token.Type.IDENTIFIER
-                && t.getStringValue().matches("IDENTIFIER_TEST"));
+                && t.getStringValue().matches("identifier_test"));
     }
 
     @Test
@@ -151,7 +151,7 @@ public class TokenizerTest {
         Tokenizer tokenizer = new Tokenizer("identifiertest2");
         Token t = tokenizer.next();
         assertTrue(t.getType() == Token.Type.IDENTIFIER
-                && t.getStringValue().matches("IDENTIFIERTEST2"));
+                && t.getStringValue().matches("identifiertest2"));
     }
 
     @Test
