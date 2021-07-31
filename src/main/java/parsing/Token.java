@@ -65,6 +65,7 @@ public class Token {
         types.put("DECIMAL", Type.DECIMAL);
         types.put("TEXT", Type.TEXT);
         types.put("BOOLEAN", Type.BOOLEAN);
+        types.put("TRUNCATE", Type.TRUNCATE);
         return types;
     }
 }
