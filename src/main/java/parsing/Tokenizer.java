@@ -40,7 +40,7 @@ public class Tokenizer {
                 curr = input.charAt(++start);
             }
         }
-        if (start >= end - 1 && Character.isWhitespace(curr)){
+        if (start > end - 1 || start == end - 1 && Character.isWhitespace(curr)){
             //end of input
             //no syntax error has been found
             return null;
