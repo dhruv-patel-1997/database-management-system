@@ -1,10 +1,12 @@
 package main.java.queries;
 
+import main.java.parsing.Token;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,43 +21,48 @@ public class DataDictionaryUtils {
     return file.exists();
   }
 
-  public static HashMap<String, Column> getColumns(String dbName, String tableName) throws FileNotFoundException, LockTimeOutException {
-    if(tableDictionaryExists(dbName, tableName)) {
-        lockTable(dbName,tableName);
+  public static LinkedHashMap<String, Column> getColumns(String dbName, String tableName) throws LockTimeOutException {
       File file = new File("Databases/" + dbName + "/dd_" + tableName + ".txt");
-      Scanner sc = new Scanner(file);
-      HashMap<String, Column> columns = new HashMap<>();
+      if (file.exists()){
+          lockTable(dbName,tableName);
+          Scanner sc = null;
+          try {
+              sc = new Scanner(file);
+          } catch (FileNotFoundException e) {
+              e.printStackTrace();
+              return null;
+          }
+          LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
 
-      sc.nextLine();
-      while (sc.hasNext()) {
-        String[] columnDetails = sc.nextLine().split("\\|");
-        String colName = columnDetails[0];
-        String dataType = columnDetails[1];
-        boolean allowNull = Boolean.parseBoolean(columnDetails[2]);
-        boolean pk = Boolean.parseBoolean(columnDetails[3]);
+          sc.nextLine();
+          while (sc.hasNext()) {
+            String[] columnDetails = sc.nextLine().split("\\|");
+            String colName = columnDetails[0];
+            String dataType = columnDetails[1];
+            boolean allowNull = Boolean.parseBoolean(columnDetails[2]);
+            boolean pk = Boolean.parseBoolean(columnDetails[3]);
 
-        String fk = null;
-        if(columnDetails.length > 4) {
-          fk = columnDetails[4];
-        }
+            String fk = null;
+            if(columnDetails.length > 4) {
+              fk = columnDetails[4];
+            }
 
-        Column column = new Column(colName, dataType);
-        column.setAllowNulls(allowNull);
-        column.setPrivateKey(pk);
+            Column column = new Column(colName, dataType);
+            column.setAllowNulls(allowNull);
+            column.setAsPrivateKey(pk);
 
-        if(fk != null) {
-          String[] fkDetails = fk.split(" ");
-          ForeignKey key = new ForeignKey(colName, fkDetails[0], fkDetails[1]);
-          column.setForeignKey(key);
-        }
-
-        columns.put(colName, column);
+            if(fk != null) {
+              String[] fkDetails = fk.split(" ");
+              ForeignKey key = new ForeignKey(colName, fkDetails[0], fkDetails[1]);
+              column.setForeignKey(key);
+            }
+            columns.put(colName, column);
+          }
+          sc.close();
+          unlockTable(dbName,tableName);
+          return columns;
       }
-      sc.close();
-        unlockTable(dbName,tableName);
-      return columns;
-    }
-    return null;
+      return null;
   }
 
   public static void create(String dbName, String tableName, List<Column> columns) throws IOException {
@@ -203,5 +210,57 @@ public class DataDictionaryUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean equalsDataType(String thisDataType, String referenceDataType) {
+        //this datatype is varchar
+        String[] first = thisDataType.split(" ");
+        String[] second = referenceDataType.split(" ");
+        if (first[0].equals("VARCHAR") && second[0].equals("VARCHAR")){
+            if (first.length == 2 && second.length == 2){
+                if (Integer.parseInt(first[1])<=Integer.parseInt(second[1])){
+                    return true;
+                }
+            }
+        }
+        return thisDataType.equals(referenceDataType);
+    }
+
+
+    public static boolean valueIsOfDataType(Token value, String dataType){
+        Boolean result = false;
+        switch (dataType){
+            case "INT":
+                if (value.getType() == Token.Type.INTLITERAL){
+                    result = true;
+                }
+                break;
+            case "DECIMAL":
+                if (value.getType() == Token.Type.DECIMALLITERAL){
+                    result = true;
+                }
+                break;
+            case "BOOLEAN":
+                if (value.getType() == Token.Type.BOOLEANLITERAL){
+                    result = true;
+                }
+                break;
+            case "TEXT":
+                if (value.getType() == Token.Type.STRING){
+                    result = true;
+                }
+                break;
+            default:
+                if (value.getType() == Token.Type.STRING) {
+                    String[] dataTypeArr = dataType.split(" ");
+                    if (dataTypeArr[0].equals("VARCHAR")) {
+                        if (Integer.parseInt(dataTypeArr[1]) >= value.getStringValue().length()) {
+                            result = true;
+                        }
+                    }
+                }
+                break;
+        }
+        return result;
     }
 }

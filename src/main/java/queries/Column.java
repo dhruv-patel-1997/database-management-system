@@ -1,18 +1,9 @@
 package main.java.queries;
 
-import java.util.ArrayList;
-
 public class Column {
-    public enum noArgDataType {
-        TEXT,DECIMAL,INT,BOOLEAN
-    }
-    public enum argDataType {
-        VARCHAR
-    }
 
     private String colName;
     private String dataType;
-    private String dataTypeArg;
     private Boolean allowNulls;
     private Boolean privateKey;
     private ForeignKey foreignKey;
@@ -29,9 +20,11 @@ public class Column {
         this.allowNulls = allowNulls;
     }
 
-    public void  setPrivateKey(Boolean bool){
+    public void  setAsPrivateKey(Boolean bool){
         privateKey = bool;
-        setAllowNulls(false);
+        if (bool){
+            setAllowNulls(false);
+        }
     }
 
     public void setForeignKey(ForeignKey key){
