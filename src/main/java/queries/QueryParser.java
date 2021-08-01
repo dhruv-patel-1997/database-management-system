@@ -1,10 +1,15 @@
 package main.java.queries;
 
+import main.java.Context;
+import main.java.logs.GeneralLog;
+import main.java.logs.QueryLog;
 import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Token;
 import main.java.parsing.Tokenizer;
 
+import java.time.LocalTime;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class QueryParser {
     private Tokenizer tokenizer;
@@ -44,6 +49,7 @@ public class QueryParser {
                 break;
             case ALTER:
                 //validate query
+                alter();
                 break;
             case SELECT:
                 //validate query
@@ -85,6 +91,196 @@ public class QueryParser {
         }
     }
 
+    private void alter() throws InvalidQueryException {
+        if(Context.getDbName()!=null) {
+            Token token = tokenizer.next();
+            if (token != null && token.getType() == Token.Type.TABLE) {
+                token = tokenizer.next();
+                if (token != null && token.getType() == Token.Type.IDENTIFIER) {
+                    String tableName = token.getStringValue();
+                    token = tokenizer.next();
+                    switch (token.getType()) {
+                        case MODIFY:
+                            alterModify(tableName);
+                            break;
+                        case ADD:
+                            alterAdd(tableName);
+                            break;
+                        case DROP:
+                            alterDrop(tableName);
+                            break;
+                        default:
+                            throw new InvalidQueryException("Invalid syntax for ALTER query");
+                    }
+                } else {
+                    throw new InvalidQueryException("Invalid syntax for ALTER query");
+                }
+            } else {
+                throw new InvalidQueryException("Invalid syntax for ALTER query");
+            }
+        }
+        else{
+            throw new InvalidQueryException("Invalid syntax for ALTER query");
+        }
+    }
+    private void alterAdd(String tableName){
+        try {
+            ArrayList<String> values;
+            Token token=tokenizer.next();
+
+                if (token != null && token.getType() == Token.Type.IDENTIFIER) {
+                    String columnName = token.getStringValue();
+                    token = tokenizer.next();
+                    Token.Type tokenType = token.getType();
+                    AddAlterQuery addAlterQuery=new AddAlterQuery();
+                    if (tokenType == Token.Type.VARCHAR) {
+                        if ((values = matchesTokenList(Arrays.asList(Token.Type.OPEN, Token.Type.INTLITERAL, Token.Type.CLOSED))) != null) {
+                            token = tokenizer.next();
+                            if (token != null && token.getType() == Token.Type.SEMICOLON) {
+                                //Successful
+                                addAlterQuery.addColumn(tableName,columnName,"");
+                            } else {
+                                throw new InvalidQueryException("Invalid syntax for ALTER query");
+                            }
+                        } else {
+                            throw new InvalidQueryException("Invalid Varchar argument");
+                        }
+                    } else if (tokenType == Token.Type.INT) {
+                        token = tokenizer.next();
+                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
+                            //Successful
+
+                            System.out.println("Hi");
+                        } else {
+                            throw new InvalidQueryException("Invalid syntax for ALTER query");
+                        }
+                    } else if (tokenType == Token.Type.DECIMAL) {
+                        token = tokenizer.next();
+                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
+                            //Successful
+                        } else {
+                            throw new InvalidQueryException("Invalid syntax for ALTER query");
+                        }
+                    } else if (tokenType == Token.Type.TEXT) {
+                        token = tokenizer.next();
+                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
+                            //Successful
+                        } else {
+                            throw new InvalidQueryException("Invalid syntax for ALTER query");
+                        }
+                    } else if (tokenType == Token.Type.BOOLEAN) {
+                        token = tokenizer.next();
+                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
+                            //Successful
+
+                        } else {
+                            throw new InvalidQueryException("Invalid syntax for ALTER query");
+                        }
+                    } else {
+                        throw new InvalidQueryException("Invalid data type for column: ");
+                    }
+                }
+                else{
+                    throw new InvalidQueryException("Invalid syntax for ALTER query");
+                }
+
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void alterDrop(String tableName){
+        try {
+            ArrayList<String> values;
+            Token token=tokenizer.next();
+            if (token != null && token.getType() == Token.Type.COLUMN) {
+                token=tokenizer.next();
+                if (token != null && token.getType() == Token.Type.IDENTIFIER) {
+                    //Succesful
+                    DropAlterQuery dropAlterQuery=new DropAlterQuery();
+                    String columnName = token.getStringValue();
+                    dropAlterQuery.dropColumn(tableName,columnName);
+                }
+                else{
+                    throw new InvalidQueryException("Invalid syntax for ALTER query");
+                }
+            }
+            else{
+                throw new InvalidQueryException("Invalid syntax for ALTER query");
+            }
+
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void alterModify(String tableName){
+        try {
+            ArrayList<String> values;
+            Token token=tokenizer.next();
+            if (token != null && token.getType() == Token.Type.COLUMN) {
+                token=tokenizer.next();
+                if (token != null && token.getType() == Token.Type.IDENTIFIER) {
+                    token = tokenizer.next();
+                    Token.Type tokenType = token.getType();
+                    if (tokenType == Token.Type.VARCHAR) {
+                        if ((values = matchesTokenList(Arrays.asList(Token.Type.OPEN, Token.Type.INTLITERAL, Token.Type.CLOSED))) != null) {
+                            token = tokenizer.next();
+                            if (token != null && token.getType() == Token.Type.SEMICOLON) {
+                                //Successful
+                            } else {
+                                throw new InvalidQueryException("Invalid syntax for ALTER query");
+                            }
+                        } else {
+                            throw new InvalidQueryException("Invalid Varchar argument");
+                        }
+                    } else if (tokenType == Token.Type.INT) {
+                        token = tokenizer.next();
+                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
+                            //Successful
+                            System.out.println("Hi");
+                        } else {
+                            throw new InvalidQueryException("Invalid syntax for ALTER query");
+                        }
+                    } else if (tokenType == Token.Type.DECIMAL) {
+                        token = tokenizer.next();
+                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
+                            //Successful
+                        } else {
+                            throw new InvalidQueryException("Invalid syntax for ALTER query");
+                        }
+                    } else if (tokenType == Token.Type.TEXT) {
+                        token = tokenizer.next();
+                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
+                            //Successful
+                        } else {
+                            throw new InvalidQueryException("Invalid syntax for ALTER query");
+                        }
+                    } else if (tokenType == Token.Type.BOOLEAN) {
+                        token = tokenizer.next();
+                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
+                            //Successful
+                        } else {
+                            throw new InvalidQueryException("Invalid syntax for ALTER query");
+                        }
+                    } else {
+                        throw new InvalidQueryException("Invalid data type for column: ");
+                    }
+                }
+                else{
+                    throw new InvalidQueryException("Invalid syntax for ALTER query");
+                }
+            }
+            else{
+                throw new InvalidQueryException("Invalid syntax for ALTER query");
+            }
+
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
+
+    }
     private void truncate() throws InvalidQueryException{
         ArrayList<String> values;
         if ((values = matchesTokenList(Arrays.asList(Token.Type.TABLE,Token.Type.IDENTIFIER,Token.Type.SEMICOLON))) != null && tokenizer.next() == null){
@@ -108,13 +304,29 @@ public class QueryParser {
     }
 
     private void dropDatabase() throws InvalidQueryException{
+        GeneralLog generalLog=new GeneralLog();
+
         ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
         if (values != null && tokenizer.next() == null) {
             String dbName = values.get(0);
-            System.out.println("dropping db " + dbName);
+            Logger general=generalLog.setLogger();
             //SUCCESSFUL QUERY
-            CreateQuery query = new CreateQuery();
-            query.createDatabase(dbName);
+            LocalTime start=LocalTime.now();
+            DropQuery query=new DropQuery();
+            System.out.println(TableUtils.getGeneralLogTableInfo(dbName));
+            general.info("At the start of drop query");
+            String message1=TableUtils.getGeneralLogTableInfo(dbName)+"\n";
+            general.info(message1);
+            if(query.dropDatabase(dbName)){
+                LocalTime end=LocalTime.now();
+                int diff=end.getNano()-start.getNano();
+                String message="At the end of drop query"+"\n"+"Execution Time of query: "+diff +" nanoseconds";
+                general.info(message);
+                System.out.println("Your database has been deleted.");
+            }
+            else{
+                throw new InvalidQueryException("Could not delete database");
+            }
         } else {
             throw new InvalidQueryException("Invalid Syntax for CREATE DATABASE query");
         }
@@ -123,11 +335,15 @@ public class QueryParser {
     private void dropTable() throws InvalidQueryException{
         ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
         if (values != null && tokenizer.next() == null) {
-            String dbName = values.get(0);
-            System.out.println("droping table " + dbName);
+            String tableName = values.get(0);
             //SUCCESSFUL QUERY
-            CreateQuery query = new CreateQuery();
-            query.createDatabase(dbName);
+            DropQuery query=new DropQuery();
+            if(Context.getDbName()==null){
+                throw new InvalidQueryException("Please select database first");
+            }
+            else{
+                query.dropTable(Context.getDbName(),tableName);
+            }
         } else {
             throw new InvalidQueryException("Invalid Syntax for CREATE DATABASE query");
         }
@@ -281,7 +497,6 @@ public class QueryParser {
             throw new InvalidQueryException("Invalid syntax");
         }
     }
-
 
     private void insert() throws InvalidQueryException {
         Token token;

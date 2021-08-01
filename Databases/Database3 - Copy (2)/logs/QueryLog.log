@@ -1,0 +1,58 @@
+Jul 30, 2021 9:06:00 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Jul 30, 2021 9:06:00 PM main.java.queries.CreateQuery createTable
+INFO: In Create query part3
+Jul 30, 2021 9:13:46 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Jul 30, 2021 9:13:46 PM main.java.queries.CreateQuery createTable
+INFO: In Create query part4
+Jul 30, 2021 9:16:58 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Jul 30, 2021 9:16:58 PM main.java.queries.CreateQuery createTable
+INFO: In Create query part5
+Jul 31, 2021 10:56:52 AM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 10:58:12 AM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 10:58:56 AM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 1:06:51 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 1:08:21 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 1:11:32 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 1:13:03 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 1:19:23 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 1:26:22 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 2:08:35 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 2:14:31 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 2:15:23 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 2:19:49 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 2:21:07 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 2:25:14 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 2:26:20 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 2:26:56 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 2:29:31 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 2:30:43 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 2:31:30 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 2:32:17 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 2:33:36 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Jul 31, 2021 2:34:47 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log

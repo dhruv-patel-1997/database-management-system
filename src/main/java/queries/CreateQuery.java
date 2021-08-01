@@ -1,7 +1,11 @@
 package main.java.queries;
 
+import main.java.Context;
+import main.java.logs.QueryLog;
+
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class CreateQuery {
     public void createTable(String tableName, HashMap<String,Column> columns, List<PrimaryKey> primaryKeys, List<ForeignKey> foreignKeys) {

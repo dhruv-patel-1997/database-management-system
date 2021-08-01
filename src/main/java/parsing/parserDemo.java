@@ -1,5 +1,6 @@
 package main.java.parsing;
 
+import main.java.logs.QueryLog;
 import main.java.queries.QueryParser;
 
 import java.io.BufferedReader;
