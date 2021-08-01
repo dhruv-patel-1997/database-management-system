@@ -1,0 +1,24 @@
+Aug 01, 2021 1:17:20 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:17:20 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 01, 2021 1:39:03 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:39:03 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 01, 2021 1:43:34 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:45:13 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:45:46 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:45:47 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 01, 2021 1:47:05 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:47:05 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 01, 2021 1:49:38 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:49:38 PM main.java.queries.QueryParser use
+INFO: User null using database Database2

@@ -1,7 +1,10 @@
 package main.java;
 
+import main.java.logs.QueryLog;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class QueryEngine {
 

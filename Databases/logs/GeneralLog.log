@@ -52,3 +52,48 @@ INFO: {table1=0}
 Jul 31, 2021 7:08:52 PM main.java.queries.QueryParser dropDatabase
 INFO: At the end of drop query
 Execution Time of query: 27546000 nanoseconds
+Aug 01, 2021 1:39:03 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:39:03 PM main.java.queries.QueryParser use
+INFO: User: null At the start of use database query
+Aug 01, 2021 1:43:34 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:43:34 PM main.java.queries.QueryParser use
+INFO: User: null At the start of use database query
+Aug 01, 2021 1:45:13 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:45:13 PM main.java.queries.QueryParser use
+INFO: User: null At the start of use database query
+Aug 01, 2021 1:45:47 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:45:47 PM main.java.queries.QueryParser use
+INFO: User: null At the start of use database query
+Aug 01, 2021 1:45:49 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {table1=0}
+
+Aug 01, 2021 1:45:49 PM main.java.queries.QueryParser use
+INFO: User: null
+At the end of add for use query
+Execution Time of query: 1381400 nanoseconds
+Aug 01, 2021 1:47:05 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:47:05 PM main.java.queries.QueryParser use
+INFO: User: null At the start of use database query
+Aug 01, 2021 1:47:48 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {table1=0}
+
+Aug 01, 2021 1:47:48 PM main.java.queries.QueryParser use
+INFO: User: null
+At the end of add for use query
+Execution Time of query: 0 nanoseconds
+Aug 01, 2021 1:49:38 PM main.java.logs.GeneralLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:49:38 PM main.java.queries.QueryParser use
+INFO: User: null At the start of use database query
+Aug 01, 2021 1:49:38 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {table1=3}
+
+Aug 01, 2021 1:49:38 PM main.java.queries.QueryParser use
+INFO: User: null
+At the end of add for use query
+Execution Time of query: 5278700 nanoseconds

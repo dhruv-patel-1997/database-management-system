@@ -80,8 +80,6 @@ public class TableUtils {
     } catch (IOException e) {
       e.printStackTrace();
     }
-
-
   }
 
   public static int getRows(String dbName, String tableName) {
@@ -112,8 +110,8 @@ public class TableUtils {
       ArrayList<String> tables=getTableInDb(dbName);
 
       for(String table:tables){
-        String[] tmp=table.split(".");
-        generalLog.put(table.split("\\.")[0],getRows(dbName,table));
+        table=table.split("\\.")[0];
+        generalLog.put(table,getRows(dbName,table));
       }
     }
     return generalLog;

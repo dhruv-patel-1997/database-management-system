@@ -1,6 +1,7 @@
 package main.java.queries;
 
 import main.java.Context;
+import main.java.logs.EventLog;
 import main.java.logs.GeneralLog;
 import main.java.logs.QueryLog;
 import main.java.parsing.InvalidQueryException;
@@ -81,10 +82,21 @@ public class QueryParser {
     }
 
     private void use() throws InvalidQueryException {
+        EventLog eventLog=new EventLog();
+        Logger eventLogger=eventLog.setLogger();
+        GeneralLog generalLog=new GeneralLog();
+        Logger generalLogger=generalLog.setLogger();
+        generalLogger.info("User: "+ Context.getUserName()+" At the start of use database query");
+        LocalTime start=LocalTime.now();
         ArrayList<String> values;
         if ((values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER,Token.Type.SEMICOLON))) != null && tokenizer.next() == null){
             UseQuery query = new UseQuery();
             query.useDataBase(values.get(0));
+            LocalTime end=LocalTime.now();
+            int diff= end.getNano()-start.getNano();
+            eventLogger.info("User " +Context.getUserName()+ " using database "+values.get(0));
+            generalLogger.info("Database status at the end of use query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+            generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for use query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
             System.out.println("using database "+values.get(0));
         } else {
             throw new InvalidQueryException("Invalid syntax for USE query");
@@ -138,7 +150,8 @@ public class QueryParser {
                             token = tokenizer.next();
                             if (token != null && token.getType() == Token.Type.SEMICOLON) {
                                 //Successful
-                                addAlterQuery.addColumn(tableName,columnName,"");
+                                addAlterQuery.addColumn(tableName,columnName,"VARCHAR "+ values.get(1));
+                                System.out.println("Alter query executed successfully");
                             } else {
                                 throw new InvalidQueryException("Invalid syntax for ALTER query");
                             }
@@ -149,8 +162,8 @@ public class QueryParser {
                         token = tokenizer.next();
                         if (token != null && token.getType() == Token.Type.SEMICOLON) {
                             //Successful
-
-                            System.out.println("Hi");
+                            addAlterQuery.addColumn(tableName,columnName,"INT");
+                            System.out.println("Alter query executed successfully");
                         } else {
                             throw new InvalidQueryException("Invalid syntax for ALTER query");
                         }
@@ -158,6 +171,8 @@ public class QueryParser {
                         token = tokenizer.next();
                         if (token != null && token.getType() == Token.Type.SEMICOLON) {
                             //Successful
+                            addAlterQuery.addColumn(tableName,columnName,"DECIMAL");
+                            System.out.println("Alter query executed successfully");
                         } else {
                             throw new InvalidQueryException("Invalid syntax for ALTER query");
                         }
@@ -165,6 +180,8 @@ public class QueryParser {
                         token = tokenizer.next();
                         if (token != null && token.getType() == Token.Type.SEMICOLON) {
                             //Successful
+                            addAlterQuery.addColumn(tableName,columnName,"TEXT");
+                            System.out.println("Alter query executed successfully");
                         } else {
                             throw new InvalidQueryException("Invalid syntax for ALTER query");
                         }
@@ -172,7 +189,8 @@ public class QueryParser {
                         token = tokenizer.next();
                         if (token != null && token.getType() == Token.Type.SEMICOLON) {
                             //Successful
-
+                            addAlterQuery.addColumn(tableName,columnName,"BOOLEAN");
+                            System.out.println("Alter query executed successfully");
                         } else {
                             throw new InvalidQueryException("Invalid syntax for ALTER query");
                         }
@@ -196,10 +214,11 @@ public class QueryParser {
             if (token != null && token.getType() == Token.Type.COLUMN) {
                 token=tokenizer.next();
                 if (token != null && token.getType() == Token.Type.IDENTIFIER) {
-                    //Succesful
+                    //Successful
                     DropAlterQuery dropAlterQuery=new DropAlterQuery();
                     String columnName = token.getStringValue();
                     dropAlterQuery.dropColumn(tableName,columnName);
+                    System.out.println("Alter query executed successfully");
                 }
                 else{
                     throw new InvalidQueryException("Invalid syntax for ALTER query");
@@ -293,36 +312,43 @@ public class QueryParser {
     }
 
     private void drop() throws InvalidQueryException{
+        EventLog eventLog=new EventLog();
+        Logger eventLogger=eventLog.setLogger();
         Token token = tokenizer.next();
         if (token!=null && token.getType() == Token.Type.DATABASE){
             dropDatabase();
         } else if (token!=null && token.getType() == Token.Type.TABLE){
             dropTable();
         } else {
-            throw new InvalidQueryException("Invalid CREATE query");
+            eventLogger.info("Crashed for User:"+Context.getUserName()+"Invalid DROP query");
+            throw new InvalidQueryException("Invalid DROP query");
         }
     }
 
     private void dropDatabase() throws InvalidQueryException{
         GeneralLog generalLog=new GeneralLog();
+        EventLog eventLog=new EventLog();
+        Logger general=generalLog.setLogger();
+        Logger eventLogger=eventLog.setLogger();
 
         ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
         if (values != null && tokenizer.next() == null) {
             String dbName = values.get(0);
-            Logger general=generalLog.setLogger();
             //SUCCESSFUL QUERY
             LocalTime start=LocalTime.now();
+
             DropQuery query=new DropQuery();
-            System.out.println(TableUtils.getGeneralLogTableInfo(dbName));
-            general.info("At the start of drop query");
-            String message1=TableUtils.getGeneralLogTableInfo(dbName)+"\n";
-            general.info(message1);
+
+            general.info("User: "+Context.getUserName()+" At the start of drop query");
+            general.info("Database status at the start of drop query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+
             if(query.dropDatabase(dbName)){
                 LocalTime end=LocalTime.now();
                 int diff=end.getNano()-start.getNano();
-                String message="At the end of drop query"+"\n"+"Execution Time of query: "+diff +" nanoseconds";
-                general.info(message);
-                System.out.println("Your database has been deleted.");
+                general.info("Database status at the end of drop query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+                general.info("User: "+Context.getUserName()+"\nAt the end of drop query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
+                eventLogger.info("User "+Context.getUserName() + " deleted database "+dbName);
+                System.out.println("Database deleted successfully");
             }
             else{
                 throw new InvalidQueryException("Could not delete database");
@@ -333,16 +359,26 @@ public class QueryParser {
     }
 
     private void dropTable() throws InvalidQueryException{
+        GeneralLog generalLog=new GeneralLog();
+        Logger generalLogger=generalLog.setLogger();
+
         ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
         if (values != null && tokenizer.next() == null) {
             String tableName = values.get(0);
             //SUCCESSFUL QUERY
+            LocalTime start=LocalTime.now();
             DropQuery query=new DropQuery();
             if(Context.getDbName()==null){
                 throw new InvalidQueryException("Please select database first");
             }
             else{
+                generalLogger.info("User: "+Context.getUserName()+" At the start of drop query");
+                generalLogger.info("Database status at the start of drop query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
                 query.dropTable(Context.getDbName(),tableName);
+                LocalTime end=LocalTime.now();
+                int diff=end.getNano()-start.getNano();
+                generalLogger.info("User: "+Context.getUserName()+"\nAt the end of drop query"+"\n"+"Execution Time of query: "+diff+" nanoseconds");
+                System.out.println("Dropped table successful");
             }
         } else {
             throw new InvalidQueryException("Invalid Syntax for CREATE DATABASE query");
@@ -361,6 +397,8 @@ public class QueryParser {
     }
 
     private void createDatabase() throws InvalidQueryException {
+        EventLog eventLog=new EventLog();
+
         ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
         if (values != null && tokenizer.next() == null) {
             String dbName = values.get(0);
@@ -368,6 +406,9 @@ public class QueryParser {
             //SUCCESSFUL QUERY
             CreateQuery query = new CreateQuery();
             query.createDatabase(dbName);
+
+            Logger eventLogger=eventLog.setLogger();
+            eventLogger.info("User "+Context.getUserName()+ " created database "+dbName);
         } else {
             throw new InvalidQueryException("Invalid Syntax for CREATE DATABASE query");
         }
