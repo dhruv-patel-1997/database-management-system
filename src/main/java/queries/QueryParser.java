@@ -1,9 +1,11 @@
 package main.java.queries;
 
+import main.java.Context;
 import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Token;
 import main.java.parsing.Tokenizer;
 
+import java.io.IOException;
 import java.util.*;
 
 public class QueryParser {
@@ -13,7 +15,7 @@ public class QueryParser {
         this.tokenizer = tokenizer;
     }
 
-    public void parse() throws InvalidQueryException {
+    public void parse() throws InvalidQueryException, IOException, LockTimeOutException {
         // call tokenizer.next(); to get the next token
         Token token = tokenizer.next();
         if(token==null){
@@ -133,7 +135,7 @@ public class QueryParser {
         }
     }
 
-    private void create() throws InvalidQueryException {
+    private void create() throws InvalidQueryException, IOException, LockTimeOutException {
         Token token = tokenizer.next();
         if (token!=null && token.getType() == Token.Type.DATABASE){
             createDatabase();
@@ -148,7 +150,6 @@ public class QueryParser {
         ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
         if (values != null && tokenizer.next() == null) {
             String dbName = values.get(0);
-            System.out.println("creating db " + dbName);
             //SUCCESSFUL QUERY
             CreateQuery query = new CreateQuery();
             query.createDatabase(dbName);
@@ -157,7 +158,7 @@ public class QueryParser {
         }
     }
 
-    private void createTable() throws InvalidQueryException {
+    private void createTable() throws InvalidQueryException, IOException, LockTimeOutException {
         Token token;
         ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.OPEN));
         if (values == null) {
@@ -210,14 +211,17 @@ public class QueryParser {
                     }
                 }
                 //Column declaration is syntactically correct, add column to list
+                if (columns.containsKey(colName)){
+                    throw new InvalidQueryException("Duplicate column name: "+colName);
+                }
                 columns.put(colName,column);
             } else {
                 //KEY declaration
                 if (token != null && token.getType() == Token.Type.PRIMARY) {
                     //Primary key declaration
                     if ((values = matchesTokenList(Arrays.asList(Token.Type.KEY, Token.Type.OPEN, Token.Type.IDENTIFIER))) != null) {
-                        LinkedList<String> keyColumnNames = new LinkedList<>();
-                        keyColumnNames.add(token.getStringValue());
+                        HashSet<String> keyColumnNames = new HashSet<>();
+                        keyColumnNames.add(values.get(2));
                         while ((token = tokenizer.next()) != null && token.getType() == Token.Type.COMMA){
                             if ((token = tokenizer.next()) != null && token.getType() == Token.Type.IDENTIFIER){
                                 keyColumnNames.add(token.getStringValue());
@@ -256,17 +260,8 @@ public class QueryParser {
 
         if (token != null && token.getType() == Token.Type.CLOSED
                 && (token = tokenizer.next()) != null && token.getType() == Token.Type.SEMICOLON && tokenizer.next() == null) {
-            System.out.println("creating table "+tableName);
             //SUCCESSFUL QUERY
-            //add primary keys and foreign keys to cols
-            for (PrimaryKey pk : primaryKeys){
-                for (String colName : pk.getColumnNames()){
-                    columns.get(colName).setPrivateKey(true);
-                }
-            }
-            for (ForeignKey fk : foreignKeys){
-                columns.get(fk.getColname()).setForeignKey(fk);
-            }
+
             CreateQuery query = new CreateQuery();
             query.createTable(tableName, columns, primaryKeys, foreignKeys);
         } else {

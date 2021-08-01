@@ -27,7 +27,7 @@ public class DataDictionaryUtilsTest {
 
         ArrayList<Column> columns = new ArrayList<>();
         Column c1 = new Column("C1","VARCHAR 30");
-        c1.setPrivateKey(true);
+        c1.setAsPrivateKey(true);
 
         Column c2 = new Column("C2","TEXT");
         c2.setAllowNulls(false);
@@ -80,7 +80,7 @@ public class DataDictionaryUtilsTest {
     @Test
     public void createTest(){
         Column C1 = new Column("colName","TEXT");
-        C1.setPrivateKey(true);
+        C1.setAsPrivateKey(true);
         C1.setForeignKey(new ForeignKey("colName","refTable","refCol"));
         try {
             DataDictionaryUtils.create(dbName,"testTable2", Arrays.asList(C1));

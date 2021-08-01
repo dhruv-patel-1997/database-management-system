@@ -41,7 +41,7 @@ public class DataDictionaryUtils {
 
         Column column = new Column(colName, dataType);
         column.setAllowNulls(allowNull);
-        column.setPrivateKey(pk);
+        column.setAsPrivateKey(pk);
 
         if(fk != null) {
           String[] fkDetails = fk.split(" ");

@@ -2,6 +2,7 @@ package main.java;
 
 import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Tokenizer;
+import main.java.queries.LockTimeOutException;
 import main.java.queries.QueryParser;
 
 import java.io.*;
@@ -63,8 +64,8 @@ public class QueryClass {
                 System.out.println("What primary school did you attend? "+q3);
                 System.out.println("What was the house number you lived in as a child?  "+q4);
                 System.out.println("----------------------------------------------------------------");
-                int x=sc.nextInt();
-                if(x==1)
+                String x=sc.nextLine();
+                if(x.equals("1"))
                 {
 					//Change here for single file structure.
                     fw.append("Password:"+sha256(password)+"\nQ1:"+q1+"\nQ2:"+q2+"\nQ3:"+q3+"\nQ4:"+q4);
@@ -300,8 +301,10 @@ public class QueryClass {
                     QueryParser qp = new QueryParser(new Tokenizer(sb));
                     try {
                         qp.parse();
-                    } catch (InvalidQueryException e) {
+                    } catch (InvalidQueryException | LockTimeOutException e) {
                         System.out.println(e.getMessage());
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                     System.out.println();
                     break;
