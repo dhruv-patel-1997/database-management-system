@@ -67,6 +67,7 @@ public class Token {
         types.put("BOOLEAN", Type.BOOLEAN);
         types.put("MODIFY", Type.MODIFY);
         types.put("COLUMN", Type.COLUMN);
+        types.put("TRUNCATE", Type.TRUNCATE);
         return types;
     }
 }

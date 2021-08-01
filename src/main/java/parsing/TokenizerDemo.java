@@ -3,7 +3,6 @@ package main.java.parsing;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 
 public class TokenizerDemo {
     public static void main(String[] args) throws IOException {
@@ -30,8 +29,7 @@ public class TokenizerDemo {
         }
         query.append((char)c);
 
-        BufferedReader reader = new BufferedReader(new StringReader(query.toString()));
-        Tokenizer tokenizer = new Tokenizer(reader);
+        Tokenizer tokenizer = new Tokenizer(query);
         Token t;
 
         //prints type and value of each token entered
@@ -45,12 +43,6 @@ public class TokenizerDemo {
                 System.out.println(e.getMessage());
                 break;
             }
-        }
-
-        try {
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

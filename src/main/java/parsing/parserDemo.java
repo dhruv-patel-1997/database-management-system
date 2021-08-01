@@ -6,14 +6,12 @@ import main.java.queries.QueryParser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 
 public class parserDemo {
     public static void main(String[] args) throws IOException {
         BufferedReader inputReader;
-        BufferedReader br;
         int c;
-        do {
+        while (true) {
             inputReader = new BufferedReader(new InputStreamReader(System.in));
             StringBuilder query = new StringBuilder();
             boolean end = false;
@@ -25,7 +23,12 @@ public class parserDemo {
 
                 if (c == ':') {
                     //canceled query
-                    break;
+                    try {
+                        inputReader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return;
                 }
                 query.append((char) c);
 
@@ -33,24 +36,14 @@ public class parserDemo {
 
             query.append((char) c);
 
-            br = new BufferedReader(new StringReader(query.toString()));
-            Tokenizer tokenizer = new Tokenizer(br);
+            Tokenizer tokenizer = new Tokenizer(query);
             QueryParser parser = new QueryParser(tokenizer);
 
             try {
                 parser.parse();
-
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-
-        } while (c!=':');
-
-        try {
-            br.close();
-            inputReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

@@ -402,29 +402,23 @@ public class QueryParser {
 
                 if (tokenType == Token.Type.VARCHAR) {
                     if ((values = matchesTokenList(Arrays.asList(Token.Type.OPEN, Token.Type.INTLITERAL, Token.Type.CLOSED)))!= null) {
-                        System.out.println("column varchar");
                         column = new Column(colName,tokenType+" "+values.get(1));
                     } else {
                         throw new InvalidQueryException("Invalid Varchar argument");
                     }
                 } else if (tokenType == Token.Type.INT) {
-                    System.out.println("column int");
                     column = new Column(colName,tokenType.toString());
                 } else if (tokenType == Token.Type.DECIMAL) {
-                    System.out.println("column decimal");
                     column = new Column(colName, tokenType.toString());
                 } else if (tokenType == Token.Type.TEXT) {
-                    System.out.println("column text");
                     column = new Column(colName,tokenType.toString());
                 } else if (tokenType == Token.Type.BOOLEAN) {
-                    System.out.println("column boolean");
                     column = new Column(colName,tokenType.toString());
                 } else {
                     throw new InvalidQueryException("Invalid data type for column: "+colName);
                 }
                 if ((token = tokenizer.next()) != null && token.getType() == Token.Type.NOT){
                     if ((token = tokenizer.next()) != null && token.getType() == Token.Type.NULL){
-                        System.out.println("NOT NULL");
                         column.setAllowNulls(false);
                         token = tokenizer.next();
                     } else {
@@ -450,7 +444,6 @@ public class QueryParser {
                         if (token != null && token.getType() == Token.Type.CLOSED){
                             //key declaration is syntactically correct, add to list
                             primaryKeys.add(new PrimaryKey(keyColumnNames));
-                            System.out.println("primary key");
                         } else {
                             throw new InvalidQueryException("Invalid primary key syntax");
                         }
@@ -462,7 +455,6 @@ public class QueryParser {
                     if ((values = matchesTokenList(Arrays.asList(Token.Type.KEY, Token.Type.OPEN, Token.Type.IDENTIFIER,
                             Token.Type.CLOSED, Token.Type.REFERENCES, Token.Type.IDENTIFIER,
                             Token.Type.OPEN, Token.Type.IDENTIFIER, Token.Type.CLOSED))) != null) {
-                        System.out.println("foreign key");
                         //key declaration is syntactically correct, add to list
                         foreignKeys.add(new ForeignKey(values.get(2), values.get(5), values.get(7)));
                     } else {

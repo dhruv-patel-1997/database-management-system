@@ -1,7 +1,12 @@
 package main.java;
 
+import main.java.parsing.InvalidQueryException;
+import main.java.parsing.Tokenizer;
+import main.java.queries.QueryParser;
+
 import java.io.*;
 import java.security.MessageDigest;
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -15,7 +20,7 @@ public class QueryClass {
         uname = sc.next();
         try {
 
-            File file = new File("Users/users.txt"); //gets the file into file object.
+            File file = new File("Users/"+uname+".txt"); //gets the file into file object.
             if (file.exists()) {
                 System.out.println("Username already exist, try something else");
                 registerUser();
@@ -65,13 +70,11 @@ public class QueryClass {
                     fw.append("Password:"+sha256(password)+"\nQ1:"+q1+"\nQ2:"+q2+"\nQ3:"+q3+"\nQ4:"+q4);
                     fw.close();
                     System.out.println("User Created Successfully ");
-                    QueryEngine.main(null);
                 }else
                 {
                     fw.close();
                     file.delete();
                     registerUser();
-                    return;
                 }
             }
 
@@ -103,6 +106,7 @@ public class QueryClass {
                     String ans = sc.nextLine();
 
                     if (ans.equalsIgnoreCase(securityQuestion[1])) {
+                        Context.setUserName(uname);
                         return true;
                     } else {
                         System.out.println("Incorrect answer");
@@ -117,6 +121,7 @@ public class QueryClass {
             }
             System.out.println("Enter 1 to try to login again, else enter any other key.");
             response = sc.next();
+            sc.nextLine();
         }
         return false;
     }
@@ -242,7 +247,6 @@ public class QueryClass {
                                 fileWriter.write(sb.toString());
                                 fileWriter.close();
                                 System.out.println("Password Update successful");
-                                QueryEngine.main(null);
                                 return;
                             } else {
                                 System.out.println("Incorrect answer");
@@ -257,10 +261,56 @@ public class QueryClass {
                     System.out.println("Incorrect answer");
                 }
             } catch (Exception e) {
-                System.out.println("Username does not exist. Press 0 to exit");
-                int zero=sc.nextInt();
-                if(zero==0)
+                System.out.println("Username does not exist. Press 1 to try again or any other key to return to main menu");
+                String input =  sc.nextLine();
+                if(!input.equals("1")) {
+                    System.out.println();
                     break;
+                }
+            }
+        }
+    }
+
+    public void getQueries() {
+        boolean loggedIn = true;
+        Scanner sc = new Scanner(System.in);
+        while (loggedIn) {
+            System.out.println("Hello " + Context.getUserName() + ". Please choose: ");
+            System.out.println("1. Enter query");
+            System.out.println("2. Logout");
+            int choice;
+            try {
+                choice = sc.nextInt();
+            } catch (InputMismatchException e) {
+                choice = -1;
+            }
+            sc.nextLine();
+            switch (choice) {
+                case 1:
+                    System.out.println("Enter query: ");
+                    StringBuilder sb = new StringBuilder();
+                    String input;
+                    while (sc.hasNext()){
+                        input = sc.nextLine();
+                        sb.append(input);
+                        if (input.contains(";")){
+                            break;
+                        }
+                    }
+                    QueryParser qp = new QueryParser(new Tokenizer(sb));
+                    try {
+                        qp.parse();
+                    } catch (InvalidQueryException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    System.out.println();
+                    break;
+                case 2:
+                    Context.logout();
+                    loggedIn = false;
+                    break;
+                default:
+                    System.out.println("Invalid input, please try again.\n");
             }
         }
     }
