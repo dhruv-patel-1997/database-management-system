@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,17 +55,13 @@ public class CreateQueryTest {
 
     @Test
     public void createTableTest() throws IOException, LockTimeOutException {
-        HashMap<String, Column> columns = new HashMap<>();
+        LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
         ArrayList<ForeignKey> foreignKeys = new ArrayList<>();
         ArrayList<PrimaryKey> primaryKeys = new ArrayList<>();
 
         cq.createTable("table2",columns,primaryKeys,foreignKeys);
-        try {
-            assertTrue(DataDictionaryUtils.tableDictionaryExists(dbName,"table2")
-                    && DataDictionaryUtils.getColumns(dbName,"table2")!=null);
-        } catch (FileNotFoundException e){
-            fail();
-        }
+        assertTrue(DataDictionaryUtils.tableDictionaryExists(dbName,"table2")
+                && DataDictionaryUtils.getColumns(dbName,"table2")!=null);
     }
 
     @Test

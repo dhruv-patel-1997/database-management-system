@@ -1,5 +1,6 @@
 package test.java.queries;
 
+import main.java.parsing.Token;
 import main.java.queries.Column;
 import main.java.queries.DataDictionaryUtils;
 import main.java.queries.ForeignKey;
@@ -71,7 +72,7 @@ public class DataDictionaryUtilsTest {
         try {
             HashMap<String,Column> columnHashMap = DataDictionaryUtils.getColumns(dbName,tableName);
             assertTrue(columnHashMap.containsKey("C1")&&columnHashMap.containsKey("C2")&&columnHashMap.containsKey("C3"));
-        } catch (FileNotFoundException | LockTimeOutException e) {
+        } catch (LockTimeOutException e) {
             e.printStackTrace();
             fail();
         }
@@ -220,5 +221,41 @@ public class DataDictionaryUtilsTest {
             }
         });
         DataDictionaryUtils.unlockTable(dbName,tableName);
+    }
+
+    @Test
+    public void valueIsOfDataTypeTextTest(){
+        Token value = new Token(Token.Type.STRING,"");
+        assertTrue(DataDictionaryUtils.valueIsOfDataType(value,"TEXT"));
+    }
+
+    @Test
+    public void valueIsOfDataTypeVarcharTest(){
+        Token value = new Token(Token.Type.STRING,"x");
+        assertTrue(DataDictionaryUtils.valueIsOfDataType(value,"VARCHAR 3"));
+    }
+
+    @Test
+    public void valueIsOfDataTypeVarcharTooLongTest(){
+        Token value = new Token(Token.Type.STRING,"abcd");
+        assertFalse(DataDictionaryUtils.valueIsOfDataType(value,"VARCHAR 3"));
+    }
+
+    @Test
+    public void valueIsOfDataTypeIntTest(){
+        Token value = new Token(Token.Type.INTLITERAL,"1");
+        assertTrue(DataDictionaryUtils.valueIsOfDataType(value,"INT"));
+    }
+
+    @Test
+    public void valueIsOfDataTypeBoolTest(){
+        Token value = new Token(Token.Type.BOOLEANLITERAL,"true");
+        assertTrue(DataDictionaryUtils.valueIsOfDataType(value,"BOOLEAN"));
+    }
+
+    @Test
+    public void valueIsOfDataTypeDecimalTest(){
+        Token value = new Token(Token.Type.DECIMALLITERAL,"-1.5");
+        assertTrue(DataDictionaryUtils.valueIsOfDataType(value,"DECIMAL"));
     }
 }

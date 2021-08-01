@@ -1,6 +1,5 @@
 package main.java.queries;
 
-import main.java.Context;
 import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Token;
 import main.java.parsing.Tokenizer;
@@ -166,7 +165,7 @@ public class QueryParser {
         }
 
         String tableName = values.get(0);
-        HashMap<String,Column> columns = new HashMap<>();
+        LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
         LinkedList<PrimaryKey> primaryKeys = new LinkedList<>();
         LinkedList<ForeignKey> foreignKeys = new LinkedList<>();
 
@@ -270,7 +269,7 @@ public class QueryParser {
     }
 
 
-    private void insert() throws InvalidQueryException {
+    private void insert() throws InvalidQueryException, LockTimeOutException {
         Token token;
         ArrayList<String> stringValues = matchesTokenList(Arrays.asList(Token.Type.INTO, Token.Type.IDENTIFIER));
         if (stringValues == null) {

@@ -5,22 +5,21 @@ import main.java.Context;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class CreateQuery {
-    public boolean createTable(String tableName, HashMap<String,Column> columns, List<PrimaryKey> primaryKeys, List<ForeignKey> foreignKeys)
+    public boolean createTable(String tableName, LinkedHashMap<String,Column> columns, List<PrimaryKey> primaryKeys, List<ForeignKey> foreignKeys)
             throws IOException, LockTimeOutException {
         //db must set and table can't already exist
         String dbName = Context.getDbName();
-        String message;
         if (dbName != null && databaseExists(dbName)){
             if (!tableExists(dbName,tableName)){
                 //foreign key column, referenced table and reference column must exist
                 for (ForeignKey fk : foreignKeys){
                     String fkTableName = fk.getReferencedTable();
                     String fkCol = fk.getReferencedColumn();
-                    HashMap<String,Column> fkTable = DataDictionaryUtils.getColumns(dbName,fkTableName);
+                    LinkedHashMap<String,Column> fkTable = DataDictionaryUtils.getColumns(dbName,fkTableName);
                     if (!columns.containsKey(fk.getColname())
                             || fkTable == null
                             || !fkTable.containsKey(fkCol)){
@@ -32,7 +31,7 @@ public class CreateQuery {
                     Column referencedColumn = fkTable.get(fkCol);
                     String referenceDataType = referencedColumn.getDataType();
                     String thisDataType = columns.get(fk.getColname()).getDataType();
-                    if (!referencedColumn.isPrivateKey()||!equalsDataType(thisDataType,referenceDataType)){
+                    if (!referencedColumn.isPrivateKey()||!DataDictionaryUtils.equalsDataType(thisDataType,referenceDataType)){
                         System.out.println("foreign key constraint fails");
                         return false;
                     }
@@ -65,20 +64,6 @@ public class CreateQuery {
             }
         }
         return false;
-    }
-
-    private boolean equalsDataType(String thisDataType, String referenceDataType) {
-        //this datatype is varchar
-        String[] first = thisDataType.split(" ");
-        String[] second = referenceDataType.split(" ");
-        if (first[0].equals("VARCHAR") && second[0].equals("VARCHAR")){
-            if (first.length == 2 && second.length == 2){
-                if (Integer.parseInt(first[1])<=Integer.parseInt(second[1])){
-                    return true;
-                }
-            }
-        }
-        return thisDataType.equals(referenceDataType);
     }
 
     private void createTable(String tableName,List<Column> columns) throws IOException, LockTimeOutException {
