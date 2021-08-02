@@ -4,6 +4,7 @@ import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Token;
 import main.java.parsing.Tokenizer;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -269,7 +270,7 @@ public class QueryParser {
     }
 
 
-    private void insert() throws InvalidQueryException, LockTimeOutException {
+    private void insert() throws InvalidQueryException, LockTimeOutException, FileNotFoundException {
         Token token;
         ArrayList<String> stringValues = matchesTokenList(Arrays.asList(Token.Type.INTO, Token.Type.IDENTIFIER));
         if (stringValues == null) {
