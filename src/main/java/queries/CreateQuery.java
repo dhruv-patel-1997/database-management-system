@@ -31,7 +31,7 @@ public class CreateQuery {
                     Column referencedColumn = fkTable.get(fkCol);
                     String referenceDataType = referencedColumn.getDataType();
                     String thisDataType = columns.get(fk.getColname()).getDataType();
-                    if (!referencedColumn.isPrivateKey()||!DataDictionaryUtils.equalsDataType(thisDataType,referenceDataType)){
+                    if (!referencedColumn.isPrimaryKey()||!DataDictionaryUtils.equalsDataType(thisDataType,referenceDataType)){
                         System.out.println("foreign key constraint fails");
                         return false;
                     }
@@ -46,7 +46,7 @@ public class CreateQuery {
                             return false;
                         }
                         //add primary key to column
-                        columns.get(colName).setAsPrivateKey(true);
+                        columns.get(colName).setAsPrimaryKey(true);
                     }
                 }
 

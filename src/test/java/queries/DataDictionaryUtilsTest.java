@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +27,7 @@ public class DataDictionaryUtilsTest {
 
         ArrayList<Column> columns = new ArrayList<>();
         Column c1 = new Column("C1","VARCHAR 30");
-        c1.setAsPrivateKey(true);
+        c1.setAsPrimaryKey(true);
 
         Column c2 = new Column("C2","TEXT");
         c2.setAllowNulls(false);
@@ -81,14 +80,14 @@ public class DataDictionaryUtilsTest {
     @Test
     public void createTest(){
         Column C1 = new Column("colName","TEXT");
-        C1.setAsPrivateKey(true);
+        C1.setAsPrimaryKey(true);
         C1.setForeignKey(new ForeignKey("colName","refTable","refCol"));
         try {
             DataDictionaryUtils.create(dbName,"testTable2", Arrays.asList(C1));
             HashMap<String,Column> columnHashMap = DataDictionaryUtils.getColumns(dbName,"testTable2");
             assertTrue(DataDictionaryUtils.tableDictionaryExists(dbName,"testTable2")
                     && columnHashMap.containsKey("colName")
-                    && columnHashMap.get("colName").isPrivateKey()
+                    && columnHashMap.get("colName").isPrimaryKey()
                     && columnHashMap.get("colName").getForeignKey().getReferencedTable().equals("refTable")
                     && columnHashMap.get("colName").getForeignKey().getReferencedColumn().equals("refCol"));
         } catch (IOException | LockTimeOutException e) {

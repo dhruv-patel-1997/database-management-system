@@ -49,7 +49,7 @@ public class DataDictionaryUtils {
 
             Column column = new Column(colName, dataType);
             column.setAllowNulls(allowNull);
-            column.setAsPrivateKey(pk);
+            column.setAsPrimaryKey(pk);
 
             if(fk != null) {
               String[] fkDetails = fk.split(" ");
@@ -82,7 +82,7 @@ public class DataDictionaryUtils {
         stringBuilder.append(column.getColName()).append("|");
         stringBuilder.append(column.getDataType()).append("|");
         stringBuilder.append(column.getAllowNulls()).append("|");
-        stringBuilder.append(column.isPrivateKey()).append("|");
+        stringBuilder.append(column.isPrimaryKey()).append("|");
 
         ForeignKey fk = column.getForeignKey();
         if(fk != null) {
@@ -106,7 +106,7 @@ public class DataDictionaryUtils {
       stringBuilder.append(column.getColName()).append("|");
       stringBuilder.append(column.getDataType()).append("|");
       stringBuilder.append(column.getAllowNulls()).append("|");
-      stringBuilder.append(column.isPrivateKey()).append("|");
+      stringBuilder.append(column.isPrimaryKey()).append("|");
 
       ForeignKey fk = column.getForeignKey();
       if(fk != null) {
