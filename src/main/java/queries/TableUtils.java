@@ -12,14 +12,15 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class TableUtils {
- /* public static boolean tableExists(String dbName, String tableName){
-    String fileName = "Databases/"+dbName+"/"+tableName+".txt";
-    File file = new File (fileName);
-    return file.exists();
-  }*/
-  public static HashMap<String,ArrayList<String>> getColumns(String dbName, String tableName,ArrayList<String> columns) throws FileNotFoundException {
-    if (Context.setDbName(dbName)&&Context.isTableExist(tableName)){
-      File file = new File("Databases/"+dbName+"/"+tableName+".txt");
+
+  /* public static boolean tableExists(String dbName, String tableName){
+     String fileName = "Databases/"+dbName+"/"+tableName+".txt";
+     File file = new File (fileName);
+     return file.exists();
+   }*/
+  public static HashMap<String, ArrayList<String>> getColumns(String dbName, String tableName, ArrayList<String> columns) throws FileNotFoundException {
+    if(Context.setDbName(dbName) && Context.isTableExist(tableName)) {
+      File file = new File("Databases/" + dbName + "/" + tableName + ".txt");
       Scanner sc = new Scanner(file);
       HashMap<String, ArrayList<String>> totalColumn = new HashMap<>();
 
@@ -29,9 +30,13 @@ public class TableUtils {
         if(columns.contains(columnDetails[0])) {
           ArrayList<String> columnList = new ArrayList<>();
           for(int i = 1; i < columnDetails.length; i++) {
-              columnList.add(columnDetails[i]);
+            if(columnDetails[i].length() == 0 || columnDetails[i].equals(" ")) {
+              columnDetails[i] = "null";
+            }
+
+            columnList.add(columnDetails[i]);
           }
-          totalColumn.put(columnDetails[0],columnList);
+          totalColumn.put(columnDetails[0], columnList);
         }
 
       }
@@ -40,46 +45,48 @@ public class TableUtils {
     }
     return null;
   }
-  public static HashMap<String,ArrayList<String>> getColumns(String dbName, String tableName) throws FileNotFoundException {
-    if (Context.setDbName(dbName)&&Context.isTableExist(tableName)){
-      File file = new File("Databases/"+dbName+"/"+tableName+".txt");
+  public static HashMap<String, ArrayList<String>> getColumns(String dbName, String tableName) throws FileNotFoundException {
+    if(Context.setDbName(dbName) && Context.isTableExist(tableName)) {
+      File file = new File("Databases/" + dbName + "/" + tableName + ".txt");
       Scanner sc = new Scanner(file);
       HashMap<String, ArrayList<String>> totalColumn = new HashMap<>();
       while (sc.hasNext()) {
         String[] columnDetails = sc.nextLine().split("\\|");
-          ArrayList<String> columnList = new ArrayList<>();
-          for(int i = 1; i < columnDetails.length; i++) {
-              columnList.add(columnDetails[i]);
+        ArrayList<String> columnList = new ArrayList<>();
+        for(int i = 1; i < columnDetails.length; i++) {
+          if(columnDetails[i].equals("*null") || columnDetails[i].equals(" ")) {
+            columnDetails[i] = "*null";
           }
-          totalColumn.put(columnDetails[0],columnList);
+          columnList.add(columnDetails[i]);
+        }
+        totalColumn.put(columnDetails[0], columnList);
       }
       sc.close();
       return totalColumn;
     }
     return null;
   }
+
   public static boolean insertRow(String dbName, String tableName, HashMap<String, String> insertData) throws FileNotFoundException {
 
     HashMap<String, ArrayList<String>> tableData = getColumns(dbName, tableName);
     for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
       entry.getValue().add(insertData.get(entry.getKey()));
     }
-    insertTableData(dbName,tableName,tableData);
+    insertTableData(dbName, tableName, tableData);
     return true;
   }
-  public static void insertTableData(String dbName, String tableName,HashMap<String,ArrayList<String>> tableData)
-  {
-    if (Context.setDbName(dbName)&&Context.isTableExist(tableName)){
+  public static void insertTableData(String dbName, String tableName, HashMap<String, ArrayList<String>> tableData) {
+    if(Context.setDbName(dbName) && Context.isTableExist(tableName)) {
       try {
-        FileWriter myWriter = new FileWriter("Databases/"+dbName+"/"+tableName+".txt");
+        FileWriter myWriter = new FileWriter("Databases/" + dbName + "/" + tableName + ".txt");
 
         for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
-         myWriter.write(entry.getKey()+"|");
-         for(int i=0;i<entry.getValue().size();i++)
-         {
-           myWriter.write(entry.getValue().get(i)+"|");
-         }
-         myWriter.write("\n");
+          myWriter.write(entry.getKey() + "|");
+          for(int i = 0; i < entry.getValue().size(); i++) {
+            myWriter.write(entry.getValue().get(i) + "|");
+          }
+          myWriter.write("\n");
         }
         myWriter.close();
 
@@ -87,8 +94,115 @@ public class TableUtils {
 
         e.printStackTrace();
       }
-
-
     }
+  }
+  public static HashMap<String, ArrayList<String>> getColumnsForEquals(String dbName,String tableName,String colName,String colValue,String operand) throws FileNotFoundException {
+    HashMap<String, ArrayList<String>> tableData= getColumns(dbName,tableName);
+    ArrayList<Integer> indexes = new ArrayList<>();
+    if(operand.equals("=")){
+    for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
+      if(entry.getKey().equals(colName)) {
+        for(int i = 0; i < entry.getValue().size(); i++)
+        {
+          if(entry.getValue().get(i).equals(colValue))
+          {
+            indexes.add(i);
+          }
+        }
+      }
+    }
+    }else if(operand.equals("<"))
+    {
+      for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
+        if(entry.getKey().equals(colName)) {
+          for(int i = 0; i < entry.getValue().size(); i++)
+          {
+            if(Integer.parseInt(entry.getValue().get(i))<Integer.parseInt(colValue))
+            {
+              indexes.add(i);
+            }
+          }
+        }
+      }
+    }else if(operand.equals(">"))
+    {
+      for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
+        if(entry.getKey().equals(colName)) {
+          for(int i = 0; i < entry.getValue().size(); i++)
+          {
+            if(Integer.parseInt(entry.getValue().get(i))>Integer.parseInt(colValue))
+            {
+              indexes.add(i);
+            }
+          }
+        }
+      }
+    }
+    HashMap<String, ArrayList<String>> updatedData= new HashMap<>();
+
+    for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
+      ArrayList<String> colValues = new ArrayList<>();
+      for(int i=0;i<indexes.size();i++)
+      {
+        colValues.add(entry.getValue().get(indexes.get(i)));
+      }
+      updatedData.put(entry.getKey(),colValues);
+    }
+    return updatedData;
+
+  }
+  public static HashMap<String, ArrayList<String>> getLimitedColumnsForEquals(String dbName,String tableName,String colName,String colValue,ArrayList<String> columns,String operand) throws FileNotFoundException {
+    HashMap<String, ArrayList<String>> tableData= getColumns(dbName,tableName,columns);
+    ArrayList<Integer> indexes = new ArrayList<>();
+    if(operand.equals("=")){
+      for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
+        if(entry.getKey().equals(colName)) {
+          for(int i = 0; i < entry.getValue().size(); i++)
+          {
+            if(entry.getValue().get(i).equals(colValue))
+            {
+              indexes.add(i);
+            }
+          }
+        }
+      }
+    }else if(operand.equals("<"))
+    {
+      for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
+        if(entry.getKey().equals(colName)) {
+          for(int i = 0; i < entry.getValue().size(); i++)
+          {
+            if(Integer.parseInt(entry.getValue().get(i))<Integer.parseInt(colValue))
+            {
+              indexes.add(i);
+            }
+          }
+        }
+      }
+    }else if(operand.equals(">"))
+    {
+      for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
+        if(entry.getKey().equals(colName)) {
+          for(int i = 0; i < entry.getValue().size(); i++)
+          {
+            if(Integer.parseInt(entry.getValue().get(i))>Integer.parseInt(colValue))
+            {
+              indexes.add(i);
+            }
+          }
+        }
+      }
+    }
+    HashMap<String, ArrayList<String>> updatedData= new HashMap<>();
+    for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
+      ArrayList<String> colValues = new ArrayList<>();
+      for(int i=0;i<indexes.size();i++)
+      {
+        colValues.add(entry.getValue().get(indexes.get(i)));
+      }
+      updatedData.put(entry.getKey(),colValues);
+    }
+    return updatedData;
+
   }
 }
