@@ -30,8 +30,8 @@ public class TableUtils {
         if(columns.contains(columnDetails[0])) {
           ArrayList<String> columnList = new ArrayList<>();
           for(int i = 1; i < columnDetails.length; i++) {
-            if(columnDetails[i].length() == 0 || columnDetails[i].equals(" ")) {
-              columnDetails[i] = "null";
+            if(columnDetails[i].equals(" ")) {
+              columnDetails[i] = " ";
             }
 
             columnList.add(columnDetails[i]);
@@ -54,8 +54,8 @@ public class TableUtils {
         String[] columnDetails = sc.nextLine().split("\\|");
         ArrayList<String> columnList = new ArrayList<>();
         for(int i = 1; i < columnDetails.length; i++) {
-          if(columnDetails[i].equals("*null") || columnDetails[i].equals(" ")) {
-            columnDetails[i] = "*null";
+          if(columnDetails[i].equals(" ")) {
+            columnDetails[i] = " ";
           }
           columnList.add(columnDetails[i]);
         }
