@@ -1,18 +1,15 @@
 package test.java.queries;
 
-import main.java.Context;
+import Utilities.Context;
 import main.java.parsing.InvalidQueryException;
 import main.java.queries.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import static org.junit.jupiter.api.Assertions.*;

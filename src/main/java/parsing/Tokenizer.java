@@ -55,6 +55,12 @@ public class Tokenizer {
             case '=':
                 start++;
                 return new Token(Token.Type.EQUAL, "=");
+            case '<':
+                start++;
+                return new Token(Token.Type.LESS, "<");
+            case '>':
+                start++;
+                return new Token(Token.Type.GREATER, ">");
             case ',':
                 start++;
                 return new Token(Token.Type.COMMA, ",");

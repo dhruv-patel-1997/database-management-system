@@ -1,6 +1,6 @@
 package test.java;
 
-import main.java.Context;
+import Utilities.Context;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,9 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ContextTest {
 

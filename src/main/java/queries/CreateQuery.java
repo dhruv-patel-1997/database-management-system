@@ -1,6 +1,6 @@
 package main.java.queries;
 
-import main.java.Context;
+import Utilities.Context;
 
 import java.io.File;
 import java.io.IOException;
