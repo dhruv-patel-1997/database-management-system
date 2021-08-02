@@ -1,7 +1,7 @@
 package main.java.queries;
-
-import main.java.Context;
+import Utilities.Context;
 import main.java.parsing.Token;
+
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;

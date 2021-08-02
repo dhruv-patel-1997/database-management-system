@@ -1,5 +1,6 @@
 package main.java;
 
+import Utilities.Context;
 import main.java.logs.QueryLog;
 import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Tokenizer;
@@ -309,18 +310,9 @@ public class QueryClass {
                         e.printStackTrace();
                     }
                     System.out.println();
-
-                    if(Context.getDbName()==null){
                         QueryLog queryLog=new QueryLog();
                         Logger queryLogger=queryLog.setLogger();
                         queryLogger.info("User Name: "+Context.getUserName() +"\nQuery: "+sb.toString());
-                    }
-                    else{
-                        QueryLog queryLog=new QueryLog();
-                        Logger queryLogger=queryLog.setLogger(Context.getDbName());
-                        queryLogger.info("User Name: "+Context.getUserName() +"\nQuery: "+sb.toString());
-                    }
-
                     break;
                 case 2:
                     Context.logout();
