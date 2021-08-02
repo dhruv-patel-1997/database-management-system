@@ -7,7 +7,7 @@ public class Token {
     public enum Type {
         IDENTIFIER, STRING, COMMA, PERIOD, INT, INTLITERAL, DECIMAL, DECIMALLITERAL, BOOLEAN, BOOLEANLITERAL, SEMICOLON, OPEN, CLOSED, STAR, EQUAL,
         USE, CREATE, DROP, DATABASE, TABLE, PRIMARY, FOREIGN, KEY, REFERENCES, NOT, NULL, SELECT, FROM, WHERE,
-        INSERT, INTO, VALUES, ALTER, UPDATE, ADD, DELETE, VARCHAR, TEXT, TRUNCATE, MODIFY, COLUMN
+        INSERT, INTO, VALUES, ALTER, UPDATE, ADD, VARCHAR, TEXT, TRUNCATE, MODIFY, COLUMN, ERD, MYSQLDUMP
     }
 
     private static HashMap<String,Type> types = initKeywords();
@@ -59,7 +59,6 @@ public class Token {
         types.put("ALTER", Type.ALTER);
         types.put("UPDATE", Type.UPDATE);
         types.put("ADD", Type.ADD);
-        types.put("DELETE", Type.DELETE);
         types.put("VARCHAR", Type.VARCHAR);
         types.put("INT", Type.INT);
         types.put("DECIMAL", Type.DECIMAL);
@@ -68,6 +67,8 @@ public class Token {
         types.put("MODIFY", Type.MODIFY);
         types.put("COLUMN", Type.COLUMN);
         types.put("TRUNCATE", Type.TRUNCATE);
+        types.put("ERD", Type.ERD);
+        types.put("MYSQLDUMP", Type.MYSQLDUMP);
         return types;
     }
 }

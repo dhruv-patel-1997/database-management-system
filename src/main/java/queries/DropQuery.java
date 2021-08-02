@@ -28,6 +28,18 @@ public class DropQuery {
         }
     }
 
+    public boolean ddDropTable(String dbName,String tableName){
+        String directoryPath = "Databases/" + dbName + "/"+"dd_"+tableName+".txt";
+        File file = new File(directoryPath);
+
+        if(file.exists()){
+            return file.delete();
+        }
+        else{
+            return false;
+        }
+    }
+
     public static boolean deleteDirectory(File directory) {
         if(directory.exists()){
             File[] files = directory.listFiles();

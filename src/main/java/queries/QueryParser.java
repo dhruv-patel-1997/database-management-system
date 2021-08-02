@@ -8,6 +8,11 @@ import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Token;
 import main.java.parsing.Tokenizer;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalTime;
 import java.io.IOException;
 import java.util.*;
@@ -46,9 +51,6 @@ public class QueryParser {
             case UPDATE:
                 //validate query
                 break;
-            case DELETE:
-                //validate query
-                break;
             case ALTER:
                 //validate query
                 alter();
@@ -58,6 +60,9 @@ public class QueryParser {
                 break;
             case TRUNCATE:
                 truncate();
+                break;
+            case ERD:
+                generateErd(Context.getDbName());
                 break;
             default:
                 throw new InvalidQueryException("Invalid syntax: "+tokenValue);
@@ -113,9 +118,6 @@ public class QueryParser {
                     String tableName = token.getStringValue();
                     token = tokenizer.next();
                     switch (token.getType()) {
-                        case MODIFY:
-                            alterModify(tableName);
-                            break;
                         case ADD:
                             alterAdd(tableName);
                             break;
@@ -136,6 +138,7 @@ public class QueryParser {
             throw new InvalidQueryException("Invalid syntax for ALTER query");
         }
     }
+
     private void alterAdd(String tableName){
         try {
             ArrayList<String> values;
@@ -235,72 +238,6 @@ public class QueryParser {
 
     }
 
-    private void alterModify(String tableName){
-        try {
-            ArrayList<String> values;
-            Token token=tokenizer.next();
-            if (token != null && token.getType() == Token.Type.COLUMN) {
-                token=tokenizer.next();
-                if (token != null && token.getType() == Token.Type.IDENTIFIER) {
-                    token = tokenizer.next();
-                    Token.Type tokenType = token.getType();
-                    if (tokenType == Token.Type.VARCHAR) {
-                        if ((values = matchesTokenList(Arrays.asList(Token.Type.OPEN, Token.Type.INTLITERAL, Token.Type.CLOSED))) != null) {
-                            token = tokenizer.next();
-                            if (token != null && token.getType() == Token.Type.SEMICOLON) {
-                                //Successful
-                            } else {
-                                throw new InvalidQueryException("Invalid syntax for ALTER query");
-                            }
-                        } else {
-                            throw new InvalidQueryException("Invalid Varchar argument");
-                        }
-                    } else if (tokenType == Token.Type.INT) {
-                        token = tokenizer.next();
-                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
-                            //Successful
-                            System.out.println("Hi");
-                        } else {
-                            throw new InvalidQueryException("Invalid syntax for ALTER query");
-                        }
-                    } else if (tokenType == Token.Type.DECIMAL) {
-                        token = tokenizer.next();
-                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
-                            //Successful
-                        } else {
-                            throw new InvalidQueryException("Invalid syntax for ALTER query");
-                        }
-                    } else if (tokenType == Token.Type.TEXT) {
-                        token = tokenizer.next();
-                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
-                            //Successful
-                        } else {
-                            throw new InvalidQueryException("Invalid syntax for ALTER query");
-                        }
-                    } else if (tokenType == Token.Type.BOOLEAN) {
-                        token = tokenizer.next();
-                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
-                            //Successful
-                        } else {
-                            throw new InvalidQueryException("Invalid syntax for ALTER query");
-                        }
-                    } else {
-                        throw new InvalidQueryException("Invalid data type for column: ");
-                    }
-                }
-                else{
-                    throw new InvalidQueryException("Invalid syntax for ALTER query");
-                }
-            }
-            else{
-                throw new InvalidQueryException("Invalid syntax for ALTER query");
-            }
-
-        } catch (InvalidQueryException e) {
-            e.printStackTrace();
-        }
-
-    }
     private void truncate() throws InvalidQueryException{
         ArrayList<String> values;
         if ((values = matchesTokenList(Arrays.asList(Token.Type.TABLE,Token.Type.IDENTIFIER,Token.Type.SEMICOLON))) != null && tokenizer.next() == null){
@@ -376,6 +313,7 @@ public class QueryParser {
                 generalLogger.info("User: "+Context.getUserName()+" At the start of drop query");
                 generalLogger.info("Database status at the start of drop query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
                 query.dropTable(Context.getDbName(),tableName);
+                query.ddDropTable(Context.getDbName(),tableName);
                 LocalTime end=LocalTime.now();
                 int diff=end.getNano()-start.getNano();
                 generalLogger.info("User: "+Context.getUserName()+"\nAt the end of drop query"+"\n"+"Execution Time of query: "+diff+" nanoseconds");
@@ -406,6 +344,8 @@ public class QueryParser {
             //SUCCESSFUL QUERY
             CreateQuery query = new CreateQuery();
             query.createDatabase(dbName);
+
+            generateDump(dbName,tokenizer.getInput()+"\n");
 
             Logger eventLogger=eventLog.setLogger();
             eventLogger.info("User "+Context.getUserName()+ " created database "+dbName);
@@ -517,7 +457,7 @@ public class QueryParser {
         if (token != null && token.getType() == Token.Type.CLOSED
                 && (token = tokenizer.next()) != null && token.getType() == Token.Type.SEMICOLON && tokenizer.next() == null) {
             //SUCCESSFUL QUERY
-
+            generateDump(Context.getDbName(),tokenizer.getInput()+"\n");
             CreateQuery query = new CreateQuery();
             query.createTable(tableName, columns, primaryKeys, foreignKeys);
         } else {
@@ -587,6 +527,7 @@ public class QueryParser {
             if (cols.isEmpty() || cols.size() == vals.size()){
                 if ((token = tokenizer.next()) != null && token.getType() == Token.Type.SEMICOLON && tokenizer.next() == null){
                     //SUCCESSFUL QUERY
+                    generateDump(Context.getDbName(),tokenizer.getInput()+"\n");
                     InsertQuery query = new InsertQuery();
                     System.out.println("Insert into table "+tableName);
                     query.insert(tableName, cols,vals);
@@ -598,6 +539,75 @@ public class QueryParser {
             }
         } else {
             throw new InvalidQueryException("Invalid syntax");
+        }
+    }
+
+    private static void generateErd(String dbName) throws InvalidQueryException {
+        try {
+            if (dbName != null) {
+                ArrayList<String> tables = TableUtils.getTableInDb(dbName);
+                ArrayList<String> dd_tables = TableUtils.getTableInDb_DD(dbName);
+                File erd = new File("Databases/erd/" + dbName + "/erd.txt");
+                Files.createDirectories(Paths.get("Databases/erd/"+dbName));
+                erd.createNewFile();
+                FileWriter myWriter = new FileWriter("Databases/erd/" + dbName + "/erd.txt");
+                String dd_data = "";
+                for(String s:dd_tables){
+                    s=s.split("\\.")[0];
+                    dd_data+="Table: "+s+"\n"+readAllBytesJava7("Databases/" + dbName + "/" + s + ".txt")+"\n\n";
+                }
+                for (String t : tables) {
+                    t = t.split("\\.")[0];
+                    LinkedHashMap<String, Column> data = DataDictionaryUtils.getColumns_erd(dbName, t);
+                    for (Map.Entry<String, Column> entry : data.entrySet()) {
+                        String key = entry.getKey();
+                        Column value = entry.getValue();
+                        if (value.getForeignKey() != null) {
+                            myWriter.write("Table " + t + " references " + value.getForeignKey().getReferencedTable() + " having primary key " + value.getForeignKey().getReferencedColumn()+"\n\n");
+                            System.out.println("Table " + t + " references " + value.getForeignKey().getReferencedTable() + " having primary key " + value.getForeignKey().getReferencedColumn());
+                        }
+                    }
+                }
+                myWriter.write(dd_data);
+                myWriter.close();
+            } else {
+                throw new InvalidQueryException("Please use database first");
+            }
+        } catch (LockTimeOutException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static String readAllBytesJava7(String filePath)
+    {
+        String content = "";
+
+        try
+        {
+            content = new String ( Files.readAllBytes( Paths.get(filePath) ) );
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        return content;
+    }
+
+    private void generateDump(String dbName,String data) throws InvalidQueryException {
+        try {
+            if (dbName != null) {
+                File erd = new File("Databases/dump/" + dbName + "/dump.txt");
+                Files.createDirectories(Paths.get("Databases/dump/"+dbName));
+                erd.createNewFile();
+                FileWriter myWriter = new FileWriter("Databases/dump/" + dbName + "/dump.txt",true);
+                myWriter.write(data);
+                myWriter.close();
+            } else {
+                throw new InvalidQueryException("Please use database first");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

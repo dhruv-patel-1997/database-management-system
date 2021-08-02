@@ -1,14 +1,13 @@
 package main.java.queries;
 
+import main.java.Context;
 import main.java.parsing.Token;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class DataDictionaryUtils {
 
@@ -262,5 +261,47 @@ public class DataDictionaryUtils {
                 break;
         }
         return result;
+    }
+
+    public static LinkedHashMap<String, Column> getColumns_erd(String dbName, String tableName) throws LockTimeOutException {
+        File file = new File("Databases/" + dbName + "/dd_" + tableName + ".txt");
+        if (file.exists()){
+            Scanner sc = null;
+            try {
+                sc = new Scanner(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
+            LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
+
+            sc.nextLine();
+            while (sc.hasNext()) {
+                String[] columnDetails = sc.nextLine().split("\\|");
+                String colName = columnDetails[0];
+                String dataType = columnDetails[1];
+                boolean allowNull = Boolean.parseBoolean(columnDetails[2]);
+                boolean pk = Boolean.parseBoolean(columnDetails[3]);
+
+                String fk = null;
+                if(columnDetails.length > 4) {
+                    fk = columnDetails[4];
+                }
+
+                Column column = new Column(colName, dataType);
+                column.setAllowNulls(allowNull);
+                column.setAsPrivateKey(pk);
+
+                if(fk != null) {
+                    String[] fkDetails = fk.split(" ");
+                    ForeignKey key = new ForeignKey(colName, fkDetails[0], fkDetails[1]);
+                    column.setForeignKey(key);
+                }
+                columns.put(colName, column);
+            }
+            sc.close();
+            return columns;
+        }
+        return null;
     }
 }

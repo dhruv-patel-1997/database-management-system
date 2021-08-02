@@ -104,6 +104,11 @@ public class TableUtils {
     return listFilesForFolder(folder);
   }
 
+  public static ArrayList<String> getTableInDb_DD(String dbName){
+    File folder = new File("Databases/" + dbName);
+    return listFilesForFolder_DD(folder);
+  }
+
   public static HashMap<String,Integer> getGeneralLogTableInfo(String dbName){
     HashMap<String,Integer> generalLog=new HashMap<>();
     if(getTableInDb(dbName)!=null){
@@ -124,7 +129,28 @@ public class TableUtils {
         if (fileEntry.isDirectory()) {
           listFilesForFolder(fileEntry);
         } else {
-          files.add(fileEntry.getName());
+          if(!fileEntry.getName().contains("dd_")){
+            files.add(fileEntry.getName());
+          }
+        }
+      }
+    }
+    else{
+      return null;
+    }
+    return files;
+  }
+
+  private static ArrayList<String> listFilesForFolder_DD(final File folder) {
+    ArrayList<String> files=new ArrayList<>();
+    if(folder.listFiles().length!=0){
+      for (final File fileEntry : folder.listFiles()) {
+        if (fileEntry.isDirectory()) {
+          listFilesForFolder(fileEntry);
+        } else {
+          if(fileEntry.getName().contains("dd_")){
+            files.add(fileEntry.getName());
+          }
         }
       }
     }

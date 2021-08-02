@@ -1,3 +1,0 @@
-empId|ep1|ep2|ep3|ep4
-empName|Leah|Harit|Dhruv|Saurabh
-empAddress|Halifax|Ahmedabad|Halifax|Culcutta

@@ -111,4 +111,8 @@ public class Tokenizer {
         String invalid  = ((String)input.subSequence(start,end)).split(" ")[0];
         throw new InvalidQueryException("Invalid token "+invalid);
     }
+
+    public String getInput(){
+        return this.input.toString();
+    }
 }
