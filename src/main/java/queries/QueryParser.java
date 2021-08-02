@@ -1,9 +1,12 @@
 package main.java.queries;
 
+import Utilities.Context;
+import Utilities.TableMaker;
 import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Token;
 import main.java.parsing.Tokenizer;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -31,7 +34,7 @@ public class QueryParser {
             case CREATE:
                 create();
                 break;
-            case DROP:  
+            case DROP:
                 drop();
                 break;
             case INSERT:
@@ -47,7 +50,7 @@ public class QueryParser {
                 //validate query
                 break;
             case SELECT:
-                //validate query
+                select();
                 break;
             case TRUNCATE:
                 truncate();
@@ -343,5 +346,57 @@ public class QueryParser {
         } else {
             throw new InvalidQueryException("Invalid syntax");
         }
+    }
+
+    private void select() throws InvalidQueryException, FileNotFoundException {
+        Token token;
+        token = tokenizer.next();
+        if(token != null && token.getType()==Token.Type.STAR) {
+            ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.FROM, Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
+            if(values == null) {
+                throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
+            }
+            String tableName = values.get(1);
+            if(Context.isTableExist(tableName)) {
+                showTable(TableUtils.getColumns(Context.getDbName(), tableName));
+            }
+            else {
+                throw new InvalidQueryException("No table exist with given name: "+tableName);
+            }
+        }else if(token!=null && token.getType()==Token.Type.IDENTIFIER)
+        {
+            ArrayList<String> columns = new ArrayList<>();
+            while(token!=null && token.getType()!=Token.Type.FROM && token.getType()==Token.Type.IDENTIFIER)
+            {
+                columns.add(token.getStringValue());
+                token=tokenizer.next();
+                if(token.getType()==Token.Type.FROM)
+                    break;
+                if(token.getType()!=Token.Type.COMMA)
+                    throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
+                token=tokenizer.next();
+            }
+            ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
+            if(values == null) {
+                throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
+            }
+            String tableName = values.get(0);
+            if(Context.isTableExist(tableName)) {
+                showTable(TableUtils.getColumns(Context.getDbName(), tableName,columns));
+            }
+            else {
+                throw new InvalidQueryException("No table exist with given name: "+tableName);
+            }
+
+        }else
+        {
+            throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
+        }
+    }
+
+    private void showTable(HashMap<String,ArrayList<String>> tableData)
+    {
+        TableMaker tm = new TableMaker();
+        tm.printTable(tableData);
     }
 }

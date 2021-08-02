@@ -1,6 +1,6 @@
 package main.java.queries;
 
-import main.java.Context;
+import Utilities.Context;
 
 public class UseQuery {
     public boolean useDataBase(String dbName) {

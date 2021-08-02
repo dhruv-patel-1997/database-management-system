@@ -1,5 +1,6 @@
 package main.java;
 
+import Utilities.Context;
 import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Tokenizer;
 import main.java.queries.LockTimeOutException;
