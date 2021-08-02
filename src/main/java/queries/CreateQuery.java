@@ -3,6 +3,7 @@ package main.java.queries;
 import Utilities.Context;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -70,6 +71,12 @@ public class CreateQuery {
         System.out.println("creating table "+tableName);
         File table = new File(Context.getDbPath()+tableName+".txt");
         table.createNewFile();
+        //print column names| order doesn't matter
+        FileWriter fw = new FileWriter(table);
+        for (Column c: columns){
+            fw.write(c.getColName()+"|\n");
+        }
+        fw.close();
         DataDictionaryUtils.create(Context.getDbName(),tableName,columns);
     }
 

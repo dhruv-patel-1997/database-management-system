@@ -1,6 +1,6 @@
 package test.java.queries;
 
-import main.java.Context;
+import Utilities.Context;
 import main.java.parsing.Token;
 import main.java.queries.*;
 import org.junit.jupiter.api.*;
@@ -13,12 +13,11 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InsertQueryTest {
-    private static InsertQuery query = new InsertQuery();
-    private static String dbName = "testInsertDb";
-    private static String tableName = "testInsertTable";
-    private static String refTableName = "testInsertRefTable";
-    private static List<String> colNames = Arrays.asList("col1", "col2", "col3", "col4", "col5");
-    private static List<Token> sampleVals = Arrays.asList(new Token(Token.Type.STRING,"\"val\""),
+    private static final InsertQuery query = new InsertQuery();
+    private static final String dbName = "testInsertDb";
+    private static final String tableName = "testInsertTable";
+    private static final List<String> colNames = Arrays.asList("col1", "col2", "col3", "col4", "col5");
+    private static final List<Token> sampleVals = Arrays.asList(new Token(Token.Type.STRING,"\"val\""),
             new Token(Token.Type.INTLITERAL,"10"),
             new Token(Token.Type.DECIMALLITERAL,"1.0"),
             new Token(Token.Type.BOOLEANLITERAL,"TRUE"),
@@ -43,12 +42,13 @@ public class InsertQueryTest {
         //create reference table
         List<PrimaryKey> refPrimaryKeys = new ArrayList<>();
         refPrimaryKeys.add(new PrimaryKey(new HashSet<String>(Collections.singleton("col1"))));
+        String refTableName = "testInsertRefTable";
         new CreateQuery().createTable(refTableName,refCols,refPrimaryKeys,new ArrayList<>());
         query.insert(refTableName,new ArrayList<String>(Collections.singleton("col1")),sampleVals);
 
         //create insert table
         List<ForeignKey> foreignKeys = new ArrayList<>();
-        foreignKeys.add(new ForeignKey("col5",refTableName,"col1"));
+        foreignKeys.add(new ForeignKey("col5", refTableName,"col1"));
         List<PrimaryKey> primaryKeys = new ArrayList<>();
         primaryKeys.add(new PrimaryKey(new HashSet<String>(Collections.singleton("col2"))));
         new CreateQuery().createTable(tableName,cols,primaryKeys,foreignKeys);
@@ -66,6 +66,8 @@ public class InsertQueryTest {
     @Test
     public void insertNoColsSuccess() throws FileNotFoundException, LockTimeOutException {
         assertTrue(query.insert(tableName,null,sampleVals));
+        HashMap<String, ArrayList<String>> values = TableUtils.getColumns(dbName,tableName);
+        assertTrue(values!=null && !values.isEmpty());
     }
 
     @Test
@@ -150,7 +152,7 @@ public class InsertQueryTest {
 
     @Test
     public void primaryKeyValueIsNull() throws FileNotFoundException, LockTimeOutException {
-        List<String> cols = Arrays.asList("col1");
+        List<String> cols = Collections.singletonList("col1");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.STRING,"\"val\""));
         assertFalse(query.insert(tableName,cols,vals));
@@ -162,7 +164,7 @@ public class InsertQueryTest {
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.STRING,"\"val\""));
         vals.add(new Token(Token.Type.INTLITERAL,"10"));
-        vals.add(new Token(Token.Type.NULL,"\"not present\""));
+        vals.add(new Token(Token.Type.STRING,"\"not present\""));
         assertFalse(query.insert(tableName,cols,vals));
     }
 
@@ -172,8 +174,8 @@ public class InsertQueryTest {
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.STRING,"\"val\""));
         vals.add(new Token(Token.Type.INTLITERAL,"10"));
-        vals.add(new Token(Token.Type.NULL,"\"val\""));
+        vals.add(new Token(Token.Type.STRING,"\"val\""));
         assertTrue(query.insert(tableName,cols,vals));
-        fail(); //debug to make sure value is actually there
+        System.out.println("break");
     }
 }

@@ -24,7 +24,7 @@ public class InsertQuery {
                 }
 
                 //iterate through columns in destination table to make sure the value can be inserted
-                List<Token> valuesToInsert = new ArrayList<>();
+                HashMap<String,String> insertData = new HashMap<>();
 
                 int valueIndex = 0;
                 int columnPresentInTableCount = 0;
@@ -78,15 +78,17 @@ public class InsertQuery {
 
                     //if column is a foreign key, value must exist in referenced table
                     if (destination.getForeignKey() != null){
+                        System.out.println(destination.getColName()+" is fk with val "+value.getStringValue());
                         String refTable = destination.getForeignKey().getReferencedTable();
                         String refColumn = destination.getForeignKey().getReferencedColumn();
                         ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(),refTable,new ArrayList<String>(Arrays.asList(refColumn))).get(refColumn);
-                        if (columnValues != null && !columnValues.contains(value.getStringValue())){
+                        if (value.getType() != Token.Type.NULL && (columnValues == null || !columnValues.contains(value.getStringValue()))){
                             //value is not present
-                            System.out.println("Foreign key constraint fails: "+value+ "not present in referenced column");
+                            System.out.println("Foreign key constraint fails: "+value.getStringValue()+ " not present in referenced column");
                             return false;
                         }
                     }
+                    insertData.put(destination.getColName(),value.getStringValue());
                 }
 
                 if (cols != null && !cols.isEmpty() && columnPresentInTableCount != cols.size()){
@@ -95,14 +97,7 @@ public class InsertQuery {
                 }
 
                 System.out.println("Inserting row");
-                //TODO:
-                //add logging
-                /*Execution logic
-                    lock table
-                    get table file
-                    append
-                    unlock*/
-
+                TableUtils.insertRow(Context.getDbName(),tableName,insertData);
                 return true;
 
             } else {

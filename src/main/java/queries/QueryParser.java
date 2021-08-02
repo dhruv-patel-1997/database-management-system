@@ -335,7 +335,6 @@ public class QueryParser {
                 if ((token = tokenizer.next()) != null && token.getType() == Token.Type.SEMICOLON && tokenizer.next() == null){
                     //SUCCESSFUL QUERY
                     InsertQuery query = new InsertQuery();
-                    System.out.println("Insert into table "+tableName);
                     query.insert(tableName, cols,vals);
                 } else {
                     throw new InvalidQueryException("Invalid syntax");
