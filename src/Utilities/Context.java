@@ -11,13 +11,13 @@ public class Context {
   public static String getDbPath() {
     return dbPath;
   }
+
   public static String getDbName() {
     return dbName;
   }
   public static String getUserName() {return userName;}
 
   public static boolean setDbName(String dbName) {
-
     String directoryPath = "Databases/" + dbName + "/";
     File file = new File(directoryPath);
 

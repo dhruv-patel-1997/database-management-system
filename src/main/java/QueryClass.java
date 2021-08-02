@@ -1,6 +1,7 @@
 package main.java;
 
 import Utilities.Context;
+import main.java.logs.QueryLog;
 import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Tokenizer;
 import main.java.queries.LockTimeOutException;
@@ -11,6 +12,7 @@ import java.security.MessageDigest;
 import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class QueryClass {
 
@@ -308,6 +310,9 @@ public class QueryClass {
                         e.printStackTrace();
                     }
                     System.out.println();
+                        QueryLog queryLog=new QueryLog();
+                        Logger queryLogger=queryLog.setLogger();
+                        queryLogger.info("User Name: "+Context.getUserName() +"\nQuery: "+sb.toString());
                     break;
                 case 2:
                     Context.logout();

@@ -50,4 +50,12 @@ public class Column {
     public Boolean getAllowNulls() {
         return allowNulls;
     }
+
+    public void set(String dataType){
+        this.dataType=dataType;
+        this.colName=getColName();
+        this.foreignKey=getForeignKey();
+        this.allowNulls=getAllowNulls();
+        this.privateKey=isPrivateKey();
+    }
 }

@@ -2,13 +2,21 @@ package main.java.queries;
 
 import Utilities.Context;
 import Utilities.TableMaker;
+import main.java.logs.EventLog;
+import main.java.logs.GeneralLog;
 import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Token;
 import main.java.parsing.Tokenizer;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalTime;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class QueryParser {
     private Tokenizer tokenizer;
@@ -43,17 +51,18 @@ public class QueryParser {
             case UPDATE:
                 //validate query
                 break;
-            case DELETE:
-                //validate query
-                break;
             case ALTER:
                 //validate query
+                alter();
                 break;
             case SELECT:
                 select();
                 break;
             case TRUNCATE:
                 truncate();
+                break;
+            case ERD:
+                generateErd(Context.getDbName());
                 break;
             default:
                 throw new InvalidQueryException("Invalid syntax: "+tokenValue);
@@ -79,14 +88,284 @@ public class QueryParser {
     }
 
     private void use() throws InvalidQueryException {
+        EventLog eventLog=new EventLog();
+        Logger eventLogger=eventLog.setLogger();
+        GeneralLog generalLog=new GeneralLog();
+        Logger generalLogger=generalLog.setLogger();
+        generalLogger.info("User: "+ Context.getUserName()+" At the start of use database query");
+        LocalTime start=LocalTime.now();
         ArrayList<String> values;
         if ((values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER,Token.Type.SEMICOLON))) != null && tokenizer.next() == null){
             UseQuery query = new UseQuery();
             query.useDataBase(values.get(0));
+            LocalTime end=LocalTime.now();
+            int diff= end.getNano()-start.getNano();
+            eventLogger.info("User " +Context.getUserName()+ " using database "+values.get(0));
+            generalLogger.info("Database status at the end of use query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+            generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for use query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
             System.out.println("using database "+values.get(0));
         } else {
             throw new InvalidQueryException("Invalid syntax for USE query");
         }
+    }
+
+
+    private void select() throws InvalidQueryException, FileNotFoundException {
+        Token token;
+        token = tokenizer.next();
+        if(token != null && token.getType()==Token.Type.STAR) {
+            ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.FROM, Token.Type.IDENTIFIER));
+            if(values == null) {
+                throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
+            }else
+            {
+                token = tokenizer.next();
+                String tableName = values.get(1);
+                if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
+                    showTable(TableUtils.getColumns(Context.getDbName(), tableName));
+                }
+                else {
+                    if(token.getType()!=Token.Type.WHERE)
+                        throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
+                    token=tokenizer.next();
+                    if(token.getType()!=Token.Type.IDENTIFIER)
+                        throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
+                    String colName=token.getStringValue();
+                    token=tokenizer.next();
+                    if(token.getType()!=Token.Type.EQUAL&&token.getType()!=Token.Type.LESS&&token.getType()!=Token.Type.GREATER)
+                        throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
+                    String operand = token.getStringValue();
+                    token=tokenizer.next();
+                    if(token.getType()==Token.Type.STRING)
+                    {
+                        String columnValue = token.getStringValue().substring(1,token.getStringValue().length()-1);
+                        token = tokenizer.next();
+                        if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
+                            showTable(TableUtils.getColumnsForEquals(Context.getDbName(), tableName,colName,columnValue,operand));
+                        }
+                    }else if(token.getType()==Token.Type.INTLITERAL)
+                    {
+                        String columnValue = token.getStringValue();
+                        token = tokenizer.next();
+                        if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
+                            showTable(TableUtils.getColumnsForEquals(Context.getDbName(), tableName,colName,columnValue,operand));
+                        }
+                    }else if(token.getType()==Token.Type.BOOLEANLITERAL)
+                    {
+                        String columnValue = token.getStringValue();
+                        token = tokenizer.next();
+                        if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
+                            showTable(TableUtils.getColumnsForEquals(Context.getDbName(), tableName,colName,columnValue,operand));
+                        }
+                    }
+
+                }
+            }
+
+        }else if(token!=null && token.getType()==Token.Type.IDENTIFIER)
+        {
+            ArrayList<String> columns = new ArrayList<>();
+            while(token!=null && token.getType()!=Token.Type.FROM && token.getType()==Token.Type.IDENTIFIER)
+            {
+                columns.add(token.getStringValue());
+                token=tokenizer.next();
+                if(token.getType()==Token.Type.FROM)
+                    break;
+                if(token.getType()!=Token.Type.COMMA)
+                    throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
+                token=tokenizer.next();
+            }
+            ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER));
+            if(values == null) {
+                throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
+            }
+            String tableName = values.get(0);
+            token = tokenizer.next();
+            if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
+                showTable(TableUtils.getColumns(Context.getDbName(), tableName));
+            }
+            else {
+                if(token.getType()!=Token.Type.WHERE)
+                    throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
+                token=tokenizer.next();
+                if(token.getType()!=Token.Type.IDENTIFIER)
+                    throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
+                String colName=token.getStringValue();
+                token=tokenizer.next();
+                if(token.getType()!=Token.Type.EQUAL&&token.getType()!=Token.Type.LESS&&token.getType()!=Token.Type.GREATER)
+                    throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
+                String operand = token.getStringValue();
+                token=tokenizer.next();
+                if(token.getType()==Token.Type.STRING)
+                {
+                    String columnValue = token.getStringValue().substring(1,token.getStringValue().length()-1);
+                    token = tokenizer.next();
+                    if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
+                        try {
+                            showTable(TableUtils.getLimitedColumnsForEquals(Context.getDbName(), tableName,colName,columnValue,columns,operand));
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }else if(token.getType()==Token.Type.INTLITERAL)
+                {
+                    String columnValue = token.getStringValue();
+                    token = tokenizer.next();
+                    if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
+                        showTable(TableUtils.getLimitedColumnsForEquals(Context.getDbName(), tableName,colName,columnValue,columns,operand));
+                    }
+                }else if(token.getType()==Token.Type.BOOLEANLITERAL)
+                {
+                    String columnValue = token.getStringValue();
+                    token = tokenizer.next();
+                    if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
+                        showTable(TableUtils.getLimitedColumnsForEquals(Context.getDbName(), tableName,colName,columnValue,columns,operand));
+                    }
+                }
+
+            }
+
+        }else
+        {
+            throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
+        }
+    }
+
+    private void showTable(HashMap<String,ArrayList<String>> tableData)
+    {
+        TableMaker tm = new TableMaker();
+        tm.printTable(tableData);
+    }
+
+
+
+    private void alter() throws InvalidQueryException {
+        if(Context.getDbName()!=null) {
+            Token token = tokenizer.next();
+            if (token != null && token.getType() == Token.Type.TABLE) {
+                token = tokenizer.next();
+                if (token != null && token.getType() == Token.Type.IDENTIFIER) {
+                    String tableName = token.getStringValue();
+                    token = tokenizer.next();
+                    switch (token.getType()) {
+                        case ADD:
+                            alterAdd(tableName);
+                            break;
+                        case DROP:
+                            alterDrop(tableName);
+                            break;
+                        default:
+                            throw new InvalidQueryException("Invalid syntax for ALTER query");
+                    }
+                } else {
+                    throw new InvalidQueryException("Invalid syntax for ALTER query");
+                }
+            } else {
+                throw new InvalidQueryException("Invalid syntax for ALTER query");
+            }
+        }
+        else{
+            throw new InvalidQueryException("Invalid syntax for ALTER query");
+        }
+    }
+
+    private void alterAdd(String tableName){
+        try {
+            ArrayList<String> values;
+            Token token=tokenizer.next();
+
+                if (token != null && token.getType() == Token.Type.IDENTIFIER) {
+                    String columnName = token.getStringValue();
+                    token = tokenizer.next();
+                    Token.Type tokenType = token.getType();
+                    AddAlterQuery addAlterQuery=new AddAlterQuery();
+                    if (tokenType == Token.Type.VARCHAR) {
+                        if ((values = matchesTokenList(Arrays.asList(Token.Type.OPEN, Token.Type.INTLITERAL, Token.Type.CLOSED))) != null) {
+                            token = tokenizer.next();
+                            if (token != null && token.getType() == Token.Type.SEMICOLON) {
+                                //Successful
+                                addAlterQuery.addColumn(tableName,columnName,"VARCHAR "+ values.get(1));
+                                System.out.println("Alter query executed successfully");
+                            } else {
+                                throw new InvalidQueryException("Invalid syntax for ALTER query");
+                            }
+                        } else {
+                            throw new InvalidQueryException("Invalid Varchar argument");
+                        }
+                    } else if (tokenType == Token.Type.INT) {
+                        token = tokenizer.next();
+                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
+                            //Successful
+                            addAlterQuery.addColumn(tableName,columnName,"INT");
+                            System.out.println("Alter query executed successfully");
+                        } else {
+                            throw new InvalidQueryException("Invalid syntax for ALTER query");
+                        }
+                    } else if (tokenType == Token.Type.DECIMAL) {
+                        token = tokenizer.next();
+                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
+                            //Successful
+                            addAlterQuery.addColumn(tableName,columnName,"DECIMAL");
+                            System.out.println("Alter query executed successfully");
+                        } else {
+                            throw new InvalidQueryException("Invalid syntax for ALTER query");
+                        }
+                    } else if (tokenType == Token.Type.TEXT) {
+                        token = tokenizer.next();
+                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
+                            //Successful
+                            addAlterQuery.addColumn(tableName,columnName,"TEXT");
+                            System.out.println("Alter query executed successfully");
+                        } else {
+                            throw new InvalidQueryException("Invalid syntax for ALTER query");
+                        }
+                    } else if (tokenType == Token.Type.BOOLEAN) {
+                        token = tokenizer.next();
+                        if (token != null && token.getType() == Token.Type.SEMICOLON) {
+                            //Successful
+                            addAlterQuery.addColumn(tableName,columnName,"BOOLEAN");
+                            System.out.println("Alter query executed successfully");
+                        } else {
+                            throw new InvalidQueryException("Invalid syntax for ALTER query");
+                        }
+                    } else {
+                        throw new InvalidQueryException("Invalid data type for column: ");
+                    }
+                }
+                else{
+                    throw new InvalidQueryException("Invalid syntax for ALTER query");
+                }
+
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void alterDrop(String tableName){
+        try {
+            ArrayList<String> values;
+            Token token=tokenizer.next();
+            if (token != null && token.getType() == Token.Type.COLUMN) {
+                token=tokenizer.next();
+                if (token != null && token.getType() == Token.Type.IDENTIFIER) {
+                    //Successful
+                    DropAlterQuery dropAlterQuery=new DropAlterQuery();
+                    String columnName = token.getStringValue();
+                    dropAlterQuery.dropColumn(tableName,columnName);
+                    System.out.println("Alter query executed successfully");
+                }
+                else{
+                    throw new InvalidQueryException("Invalid syntax for ALTER query");
+                }
+            }
+            else{
+                throw new InvalidQueryException("Invalid syntax for ALTER query");
+            }
+
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void truncate() throws InvalidQueryException{
@@ -101,37 +380,75 @@ public class QueryParser {
     }
 
     private void drop() throws InvalidQueryException{
+        EventLog eventLog=new EventLog();
+        Logger eventLogger=eventLog.setLogger();
         Token token = tokenizer.next();
         if (token!=null && token.getType() == Token.Type.DATABASE){
             dropDatabase();
         } else if (token!=null && token.getType() == Token.Type.TABLE){
             dropTable();
         } else {
-            throw new InvalidQueryException("Invalid CREATE query");
+            eventLogger.info("Crashed for User:"+Context.getUserName()+"Invalid DROP query");
+            throw new InvalidQueryException("Invalid DROP query");
         }
     }
 
     private void dropDatabase() throws InvalidQueryException{
+        GeneralLog generalLog=new GeneralLog();
+        EventLog eventLog=new EventLog();
+        Logger general=generalLog.setLogger();
+        Logger eventLogger=eventLog.setLogger();
+
         ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
         if (values != null && tokenizer.next() == null) {
             String dbName = values.get(0);
-            System.out.println("dropping db " + dbName);
             //SUCCESSFUL QUERY
-            CreateQuery query = new CreateQuery();
-            query.createDatabase(dbName);
+            LocalTime start=LocalTime.now();
+
+            DropQuery query=new DropQuery();
+
+            general.info("User: "+Context.getUserName()+" At the start of drop query");
+            general.info("Database status at the start of drop query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+
+            if(query.dropDatabase(dbName)){
+                LocalTime end=LocalTime.now();
+                int diff=end.getNano()-start.getNano();
+                general.info("Database status at the end of drop query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+                general.info("User: "+Context.getUserName()+"\nAt the end of drop query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
+                eventLogger.info("User "+Context.getUserName() + " deleted database "+dbName);
+                System.out.println("Database deleted successfully");
+            }
+            else{
+                throw new InvalidQueryException("Could not delete database");
+            }
         } else {
             throw new InvalidQueryException("Invalid Syntax for CREATE DATABASE query");
         }
     }
 
     private void dropTable() throws InvalidQueryException{
+        GeneralLog generalLog=new GeneralLog();
+        Logger generalLogger=generalLog.setLogger();
+
         ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
         if (values != null && tokenizer.next() == null) {
-            String dbName = values.get(0);
-            System.out.println("droping table " + dbName);
+            String tableName = values.get(0);
             //SUCCESSFUL QUERY
-            CreateQuery query = new CreateQuery();
-            query.createDatabase(dbName);
+            LocalTime start=LocalTime.now();
+            DropQuery query=new DropQuery();
+            if(Context.getDbName()==null){
+                throw new InvalidQueryException("Please select database first");
+            }
+            else{
+                generalLogger.info("User: "+Context.getUserName()+" At the start of drop query");
+                generalLogger.info("Database status at the start of drop query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+                query.dropTable(Context.getDbName(),tableName);
+                query.ddDropTable(Context.getDbName(),tableName);
+                LocalTime end=LocalTime.now();
+                int diff=end.getNano()-start.getNano();
+                generalLogger.info("User: "+Context.getUserName()+"\nAt the end of drop query"+"\n"+"Execution Time of query: "+diff+" nanoseconds");
+                System.out.println("Dropped table successful");
+            }
         } else {
             throw new InvalidQueryException("Invalid Syntax for CREATE DATABASE query");
         }
@@ -149,12 +466,19 @@ public class QueryParser {
     }
 
     private void createDatabase() throws InvalidQueryException {
+        EventLog eventLog=new EventLog();
+
         ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
         if (values != null && tokenizer.next() == null) {
             String dbName = values.get(0);
             //SUCCESSFUL QUERY
             CreateQuery query = new CreateQuery();
             query.createDatabase(dbName);
+
+            generateDump(dbName,tokenizer.getInput()+"\n");
+
+            Logger eventLogger=eventLog.setLogger();
+            eventLogger.info("User "+Context.getUserName()+ " created database "+dbName);
         } else {
             throw new InvalidQueryException("Invalid Syntax for CREATE DATABASE query");
         }
@@ -263,14 +587,13 @@ public class QueryParser {
         if (token != null && token.getType() == Token.Type.CLOSED
                 && (token = tokenizer.next()) != null && token.getType() == Token.Type.SEMICOLON && tokenizer.next() == null) {
             //SUCCESSFUL QUERY
-
+            generateDump(Context.getDbName(),tokenizer.getInput()+"\n");
             CreateQuery query = new CreateQuery();
             query.createTable(tableName, columns, primaryKeys, foreignKeys);
         } else {
             throw new InvalidQueryException("Invalid syntax");
         }
     }
-
 
     private void insert() throws InvalidQueryException, LockTimeOutException {
         Token token;
@@ -334,6 +657,7 @@ public class QueryParser {
             if (cols.isEmpty() || cols.size() == vals.size()){
                 if ((token = tokenizer.next()) != null && token.getType() == Token.Type.SEMICOLON && tokenizer.next() == null){
                     //SUCCESSFUL QUERY
+                    generateDump(Context.getDbName(),tokenizer.getInput()+"\n");
                     InsertQuery query = new InsertQuery();
                     System.out.println("Insert into table "+tableName);
                     query.insert(tableName, cols,vals);
@@ -348,126 +672,72 @@ public class QueryParser {
         }
     }
 
-    private void select() throws InvalidQueryException, FileNotFoundException {
-        Token token;
-        token = tokenizer.next();
-        if(token != null && token.getType()==Token.Type.STAR) {
-            ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.FROM, Token.Type.IDENTIFIER));
-            if(values == null) {
-                throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
-            }else
-            {
-                token = tokenizer.next();
-                String tableName = values.get(1);
-                if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
-                    showTable(TableUtils.getColumns(Context.getDbName(), tableName));
+    private static void generateErd(String dbName) throws InvalidQueryException {
+        try {
+            if (dbName != null) {
+                ArrayList<String> tables = TableUtils.getTableInDb(dbName);
+                ArrayList<String> dd_tables = TableUtils.getTableInDb_DD(dbName);
+                File erd = new File("Databases/erd/" + dbName + "/erd.txt");
+                Files.createDirectories(Paths.get("Databases/erd/"+dbName));
+                erd.createNewFile();
+                FileWriter myWriter = new FileWriter("Databases/erd/" + dbName + "/erd.txt");
+                String dd_data = "";
+                for(String s:dd_tables){
+                    s=s.split("\\.")[0];
+                    dd_data+="Table: "+s+"\n"+readAllBytesJava7("Databases/" + dbName + "/" + s + ".txt")+"\n\n";
                 }
-                else {
-                    if(token.getType()!=Token.Type.WHERE)
-                        throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
-                    token=tokenizer.next();
-                    if(token.getType()!=Token.Type.IDENTIFIER)
-                        throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
-                    String colName=token.getStringValue();
-                    token=tokenizer.next();
-                    if(token.getType()!=Token.Type.EQUAL&&token.getType()!=Token.Type.LESS&&token.getType()!=Token.Type.GREATER)
-                        throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
-                    String operand = token.getStringValue();
-                    token=tokenizer.next();
-                    if(token.getType()==Token.Type.STRING)
-                    {
-                        String columnValue = token.getStringValue().substring(1,token.getStringValue().length()-1);
-                        token = tokenizer.next();
-                        if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
-                            showTable(TableUtils.getColumnsForEquals(Context.getDbName(), tableName,colName,columnValue,operand));
-                        }
-                    }else if(token.getType()==Token.Type.INTLITERAL)
-                    {
-                        String columnValue = token.getStringValue();
-                        token = tokenizer.next();
-                        if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
-                            showTable(TableUtils.getColumnsForEquals(Context.getDbName(), tableName,colName,columnValue,operand));
-                        }
-                    }else if(token.getType()==Token.Type.BOOLEANLITERAL)
-                    {
-                        String columnValue = token.getStringValue();
-                        token = tokenizer.next();
-                        if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
-                            showTable(TableUtils.getColumnsForEquals(Context.getDbName(), tableName,colName,columnValue,operand));
+                for (String t : tables) {
+                    t = t.split("\\.")[0];
+                    LinkedHashMap<String, Column> data = DataDictionaryUtils.getColumns_erd(dbName, t);
+                    for (Map.Entry<String, Column> entry : data.entrySet()) {
+                        String key = entry.getKey();
+                        Column value = entry.getValue();
+                        if (value.getForeignKey() != null) {
+                            myWriter.write("Table " + t + " references " + value.getForeignKey().getReferencedTable() + " having primary key " + value.getForeignKey().getReferencedColumn()+"\n\n");
+                            System.out.println("Table " + t + " references " + value.getForeignKey().getReferencedTable() + " having primary key " + value.getForeignKey().getReferencedColumn());
                         }
                     }
-
                 }
+                myWriter.write(dd_data);
+                myWriter.close();
+            } else {
+                throw new InvalidQueryException("Please use database first");
             }
-
-        }else if(token!=null && token.getType()==Token.Type.IDENTIFIER)
-        {
-            ArrayList<String> columns = new ArrayList<>();
-            while(token!=null && token.getType()!=Token.Type.FROM && token.getType()==Token.Type.IDENTIFIER)
-            {
-                columns.add(token.getStringValue());
-                token=tokenizer.next();
-                if(token.getType()==Token.Type.FROM)
-                    break;
-                if(token.getType()!=Token.Type.COMMA)
-                    throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
-                token=tokenizer.next();
-            }
-            ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER));
-            if(values == null) {
-                throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
-            }
-            String tableName = values.get(0);
-            token = tokenizer.next();
-            if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
-                showTable(TableUtils.getColumns(Context.getDbName(), tableName));
-            }
-            else {
-                if(token.getType()!=Token.Type.WHERE)
-                    throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
-                token=tokenizer.next();
-                if(token.getType()!=Token.Type.IDENTIFIER)
-                    throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
-                String colName=token.getStringValue();
-                token=tokenizer.next();
-                if(token.getType()!=Token.Type.EQUAL&&token.getType()!=Token.Type.LESS&&token.getType()!=Token.Type.GREATER)
-                    throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
-                String operand = token.getStringValue();
-                token=tokenizer.next();
-                if(token.getType()==Token.Type.STRING)
-                {
-                    String columnValue = token.getStringValue().substring(1,token.getStringValue().length()-1);
-                    token = tokenizer.next();
-                    if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
-                        showTable(TableUtils.getLimitedColumnsForEquals(Context.getDbName(), tableName,colName,columnValue,columns,operand));
-                    }
-                }else if(token.getType()==Token.Type.INTLITERAL)
-                {
-                    String columnValue = token.getStringValue();
-                    token = tokenizer.next();
-                    if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
-                        showTable(TableUtils.getLimitedColumnsForEquals(Context.getDbName(), tableName,colName,columnValue,columns,operand));
-                    }
-                }else if(token.getType()==Token.Type.BOOLEANLITERAL)
-                {
-                    String columnValue = token.getStringValue();
-                    token = tokenizer.next();
-                    if((token.getType()==Token.Type.SEMICOLON)&&Context.isTableExist(tableName)) {
-                        showTable(TableUtils.getLimitedColumnsForEquals(Context.getDbName(), tableName,colName,columnValue,columns,operand));
-                    }
-                }
-
-            }
-
-        }else
-        {
-            throw new InvalidQueryException("Invalid syntax for SELECT TABLE query");
+        } catch (LockTimeOutException | IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private void showTable(HashMap<String,ArrayList<String>> tableData)
+    private static String readAllBytesJava7(String filePath)
     {
-        TableMaker tm = new TableMaker();
-        tm.printTable(tableData);
+        String content = "";
+
+        try
+        {
+            content = new String ( Files.readAllBytes( Paths.get(filePath) ) );
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        return content;
+    }
+
+    private void generateDump(String dbName,String data) throws InvalidQueryException {
+        try {
+            if (dbName != null) {
+                File erd = new File("Databases/dump/" + dbName + "/dump.txt");
+                Files.createDirectories(Paths.get("Databases/dump/"+dbName));
+                erd.createNewFile();
+                FileWriter myWriter = new FileWriter("Databases/dump/" + dbName + "/dump.txt",true);
+                myWriter.write(data);
+                myWriter.close();
+            } else {
+                throw new InvalidQueryException("Please use database first");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
