@@ -1,3 +1,12 @@
+package main.java;
+
+import Utilities.Context;
+import main.java.logs.QueryLog;
+import main.java.parsing.InvalidQueryException;
+import main.java.parsing.Tokenizer;
+import main.java.queries.LockTimeOutException;
+import main.java.queries.QueryParser;
+
 import java.io.*;
 import java.security.MessageDigest;
 import java.util.InputMismatchException;
@@ -58,19 +67,18 @@ public class QueryClass {
                 System.out.println("What primary school did you attend? "+q3);
                 System.out.println("What was the house number you lived in as a child?  "+q4);
                 System.out.println("----------------------------------------------------------------");
-                int x=sc.nextInt();
-                if(x==1)
+                String x=sc.nextLine();
+                if(x.equals("1"))
                 {
-                    fw.write("Password:"+sha256(password)+"\nQ1:"+q1+"\nQ2:"+q2+"\nQ3:"+q3+"\nQ4:"+q4);
+					//Change here for single file structure.
+                    fw.append("Password:"+sha256(password)+"\nQ1:"+q1+"\nQ2:"+q2+"\nQ3:"+q3+"\nQ4:"+q4);
                     fw.close();
                     System.out.println("User Created Successfully ");
-                    QueryEngine.main(null);
                 }else
                 {
                     fw.close();
                     file.delete();
                     registerUser();
-                    return;
                 }
             }
 
@@ -102,6 +110,7 @@ public class QueryClass {
                     String ans = sc.nextLine();
 
                     if (ans.equalsIgnoreCase(securityQuestion[1])) {
+                        Context.setUserName(uname);
                         return true;
                     } else {
                         System.out.println("Incorrect answer");
@@ -116,6 +125,7 @@ public class QueryClass {
             }
             System.out.println("Enter 1 to try to login again, else enter any other key.");
             response = sc.next();
+            sc.nextLine();
         }
         return false;
     }
@@ -124,7 +134,7 @@ public class QueryClass {
      * Returns the encrypted password from the file for the given username
      */
     private String getPassword(String uname) throws FileNotFoundException {
-        File file = new File("Databases/Users/" + uname + ".txt");
+        File file = new File("Users/" + uname + ".txt");
         Scanner sc = new Scanner(file);
         String pw = null;
         while (sc.hasNext() && pw==null) {
@@ -140,7 +150,7 @@ public class QueryClass {
      * Returns a random security question and answer pair for the given username
      */
     private String[] getSecurityQuestion(String uname) throws FileNotFoundException {
-        File file = new File("Databases/Users/" + uname + ".txt");
+        File file = new File("Users/" + uname + ".txt");
         Scanner sc = new Scanner(file);
         int question = new Random().nextInt(4)+1;
         String[] ans = null;
@@ -174,7 +184,7 @@ public class QueryClass {
      * Used for creating hashes of the mobile user's identity
      *
      */
-    public static String sha256(final String base) {
+    public  String sha256( String base) {
         try{
             final MessageDigest digest = MessageDigest.getInstance("SHA-256");
             final byte[] hash = digest.digest(base.getBytes("UTF-8"));
@@ -226,7 +236,7 @@ public class QueryClass {
                                     p2 = sc.nextLine();
                                 }
 
-                                File f = new File("Databases/Users/" + uname + ".txt");
+                                File f = new File("Users/" + uname + ".txt");
                                 Scanner sc_file = new Scanner(f);
                                 StringBuilder sb=new StringBuilder();
 
@@ -237,11 +247,10 @@ public class QueryClass {
                                     }
                                     sb.append(line).append("\n");
                                 }
-                                BufferedWriter fileWriter = new BufferedWriter(new FileWriter("Databases/Users/" + uname + ".txt"));
+                                BufferedWriter fileWriter = new BufferedWriter(new FileWriter("Users/" + uname + ".txt"));
                                 fileWriter.write(sb.toString());
                                 fileWriter.close();
                                 System.out.println("Password Update successful");
-                                QueryEngine.main(null);
                                 return;
                             } else {
                                 System.out.println("Incorrect answer");
@@ -256,10 +265,69 @@ public class QueryClass {
                     System.out.println("Incorrect answer");
                 }
             } catch (Exception e) {
-                System.out.println("Username does not exist. Press 0 to exit");
-                int zero=sc.nextInt();
-                if(zero==0)
+                System.out.println("Username does not exist. Press 1 to try again or any other key to return to main menu");
+                String input =  sc.nextLine();
+                if(!input.equals("1")) {
+                    System.out.println();
                     break;
+                }
+            }
+        }
+    }
+
+    public void getQueries() {
+        boolean loggedIn = true;
+        Scanner sc = new Scanner(System.in);
+        while (loggedIn) {
+            System.out.println("Hello " + Context.getUserName() + ". Please choose: ");
+            System.out.println("1. Enter query");
+            System.out.println("2. Logout");
+            int choice;
+            try {
+                choice = sc.nextInt();
+            } catch (InputMismatchException e) {
+                choice = -1;
+            }
+            sc.nextLine();
+            switch (choice) {
+                case 1:
+                    System.out.println("Enter query: ");
+                    StringBuilder sb = new StringBuilder();
+                    String input;
+                    boolean isTransaction = false;
+
+                    do {
+                        input = sc.nextLine();
+                        sb.append(input);
+                        if (input.toUpperCase().startsWith("START TRANSACTION:")) {
+                            isTransaction = true;
+                        }
+                        if (!isTransaction && input.contains(";")){
+                            break;
+                        }
+                        if (isTransaction && input.toUpperCase().contains("COMMIT;")){
+                            break;
+                        }
+                    } while (sc.hasNext());
+                    QueryParser qp = new QueryParser(new Tokenizer(sb));
+                    try {
+                        qp.parse();
+                    } catch (InvalidQueryException | LockTimeOutException e) {
+                        System.out.println(e.getMessage());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println();
+                        QueryLog queryLog=new QueryLog();
+                        Logger queryLogger=queryLog.setLogger();
+                        queryLogger.info("User Name: "+Context.getUserName() +"\nQuery: "+sb.toString());
+                    break;
+                case 2:
+                    Context.logout();
+                    loggedIn = false;
+                    break;
+                default:
+                    System.out.println("Invalid input, please try again.\n");
             }
         }
     }

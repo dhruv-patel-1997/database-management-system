@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 public class UseQuery {
     public boolean useDataBase(String dbName) throws InvalidQueryException {
 
+
         if(Context.setDbName(dbName)){
             GeneralLog generalLog=new GeneralLog();
             Logger generalLogger=generalLog.setLogger();

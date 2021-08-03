@@ -1,3 +1,286 @@
-Aug 03, 2021 3:46:28 PM main.java.parsing.InvalidQueryException <init>
+Aug 01, 2021 1:17:20 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:17:20 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 01, 2021 1:39:03 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:39:03 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 01, 2021 1:43:34 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:45:13 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:45:46 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:45:47 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 01, 2021 1:47:05 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:47:05 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 01, 2021 1:49:38 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 01, 2021 1:49:38 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 11:53:27 AM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 11:53:28 AM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 12:39:25 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 12:41:10 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 12:41:10 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 2:27:08 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 2:27:08 PM main.java.parsing.InvalidQueryException <init>
 INFO: Query Crashed for User: null.
-Reason: Please select database first.
+Reason: Please use database first
+Aug 02, 2021 2:27:14 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 2:27:14 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 2:27:56 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 2:27:57 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 2:31:56 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 2:31:57 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 2:33:34 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 2:33:35 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 2:44:16 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 2:44:16 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 2:49:57 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 2:49:57 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 3:50:50 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 3:50:50 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 3:51:36 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 3:51:36 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 3:53:44 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 3:53:44 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 3:54:59 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 3:54:59 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 3:57:03 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 3:57:03 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 3:58:07 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 3:58:07 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 4:00:39 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 4:00:40 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 4:05:24 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 4:05:25 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 4:06:47 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 4:06:47 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 4:08:58 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 4:08:58 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 4:16:15 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 4:16:15 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 4:17:00 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 4:17:00 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 4:18:55 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 4:18:55 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 4:21:56 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 4:21:56 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 4:24:20 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 4:24:20 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 5:04:32 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:04:33 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 5:05:06 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:05:06 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Invalid syntax: dump
+Aug 02, 2021 5:05:22 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:05:22 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Invalid syntax: SQLDUMP
+Aug 02, 2021 5:05:35 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:05:35 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Invalid syntax: SQLDUMPl
+Aug 02, 2021 5:05:39 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:05:39 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Invalid syntax: SQLDUMP
+Aug 02, 2021 5:08:14 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:08:14 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Please use database first
+Aug 02, 2021 5:08:26 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:08:26 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 5:08:33 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:08:33 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Invalid syntax: MYSQLDUMP
+Aug 02, 2021 5:08:52 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:08:52 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Invalid syntax: MYSQLDUMP
+Aug 02, 2021 5:09:12 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:09:12 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Invalid syntax: MYSQLDUMP
+Aug 02, 2021 5:10:03 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:10:03 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Invalid syntax: MYSQLDUMP
+Aug 02, 2021 5:12:07 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:12:07 PM main.java.queries.QueryParser use
+INFO: User null using database Datbase2
+Aug 02, 2021 5:12:44 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:12:44 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 5:13:38 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:16:06 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:16:19 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:26:08 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:26:08 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 5:26:22 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:26:33 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:48:54 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:48:55 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 02, 2021 5:51:01 PM main.java.logs.EventLog setLogger
+INFO: In Query log
+Aug 02, 2021 5:51:01 PM main.java.queries.QueryParser use
+INFO: User null using database Database2
+Aug 03, 2021 5:21:10 PM main.java.queries.QueryParser use
+INFO: User harit_patwa using database Database1
+Aug 03, 2021 5:26:27 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid syntax
+Aug 03, 2021 5:29:58 PM main.java.queries.QueryParser use
+INFO: User harit_patwa using database Database1
+Aug 03, 2021 5:31:45 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid syntax
+Aug 03, 2021 5:32:08 PM main.java.queries.QueryParser use
+INFO: User harit_patwa using database Database1
+Aug 03, 2021 6:30:08 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Please use database first
+Aug 03, 2021 6:30:24 PM main.java.queries.QueryParser use
+INFO: User harit_patwa using database Database1
+Aug 03, 2021 7:19:17 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid syntax for SELECT TABLE query
+Aug 03, 2021 7:19:47 PM main.java.queries.QueryParser use
+INFO: User harit_patwa using database Database1
+Aug 03, 2021 7:19:57 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Please select database first
+Aug 03, 2021 7:20:13 PM main.java.queries.QueryParser use
+INFO: User harit_patwa using database Database1
+Aug 03, 2021 7:20:20 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Please select database first
+Aug 03, 2021 7:28:41 PM main.java.queries.QueryParser use
+INFO: User harit_patwa using database Database1
+Aug 03, 2021 8:10:31 PM main.java.queries.QueryParser use
+INFO: User harit_patwa using database Database1
+Aug 03, 2021 8:12:39 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid data type for column: empId it should be: VARCHAR 255 You have passed: STRING
+Aug 03, 2021 8:16:17 PM main.java.queries.QueryParser use
+INFO: User harit_patwa using database Database1
+Aug 03, 2021 8:16:24 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid data type for column: empSalary it should be: INT You have passed: INTLITERAL
+Aug 03, 2021 8:17:10 PM main.java.queries.QueryParser use
+INFO: User harit_patwa using database Database1
+Aug 03, 2021 8:21:29 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Please use database first
+Aug 03, 2021 8:21:43 PM main.java.queries.QueryParser use
+INFO: User harit_patwa using database Database1
+Aug 03, 2021 8:29:37 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid syntax for SELECT TABLE query
+Aug 03, 2021 8:30:11 PM main.java.queries.QueryParser use
+INFO: User harit_patwa using database Database1
+Aug 03, 2021 8:31:44 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid data type for column: empIsVaccinated it should be: BOOLEAN You have passed: BOOLEANLITERAL
+Aug 03, 2021 8:33:16 PM main.java.queries.QueryParser use
+INFO: User harit_patwa using database Database1
+Aug 03, 2021 10:35:12 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid syntax for SELECT TABLE query
+Aug 03, 2021 10:44:41 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid syntax for SELECT TABLE query
+Aug 03, 2021 10:46:32 PM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid syntax for SELECT TABLE query2
+Aug 04, 2021 12:30:07 AM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Please select the database first
+Aug 04, 2021 12:46:22 AM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Please use database first
+Aug 04, 2021 1:20:39 AM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid syntax1
+Aug 04, 2021 2:04:03 AM main.java.parsing.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid syntax: 1
