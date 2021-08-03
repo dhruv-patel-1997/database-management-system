@@ -1,5 +1,6 @@
 package main.java.queries;
 
+import Utilities.Context;
 import main.java.parsing.Token;
 
 import java.io.File;
@@ -155,37 +156,38 @@ public class DataDictionaryUtils {
     public static void lockTable(String dbName, String tableName) throws LockTimeOutException {
         File file = new File("Databases/"+dbName+"/dd_"+tableName+".txt");
         boolean obtainedLock = false;
-        int tries = 0;
-        while (!obtainedLock && tries<15) {
-            if (file.exists()) {
-                try {
-                    Scanner sc = new Scanner(file);
-                    boolean unlocked = sc.next().equals("[unlocked]");
-                    sc.nextLine();
-                    if (unlocked) {
-                        StringBuilder content = new StringBuilder();
-                        content.append("[locked]\n");
-                        while (sc.hasNext()) {
-                            content.append(sc.nextLine()).append("\n");
-                        }
-
-                        FileWriter fw = new FileWriter(file);
-                        fw.write(content.toString());
-                        fw.close();
-                        obtainedLock = true;
-
-                    } else {
-                        try {
-                            Thread.sleep((long) (1000 * Math.random()));
-                            tries++;
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+        int time = 0;
+        while (!obtainedLock && time<5000) {
+            try {
+                Scanner sc = new Scanner(file);
+                String lockValue = sc.next();
+                boolean unlocked = (lockValue.equals("[unlocked]")||lockValue.equals("["+Context.getTransactionId()+"]"));
+                sc.nextLine();
+                if (unlocked) {
+                    StringBuilder content = new StringBuilder();
+                    content.append("[").append(Context.getTransactionId()).append("]\n");
+                    while (sc.hasNext()) {
+                        content.append(sc.nextLine()).append("\n");
                     }
-                    sc.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+                    FileWriter fw = new FileWriter(file);
+                    fw.write(content.toString());
+                    fw.close();
+                    obtainedLock = true;
+
+                } else {
+
+                    try {
+                        double timeToWait = 1000 * Math.random();
+                        Thread.sleep((long) timeToWait);
+                        time += timeToWait;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+                sc.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         if (!obtainedLock){

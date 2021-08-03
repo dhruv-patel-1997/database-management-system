@@ -9,8 +9,11 @@ import main.java.queries.QueryParser;
 import java.io.*;
 import java.security.MessageDigest;
 import java.util.InputMismatchException;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class QueryClass {
 
@@ -292,13 +295,21 @@ public class QueryClass {
                     System.out.println("Enter query: ");
                     StringBuilder sb = new StringBuilder();
                     String input;
-                    while (sc.hasNext()){
+                    boolean isTransaction = false;
+
+                    do {
                         input = sc.nextLine();
                         sb.append(input);
-                        if (input.contains(";")){
+                        if (input.toUpperCase().startsWith("START TRANSACTION:")) {
+                            isTransaction = true;
+                        }
+                        if (!isTransaction && input.contains(";")){
                             break;
                         }
-                    }
+                        if (isTransaction && input.toUpperCase().contains("COMMIT;")){
+                            break;
+                        }
+                    } while (sc.hasNext());
                     QueryParser qp = new QueryParser(new Tokenizer(sb));
                     try {
                         qp.parse();
