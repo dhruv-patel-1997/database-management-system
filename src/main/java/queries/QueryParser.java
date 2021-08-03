@@ -592,7 +592,7 @@ public class QueryParser {
             //SUCCESSFUL QUERY
             queries.add(new Callable() {
                 @Override
-                public Object call() {
+                public Object call() throws InvalidQueryException {
                     CreateQuery query = new CreateQuery();
                     try {
                         query.createDatabase(dbName);
@@ -718,9 +718,13 @@ public class QueryParser {
             //generateDump(Context.getDbName(),tokenizer.getInput()+"\n");
             queries.add(new Callable() {
                 @Override
-                public Object call() throws IOException, LockTimeOutException {
+                public Object call() throws IOException, LockTimeOutException, InvalidQueryException {
+                    boolean keepTableLocked = false;
                     CreateQuery query = new CreateQuery();
-                    query.createTable(tableName, columns, primaryKeys, foreignKeys);
+                    if (isTransaction){
+                        keepTableLocked = true;
+                    }
+                    query.createTable(tableName, columns, primaryKeys, foreignKeys,keepTableLocked);
                     return null;
                 }
             });

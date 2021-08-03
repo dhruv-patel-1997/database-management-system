@@ -3,6 +3,7 @@ package main.java.queries;
 import Utilities.Context;
 import main.java.logs.GeneralLog;
 import main.java.parsing.InvalidQueryException;
+import main.java.parsing.InvalidQueryException;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -14,8 +15,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class CreateQuery {
-    public boolean createTable(String tableName, LinkedHashMap<String,Column> columns, List<PrimaryKey> primaryKeys, List<ForeignKey> foreignKeys)
-            throws IOException, LockTimeOutException {
+    public boolean createTable(String tableName, LinkedHashMap<String,Column> columns, List<PrimaryKey> primaryKeys, List<ForeignKey> foreignKeys,boolean lockAfterCreate)
+            throws IOException, LockTimeOutException, InvalidQueryException {
         //db must set and table can't already exist
         String dbName = Context.getDbName();
         if (dbName != null && databaseExists(dbName)){
@@ -30,16 +31,14 @@ public class CreateQuery {
                             || fkTable == null
                             || !fkTable.containsKey(fkCol)){
                         //foreign key doesn't exist
-                        System.out.println("foreign key constraint fails");
-                        return false;
+                        throw new InvalidQueryException("foreign key constraint fails");
                     }
                     //referenced column must be primary key and of same data type
                     Column referencedColumn = fkTable.get(fkCol);
                     String referenceDataType = referencedColumn.getDataType();
                     String thisDataType = columns.get(fk.getColname()).getDataType();
                     if (!referencedColumn.isPrimaryKey()||!DataDictionaryUtils.equalsDataType(thisDataType,referenceDataType)){
-                        System.out.println("foreign key constraint fails");
-                        return false;
+                        throw new InvalidQueryException("foreign key constraint fails");
                     }
                     //add foreign key to column
                     columns.get(fk.getColname()).setForeignKey(fk);
@@ -48,8 +47,7 @@ public class CreateQuery {
                 for (PrimaryKey pk : primaryKeys){
                     for (String colName : pk.getColumnNames()){
                         if (!columns.containsKey(colName)){
-                            System.out.println("Primary key column "+colName+" is not declared");
-                            return false;
+                            throw new InvalidQueryException("Primary key column "+colName+" is not declared");
                         }
                         //add primary key to column
                         columns.get(colName).setAsPrimaryKey(true);
@@ -75,7 +73,7 @@ public class CreateQuery {
                 }
                 generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for create query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
                 //Query can be executed!
-                createTable(tableName, new ArrayList<>(columns.values()));
+                createTable(tableName, new ArrayList<>(columns.values()),lockAfterCreate);
                 return true;
             } else {
                 System.out.println("Table already exists in database "+dbName);
@@ -87,10 +85,10 @@ public class CreateQuery {
                 System.out.println("Database "+dbName+" does not exist");
             }
         }
-        return false;
+        throw new InvalidQueryException("Query was not successful");
     }
 
-    private void createTable(String tableName,List<Column> columns) throws IOException {
+    private void createTable(String tableName,List<Column> columns, boolean lockAfterCreate) throws IOException, LockTimeOutException {
         System.out.println("creating table "+tableName);
         File table = new File("temp");
         table.createNewFile();
@@ -102,6 +100,9 @@ public class CreateQuery {
         table.renameTo(new File(Context.getDbPath() + tableName + ".txt"));
         fw.close();
         DataDictionaryUtils.create(Context.getDbName(),tableName,columns);
+        if (lockAfterCreate) {
+            DataDictionaryUtils.lockTable(Context.getDbName(), tableName);
+        }
     }
 
     public boolean createDatabase(String dbName) throws InvalidQueryException {
@@ -120,10 +121,10 @@ public class CreateQuery {
             generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for create query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
             System.out.println("creating database "+dbName);
             db.mkdir();
+            Context.setDbName(dbName);
             return true;
         } else {
-            System.out.println("Database already exists");
-            return false;
+            throw new InvalidQueryException("Database already exists");
         }
     }
 
