@@ -298,7 +298,7 @@ public class QueryClass {
 
                     do {
                         input = sc.nextLine();
-                        sb.append(input).append("\n");
+                        sb.append(input);
                         if (input.toUpperCase().startsWith("START TRANSACTION:")) {
                             isTransaction = true;
                         }

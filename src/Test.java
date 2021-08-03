@@ -1,12 +1,14 @@
 import Utilities.Context;
+import main.java.queries.LockTimeOutException;
 import main.java.queries.TableUtils;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 
 public class Test {
 
-  public static void main(String [] args) throws FileNotFoundException {
+  public static void main(String [] args) throws IOException, LockTimeOutException {
     Context.setDbName("Database1");
     HashMap<String,String> hmp = new HashMap<>();
     hmp.put("empId","ep10");

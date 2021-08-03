@@ -6,8 +6,6 @@ import java.util.Map;
 
 public class TableMaker {
 
-  int columnSize;
-
   private void printSpace(int n) {
     for(int i = 0; i < n; i++)
       System.out.print(" ");
@@ -62,7 +60,7 @@ public class TableMaker {
         print("+");
       }
     }
-
+System.out.println();
   }
 
 }

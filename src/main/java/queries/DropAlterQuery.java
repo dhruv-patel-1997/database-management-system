@@ -3,6 +3,7 @@ package main.java.queries;
 
 import Utilities.Context;
 import main.java.logs.GeneralLog;
+import main.java.parsing.InvalidQueryException;
 
 import java.io.IOException;
 import java.time.LocalTime;
@@ -12,12 +13,13 @@ import java.util.logging.Logger;
 
 public class DropAlterQuery {
     public void dropColumn(String tableName,String columnName){
-        GeneralLog generalLog=new GeneralLog();
-        Logger generalLogger=generalLog.setLogger();
-        LocalTime start=LocalTime.now();
-        generalLogger.info("User: "+ Context.getUserName()+" At the start of adding column for alter query");
-        generalLogger.info("Database status at the start of alter query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
         try {
+            GeneralLog generalLog=new GeneralLog();
+            Logger generalLogger=generalLog.setLogger();
+            LocalTime start=LocalTime.now();
+            generalLogger.info("User: "+ Context.getUserName()+" At the start of adding column for alter query");
+            generalLogger.info("Database status at the start of alter query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+
             HashMap<String, ArrayList<String>> data=TableUtils.getColumns(Context.getDbName(),tableName);
             data.remove(columnName);
             TableUtils.setColumns(data,tableName);
@@ -31,7 +33,7 @@ public class DropAlterQuery {
             } catch (LockTimeOutException e) {
                 e.printStackTrace();
             }
-        } catch (IOException e) {
+        } catch (IOException | InvalidQueryException | LockTimeOutException e) {
             e.printStackTrace();
         }
 

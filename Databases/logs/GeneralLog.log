@@ -486,3 +486,321 @@ Aug 02, 2021 5:51:01 PM main.java.queries.QueryParser use
 INFO: User: null
 At the end of add for use query
 Execution Time of query: 1991700 nanoseconds
+Aug 03, 2021 5:21:10 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa At the start of use database query
+Aug 03, 2021 5:21:10 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {employee=3}
+
+Aug 03, 2021 5:21:10 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 2006200 nanoseconds
+Aug 03, 2021 5:21:10 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 5:21:10 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 03, 2021 5:21:55 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 5:21:55 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee where empAddress='Halifax';
+Aug 03, 2021 5:22:47 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 5:22:47 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 03, 2021 5:26:27 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 5:26:27 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: UPDATE employee SET empName='Samir' where empName='Saurabh';
+Aug 03, 2021 5:29:58 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa At the start of use database query
+Aug 03, 2021 5:29:58 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {employee=3}
+
+Aug 03, 2021 5:29:58 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 999900 nanoseconds
+Aug 03, 2021 5:29:58 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 5:29:58 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 03, 2021 5:31:45 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 5:31:45 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: UPDATE employee SET empName='Samir' where empName='Saurabh';
+Aug 03, 2021 5:32:08 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa At the start of use database query
+Aug 03, 2021 5:32:08 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {employee=3}
+
+Aug 03, 2021 5:32:08 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 994300 nanoseconds
+Aug 03, 2021 5:32:08 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 5:32:08 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 03, 2021 5:32:19 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 5:32:19 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: UPDATE employee SET empName='Samir' where empName='Saurabh';
+Aug 03, 2021 5:32:41 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 5:32:41 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 03, 2021 6:30:24 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa At the start of use database query
+Aug 03, 2021 6:30:24 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {employee=3}
+
+Aug 03, 2021 6:30:24 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 2000000 nanoseconds
+Aug 03, 2021 6:30:24 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 6:30:24 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 03, 2021 6:30:29 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 6:30:29 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: CREATE TABLE employee(    empId varchar(255),    empName varchar(255),    empAddress varchar(255),    empSalary int);
+Aug 03, 2021 7:19:47 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa At the start of use database query
+Aug 03, 2021 7:19:47 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {employee=3}
+
+Aug 03, 2021 7:19:47 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 2020600 nanoseconds
+Aug 03, 2021 7:19:47 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 7:19:47 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 03, 2021 7:19:57 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 7:19:57 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 03, 2021 7:20:13 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa At the start of use database query
+Aug 03, 2021 7:20:13 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {employee=3}
+
+Aug 03, 2021 7:20:13 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 0 nanoseconds
+Aug 03, 2021 7:20:13 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 7:20:13 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 03, 2021 7:20:20 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 7:20:20 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 03, 2021 7:28:41 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa At the start of use database query
+Aug 03, 2021 7:28:41 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {employee=3}
+
+Aug 03, 2021 7:28:41 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 1994900 nanoseconds
+Aug 03, 2021 7:28:41 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 7:28:41 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 03, 2021 7:29:06 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 7:29:06 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 03, 2021 8:10:31 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa At the start of use database query
+Aug 03, 2021 8:10:31 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {employee=3}
+
+Aug 03, 2021 8:10:31 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 1986200 nanoseconds
+Aug 03, 2021 8:10:31 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:10:31 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 03, 2021 8:10:57 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:10:57 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 03, 2021 8:12:39 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:12:39 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update employee set empId='ep12',empSalary=130 where empName='Samir';
+Aug 03, 2021 8:16:17 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa At the start of use database query
+Aug 03, 2021 8:16:17 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {employee=3}
+
+Aug 03, 2021 8:16:17 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 2006200 nanoseconds
+Aug 03, 2021 8:16:17 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:16:17 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 03, 2021 8:16:24 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:16:24 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update employee set empId='ep12',empSalary=130 where empName='Samir';
+Aug 03, 2021 8:17:10 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa At the start of use database query
+Aug 03, 2021 8:17:10 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {employee=3}
+
+Aug 03, 2021 8:17:10 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 999500 nanoseconds
+Aug 03, 2021 8:17:10 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:17:10 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 03, 2021 8:17:22 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:17:22 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update employee set empId='ep12',empSalary=130 where empName='Samir';
+Aug 03, 2021 8:17:35 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:17:35 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 03, 2021 8:21:43 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa At the start of use database query
+Aug 03, 2021 8:21:43 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {employee=3}
+
+Aug 03, 2021 8:21:43 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 1994200 nanoseconds
+Aug 03, 2021 8:21:43 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:21:43 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 03, 2021 8:21:50 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:21:50 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: CREATE TABLE employee(    empId varchar(255),    empName varchar(255),    empAddress varchar(255),    empSalary int,    empIsVaccinated boolean);
+Aug 03, 2021 8:28:56 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:28:56 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 03, 2021 8:30:11 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa At the start of use database query
+Aug 03, 2021 8:30:11 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {employee=3}
+
+Aug 03, 2021 8:30:11 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 966100 nanoseconds
+Aug 03, 2021 8:30:11 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:30:11 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 03, 2021 8:30:18 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:30:18 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 03, 2021 8:31:44 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:31:44 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update employee SET empIsVaccinated = false where empId='ep10';
+Aug 03, 2021 8:33:16 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa At the start of use database query
+Aug 03, 2021 8:33:16 PM main.java.queries.QueryParser use
+INFO: Database status at the end of use query: {employee=3}
+
+Aug 03, 2021 8:33:16 PM main.java.queries.QueryParser use
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 2007300 nanoseconds
+Aug 03, 2021 8:33:16 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:33:16 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 03, 2021 8:33:55 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:33:55 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update employee set empIsVaccinated=false where empId='ep1';
+Aug 03, 2021 8:34:08 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:34:08 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 04, 2021 2:27:39 AM main.java.queries.UseQuery useDataBase
+INFO: User: harit_patwa At the start of use query
+Aug 04, 2021 2:27:39 AM main.java.queries.UseQuery useDataBase
+INFO: Database status at the start of use query: {employee=3}
+
+Aug 04, 2021 2:27:39 AM main.java.queries.UseQuery useDataBase
+INFO: Database status at the end of alter query: {employee=3}
+
+Aug 04, 2021 2:27:39 AM main.java.queries.UseQuery useDataBase
+INFO: User: harit_patwa
+At the end of add for alter query
+Execution Time of query: 0 nanoseconds
+Aug 04, 2021 2:27:39 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 2:27:39 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+
+Aug 04, 2021 2:27:59 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 2:27:59 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: start transaction: 
+update employee set empId='ep123' where empName='Harit';
+select * from employee where empName='Harit';
+select * from employee;
+update employee set empName='Dwayne' where empId='ep5';
+select empName,empId from employee where empId='ep5';
+
+commit;
+

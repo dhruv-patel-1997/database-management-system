@@ -1,6 +1,7 @@
 package main.java.queries;
 
 import Utilities.Context;
+import main.java.parsing.InvalidQueryException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,7 +21,8 @@ public class TableUtils {
      File file = new File (fileName);
      return file.exists();
    }*/
-  public static HashMap<String, ArrayList<String>> getColumns(String dbName, String tableName, ArrayList<String> columns) throws FileNotFoundException {
+  public static HashMap<String, ArrayList<String>> getColumns(String dbName, String tableName, ArrayList<String> columns) throws IOException, LockTimeOutException {
+    DataDictionaryUtils.lockTable(dbName,tableName);
     if(Context.setDbName(dbName) && Context.isTableExist(tableName)) {
       File file = new File("Databases/" + dbName + "/" + tableName + ".txt");
       Scanner sc = new Scanner(file);
@@ -43,11 +45,13 @@ public class TableUtils {
 
       }
       sc.close();
+      DataDictionaryUtils.unlockTable(dbName,tableName);
       return totalColumn;
     }
     return null;
   }
-  public static HashMap<String, ArrayList<String>> getColumns(String dbName, String tableName) throws FileNotFoundException {
+  public static HashMap<String, ArrayList<String>> getColumns(String dbName, String tableName) throws IOException, LockTimeOutException {
+    DataDictionaryUtils.lockTable(dbName,tableName);
     if(Context.setDbName(dbName) && Context.isTableExist(tableName)) {
       File file = new File("Databases/" + dbName + "/" + tableName + ".txt");
       Scanner sc = new Scanner(file);
@@ -64,8 +68,10 @@ public class TableUtils {
         totalColumn.put(columnDetails[0], columnList);
       }
       sc.close();
+      DataDictionaryUtils.unlockTable(dbName,tableName);
       return totalColumn;
     }
+    DataDictionaryUtils.unlockTable(dbName,tableName);
     return null;
   }
 
@@ -113,6 +119,12 @@ public class TableUtils {
     } catch (FileNotFoundException e) {
       e.printStackTrace();
       return 0;
+    } catch (IOException e) {
+      e.printStackTrace();
+      return 0;
+    } catch (LockTimeOutException e) {
+      e.printStackTrace();
+      return 0;
     }
   }
 
@@ -126,7 +138,10 @@ public class TableUtils {
     return listFilesForFolder_DD(folder);
   }
 
-  public static HashMap<String,Integer> getGeneralLogTableInfo(String dbName){
+  public static HashMap<String,Integer> getGeneralLogTableInfo(String dbName) throws InvalidQueryException{
+    if(dbName==null){
+      throw new InvalidQueryException("Please select database first.");
+    }
     HashMap<String,Integer> generalLog=new HashMap<>();
     if(getTableInDb(dbName)!=null){
       ArrayList<String> tables=getTableInDb(dbName);
@@ -194,7 +209,7 @@ public class TableUtils {
 
   }
 
-  public static boolean insertRow(String dbName, String tableName, HashMap<String, String> insertData) throws FileNotFoundException {
+  public static boolean insertRow(String dbName, String tableName, HashMap<String, String> insertData) throws IOException, LockTimeOutException {
 
     HashMap<String, ArrayList<String>> tableData = getColumns(dbName, tableName);
     for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
@@ -223,7 +238,7 @@ public class TableUtils {
       }
     }
   }
-  public static HashMap<String, ArrayList<String>> getColumnsForEquals(String dbName,String tableName,String colName,String colValue,String operand) throws FileNotFoundException {
+  public static HashMap<String, ArrayList<String>> getColumnsForEquals(String dbName,String tableName,String colName,String colValue,String operand) throws IOException, LockTimeOutException {
     HashMap<String, ArrayList<String>> tableData= getColumns(dbName,tableName);
     ArrayList<Integer> indexes = new ArrayList<>();
     if(operand.equals("=")){
@@ -278,58 +293,42 @@ public class TableUtils {
     return updatedData;
 
   }
-  public static HashMap<String, ArrayList<String>> getLimitedColumnsForEquals(String dbName,String tableName,String colName,String colValue,ArrayList<String> columns,String operand) throws FileNotFoundException {
-    HashMap<String, ArrayList<String>> tableData= getColumns(dbName,tableName,columns);
-    ArrayList<Integer> indexes = new ArrayList<>();
-    if(operand.equals("=")){
-      for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
-        if(entry.getKey().equals(colName)) {
-          for(int i = 0; i < entry.getValue().size(); i++)
-          {
-            if(entry.getValue().get(i).equals(colValue))
-            {
-              indexes.add(i);
-            }
-          }
-        }
-      }
-    }else if(operand.equals("<"))
-    {
-      for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
-        if(entry.getKey().equals(colName)) {
-          for(int i = 0; i < entry.getValue().size(); i++)
-          {
-            if(Integer.parseInt(entry.getValue().get(i))<Integer.parseInt(colValue))
-            {
-              indexes.add(i);
-            }
-          }
-        }
-      }
-    }else if(operand.equals(">"))
-    {
-      for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
-        if(entry.getKey().equals(colName)) {
-          for(int i = 0; i < entry.getValue().size(); i++)
-          {
-            if(Integer.parseInt(entry.getValue().get(i))>Integer.parseInt(colValue))
-            {
-              indexes.add(i);
-            }
-          }
-        }
-      }
-    }
-    HashMap<String, ArrayList<String>> updatedData= new HashMap<>();
-    for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
-      ArrayList<String> colValues = new ArrayList<>();
-      for(int i=0;i<indexes.size();i++)
+  public static HashMap<String, ArrayList<String>> getLimitedColumnsForEquals(String dbName,String tableName,String colName,String colValue,ArrayList<String> columns,String operand) throws IOException, LockTimeOutException {
+
+    HashMap<String, ArrayList<String>> updatedData = getColumnsForEquals(dbName,tableName,colName,colValue,operand);
+    ArrayList<String> removedList = new ArrayList<>();
+    for(Map.Entry<String, ArrayList<String>> entry: updatedData.entrySet()) {
+      if(!columns.contains(entry.getKey()))
       {
-        colValues.add(entry.getValue().get(indexes.get(i)));
+        removedList.add(entry.getKey());
       }
-      updatedData.put(entry.getKey(),colValues);
     }
+    for(int i=0;i<removedList.size();i++)
+    {
+      updatedData.remove(removedList.get(i));
+    }
+
     return updatedData;
 
   }
+  public static boolean updateHashMap(String dbName,String tableName,ArrayList<String> columnName,ArrayList<String> columnType,ArrayList<String> columnValue,String colName,String colValue) throws IOException, LockTimeOutException {
+   DataDictionaryUtils.lockTable(dbName,tableName);
+    HashMap<String,ArrayList<String>> tableData = getColumns(dbName,tableName);
+    ArrayList<Integer> indexes = new ArrayList<>();
+    for(int i=0;i<tableData.get(colName).size();i++)
+    {
+      if(tableData.get(colName).get(i).equals(colValue))
+        indexes.add(i);
+    }
+    for(int i=0;i<columnName.size();i++)
+    {
+      for(int j=0;j<indexes.size();j++) {
+        tableData.get(columnName.get(i)).set(indexes.get(j), columnValue.get(i));
+      }
+    }
+    insertTableData(dbName,tableName,tableData);
+    DataDictionaryUtils.unlockTable(dbName,tableName);
+    return true;
+  }
+
 }

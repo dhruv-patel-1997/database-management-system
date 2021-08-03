@@ -1,6 +1,0 @@
-[unlocked]
-PersonID|INT|false|true|
-LastName|VARCHAR 255|true|false|
-FirstName|VARCHAR 255|true|false|
-Address|VARCHAR 255|true|false|
-City|VARCHAR 255|true|false|

@@ -1,0 +1,95 @@
+Aug 03, 2021 5:26:27 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 5:26:27 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: UPDATE employee SET empName='Samir' where empName='Saurabh';
+Aug 03, 2021 7:20:13 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 7:20:13 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 03, 2021 7:20:20 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 7:20:20 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 03, 2021 8:28:56 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:28:56 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 03, 2021 8:31:44 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 8:31:44 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update employee SET empIsVaccinated = false where empId='ep10';
+Aug 03, 2021 10:37:18 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 10:37:18 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update employee set empIsVaccinated=false where empId='ep9';
+Aug 03, 2021 10:37:49 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 10:37:49 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 03, 2021 10:39:05 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 10:39:05 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update employee set empSalary=200 where empId='ep10';
+Aug 03, 2021 10:39:19 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 10:39:19 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 03, 2021 11:40:14 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 11:40:14 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select empId,empAddress from employee;
+Aug 03, 2021 11:40:38 PM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 03, 2021 11:40:38 PM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select empId from employee where empSalary<130;
+Aug 04, 2021 12:32:27 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 12:32:27 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update employee set empId='ep11' where empId='ep4';
+Aug 04, 2021 12:32:50 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 12:32:50 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 04, 2021 1:03:02 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 1:03:02 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee;
+Aug 04, 2021 1:20:39 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 1:20:39 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: start transaction: update employee setempIsVaccinated=false where empId='ep11'; select * from employee where empId='ep11';commit;
+Aug 04, 2021 1:21:28 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 1:21:28 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update employee set empIsVaccinated=false where empId='ep11'; 
+Aug 04, 2021 1:21:49 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 1:21:49 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employee where empId='ep11';
+Aug 04, 2021 1:28:00 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 1:28:00 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: start transaction: update employee set empId='ep15' where empName='Harit';select * from employee where empName='Harit';commit;
+Aug 04, 2021 1:28:21 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 1:28:21 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: start transaction: update employee set empId='ep16' where empName='Harit';select * from employee where empName='Harit';commit;
