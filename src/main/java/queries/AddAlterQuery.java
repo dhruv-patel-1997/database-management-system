@@ -2,6 +2,7 @@ package main.java.queries;
 
 import Utilities.Context;
 import main.java.logs.GeneralLog;
+import main.java.parsing.InvalidQueryException;
 
 import java.io.IOException;
 import java.time.LocalTime;
@@ -12,7 +13,11 @@ public class AddAlterQuery {
         GeneralLog generalLog=new GeneralLog();
         Logger generalLogger=generalLog.setLogger();
         generalLogger.info("User: "+ Context.getUserName()+" At the start of adding column for alter query");
-        generalLogger.info("Database status at the start of alter query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+        try {
+            generalLogger.info("Database status at the start of alter query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
         LocalTime start=LocalTime.now();
         try {
             TableUtils.addEmptyColumnData(tableName,columnName);
@@ -24,6 +29,8 @@ public class AddAlterQuery {
                 generalLogger.info("Database status at the end of alter query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
                 generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for alter query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
             } catch (LockTimeOutException e) {
+                e.printStackTrace();
+            } catch (InvalidQueryException e) {
                 e.printStackTrace();
             }
         } catch (IOException e) {

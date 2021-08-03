@@ -1,0 +1,12 @@
+use Database1;
+
+
+use Database1;
+
+
+use Database1;
+
+
+drop database Database1;
+
+
