@@ -44,7 +44,7 @@ public class InsertQueryTest {
         List<PrimaryKey> refPrimaryKeys = new ArrayList<>();
         refPrimaryKeys.add(new PrimaryKey(new HashSet<String>(Collections.singleton("col1"))));
         String refTableName = "testInsertRefTable";
-        new CreateQuery().createTable(refTableName,refCols,refPrimaryKeys,new ArrayList<>());
+        new CreateQuery().createTable(refTableName,refCols,refPrimaryKeys,new ArrayList<>(),false);
         query.insert(refTableName,new ArrayList<String>(Collections.singleton("col1")),sampleVals);
 
         //create insert table
@@ -52,7 +52,7 @@ public class InsertQueryTest {
         foreignKeys.add(new ForeignKey("col5", refTableName,"col1"));
         List<PrimaryKey> primaryKeys = new ArrayList<>();
         primaryKeys.add(new PrimaryKey(new HashSet<String>(Collections.singleton("col2"))));
-        new CreateQuery().createTable(tableName,cols,primaryKeys,foreignKeys);
+        new CreateQuery().createTable(tableName,cols,primaryKeys,foreignKeys,false);
     }
 
     @AfterEach
@@ -77,30 +77,50 @@ public class InsertQueryTest {
     }
 
     @Test
-    public void invalidTable() throws IOException, LockTimeOutException, InvalidQueryException {
-        assertFalse(query.insert("notatable",null,sampleVals));
+    public void invalidTable() throws IOException, LockTimeOutException {
+        try {
+            query.insert("notatable",null,sampleVals);
+            fail();
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void noColsTooManyValues() throws IOException, LockTimeOutException, InvalidQueryException {
+    public void noColsTooManyValues() throws IOException, LockTimeOutException {
         List<Token> tooManyVals = new ArrayList<>(sampleVals);
         tooManyVals.add(new Token(Token.Type.NULL,"NULL"));
-        assertFalse(query.insert(tableName,null,tooManyVals));
+        try {
+            query.insert(tableName,null,tooManyVals);
+            fail();
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void noColsNotEnoughValues() throws IOException, LockTimeOutException, InvalidQueryException {
+    public void noColsNotEnoughValues() throws IOException, LockTimeOutException {
         List<Token> notEnoughVals = new ArrayList<>(sampleVals);
         notEnoughVals.remove(0);
-        assertFalse(query.insert(tableName,null,notEnoughVals));
+        try {
+            query.insert(tableName,null,notEnoughVals);
+            fail();
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void noValueGivenColDoesNotAllowNulls() throws IOException, LockTimeOutException, InvalidQueryException {
+    public void noValueGivenColDoesNotAllowNulls() throws IOException, LockTimeOutException {
         List<String> cols = Arrays.asList("col2");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.INTLITERAL,"10"));
-        assertFalse(query.insert(tableName,cols,vals));
+        try {
+            query.insert(tableName,cols,vals);
+            fail();
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -123,27 +143,43 @@ public class InsertQueryTest {
     }
 
     @Test
-    public void insertNullColDoesntAllowsNulls() throws IOException, LockTimeOutException, InvalidQueryException {
+    public void insertNullColDoesntAllowsNulls() throws IOException, LockTimeOutException {
         List<String> cols = Arrays.asList("col1","col2");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.NULL,"NULL"));
         vals.add(new Token(Token.Type.INTLITERAL,"10"));
-        assertFalse(query.insert(tableName,cols,vals));
+        try {
+            query.insert(tableName,cols,vals);
+            fail();
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void invalidDataType() throws IOException, LockTimeOutException, InvalidQueryException {
+    public void invalidDataType() throws IOException, LockTimeOutException {
         List<String> cols = Arrays.asList("col1","col2");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.STRING,"\"val\""));
         vals.add(new Token(Token.Type.STRING,"not a number"));
-        assertFalse(query.insert(tableName,cols,vals));
+        try {
+            assertFalse(query.insert(tableName,cols,vals));
+            fail();
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void primaryKeyValuesAlreadyPresent() throws IOException, LockTimeOutException, InvalidQueryException {
-        query.insert(tableName,colNames,sampleVals);
-        assertFalse(query.insert(tableName,colNames,sampleVals));
+    public void primaryKeyValuesAlreadyPresent() throws IOException, LockTimeOutException {
+
+        try {
+            query.insert(tableName,colNames,sampleVals);
+            query.insert(tableName,colNames,sampleVals);
+            fail();
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -152,21 +188,31 @@ public class InsertQueryTest {
     }
 
     @Test
-    public void primaryKeyValueIsNull() throws IOException, LockTimeOutException, InvalidQueryException {
+    public void primaryKeyValueIsNull() throws IOException, LockTimeOutException {
         List<String> cols = Collections.singletonList("col1");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.STRING,"\"val\""));
-        assertFalse(query.insert(tableName,cols,vals));
+        try {
+            query.insert(tableName,cols,vals);
+            fail();
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void foreignKeyValueNotInRefColumn() throws IOException, LockTimeOutException, InvalidQueryException {
+    public void foreignKeyValueNotInRefColumn() throws IOException, LockTimeOutException {
         List<String> cols = Arrays.asList("col1","col2","col5");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.STRING,"\"val\""));
         vals.add(new Token(Token.Type.INTLITERAL,"10"));
         vals.add(new Token(Token.Type.STRING,"\"not present\""));
-        assertFalse(query.insert(tableName,cols,vals));
+        try {
+            query.insert(tableName,cols,vals);
+            fail();
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test

@@ -38,8 +38,13 @@ public class CreateQueryTest {
     }
 
     @Test
-    public void createDatabaseAlreadyExistsTest(){
-        assertFalse(cq.createDatabase(dbName));
+    public void createDatabaseAlreadyExistsTest() {
+        try {
+            cq.createDatabase(dbName);
+            fail();
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -51,18 +56,23 @@ public class CreateQueryTest {
     }
 
     @Test
-    public void createTableTest() throws IOException, LockTimeOutException {
+    public void createTableTest() throws IOException, LockTimeOutException, InvalidQueryException {
         LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
         ArrayList<ForeignKey> foreignKeys = new ArrayList<>();
         ArrayList<PrimaryKey> primaryKeys = new ArrayList<>();
 
-        cq.createTable("table2",columns,primaryKeys,foreignKeys);
+        cq.createTable("table2",columns,primaryKeys,foreignKeys,false);
         assertTrue(DataDictionaryUtils.tableDictionaryExists(dbName,"table2")
                 && DataDictionaryUtils.getColumns(dbName,"table2")!=null);
     }
 
     @Test
     public void createTableAlreadyExistsTest() throws IOException, LockTimeOutException {
-        assertFalse(cq.createTable(tbname, null, null, null));
+        try {
+            cq.createTable(tbname, null, null, null, false);
+            fail();
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+        }
     }
 }

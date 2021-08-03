@@ -1,11 +1,14 @@
 package main.java.queries;
 import Utilities.Context;
+import main.java.logs.GeneralLog;
 import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Token;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class InsertQuery {
 
@@ -90,7 +93,15 @@ public class InsertQuery {
                 if (cols != null && !cols.isEmpty() && columnPresentInTableCount != cols.size()){
                     throw new InvalidQueryException("Columns given are not all present in destination table");
                 }
-
+                GeneralLog generalLog=new GeneralLog();
+                Logger generalLogger=generalLog.setLogger();
+                LocalTime start=LocalTime.now();
+                generalLogger.info("User: "+ Context.getUserName()+" At the start of alter query");
+                generalLogger.info("Database status at the start of insert query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+                LocalTime end=LocalTime.now();
+                int diff=end.getNano()-start.getNano();
+                generalLogger.info("Database status at the end of insert query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+                generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for insert query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
                 System.out.println("Inserting row");
                 TableUtils.insertRow(Context.getDbName(),tableName,insertData);
                 return true;

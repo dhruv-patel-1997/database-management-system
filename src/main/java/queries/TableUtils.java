@@ -1,6 +1,7 @@
 package main.java.queries;
 
 import Utilities.Context;
+import main.java.parsing.InvalidQueryException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -137,7 +138,10 @@ public class TableUtils {
     return listFilesForFolder_DD(folder);
   }
 
-  public static HashMap<String,Integer> getGeneralLogTableInfo(String dbName){
+  public static HashMap<String,Integer> getGeneralLogTableInfo(String dbName) throws InvalidQueryException{
+    if(dbName==null){
+      throw new InvalidQueryException("Please select database first.");
+    }
     HashMap<String,Integer> generalLog=new HashMap<>();
     if(getTableInDb(dbName)!=null){
       ArrayList<String> tables=getTableInDb(dbName);
