@@ -5,14 +5,14 @@ public class Column {
     private String colName;
     private String dataType;
     private Boolean allowNulls;
-    private Boolean privateKey;
+    private Boolean primaryKey;
     private ForeignKey foreignKey;
 
     public Column(String colName, String dataType){
         this.colName = colName;
         this.dataType = dataType;
         allowNulls = true;
-        privateKey = false;
+        primaryKey = false;
         foreignKey = null;
     }
 
@@ -20,8 +20,8 @@ public class Column {
         this.allowNulls = allowNulls;
     }
 
-    public void  setAsPrivateKey(Boolean bool){
-        privateKey = bool;
+    public void  setAsPrimaryKey(Boolean bool){
+        primaryKey = bool;
         if (bool){
             setAllowNulls(false);
         }
@@ -35,8 +35,8 @@ public class Column {
         return foreignKey;
     }
 
-    public Boolean isPrivateKey(){
-        return privateKey;
+    public Boolean isPrimaryKey(){
+        return primaryKey;
     }
 
     public String getColName() {
@@ -56,6 +56,6 @@ public class Column {
         this.colName=getColName();
         this.foreignKey=getForeignKey();
         this.allowNulls=getAllowNulls();
-        this.privateKey=isPrivateKey();
+        this.primaryKey=isPrimaryKey();
     }
 }

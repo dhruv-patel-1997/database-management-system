@@ -1,89 +1,99 @@
 package main.java.queries;
 import Utilities.Context;
+import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Token;
 
 import java.io.File;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 public class InsertQuery {
 
-    public boolean insert(String tableName, List<String> cols, List<Token> vals) throws LockTimeOutException {
-        /*TODO: check against data dictionary
-                    data types are correct for columns, extra check for varchar
-                    if column is a primary key, can be a value that already exists???
-
-                    Execution logic
-                    lock table
-                    get table file
-                    append
-                    unlock
-       */
+    public boolean insert(String tableName, List<String> cols, List<Token> vals) throws LockTimeOutException, IOException, InvalidQueryException {
         //db must set
-
         String dbName = Context.getDbName();
         if (dbName != null && (new File(Context.getDbPath())).isDirectory()){
             //table must exist in db
-            if (DataDictionaryUtils.tableDictionaryExists(dbName,tableName)){
-                LinkedHashMap<String,Column> destinationColumns = DataDictionaryUtils.getColumns(dbName,tableName);
+            LinkedHashMap<String,Column> destinationColumns = DataDictionaryUtils.getColumns(dbName,tableName);
+            if (destinationColumns != null){
                 if (cols == null || cols.isEmpty()){
                     //if no columns given then value count must equal column count in table
-                    if (destinationColumns == null || vals.size() != destinationColumns.size()){
-                        System.out.println("Number of values does not match number of columns in destination table");
-                        return false;
-                    } else {
-                        //check that values are the correct data types for columns
-                        int i = 0;
-                        for (Column col: destinationColumns.values()){
-                            Token value = vals.get(i++);
-                            if (!DataDictionaryUtils.valueIsOfDataType(value, col.getDataType())){
-                                System.out.println("Invalid dataType for column "+col.getColName());
-                                return false;
-                            }
-                        }
-                    }
-                } else {
-                    //if columns given they must be present in table
-                    //have already checked in parser that column count given is equal to value count
-                    int i = 0;
-                    for (String colName: cols){
-                        if (destinationColumns == null || !destinationColumns.containsKey(colName)){
-                            System.out.println("Column "+colName+" is not present in destination table");
-                            return false;
-                        } else {
-                            //check that values are the correct data types for columns
-                            String datatype = destinationColumns.get(colName).getDataType();
-                            Token value = vals.get(i++);
-                            if (!DataDictionaryUtils.valueIsOfDataType(value,datatype)){
-                                System.out.println("Invalid dataType for column "+colName);
-                                return false;
-                            }
-                        }
-                    }
-                    //organize??
-                    //columns in table that are not given in query must allow nulls
-                    i = 0;
-                    for (Column c: destinationColumns.values()){
-                        if (cols.get(i).equals(c.getColName())){
-                            i++;
-                        } else {
-                            if (!c.getAllowNulls()){
-                                System.out.println("Column "+c.getColName()+" does not allow nulls");
-                                return false;
-                            }
-                        }
+                    if (vals.size() != destinationColumns.size()){
+                        throw new InvalidQueryException("Number of values does not match number of columns in destination table");
                     }
                 }
 
-                // if column is a primary key, cannot be a value that already exists
-                for (Column c: destinationColumns.values()){}
+                //iterate through columns in destination table to make sure the value can be inserted
+                HashMap<String,String> insertData = new HashMap<>();
 
+                int valueIndex = 0;
+                int columnPresentInTableCount = 0;
+                for (Column destination: destinationColumns.values()){
+                    Token value = null;
+                    if (cols != null){
+                        //columns are given in query
+                        for (int columnIndex = 0; columnIndex < cols.size(); columnIndex++){
+                            if (destination.getColName().equalsIgnoreCase(cols.get(columnIndex))){
+                                //destination column is present in query
+                                //the next value to insert is in position columnIndex in vals
+                                value = vals.get(columnIndex);
+                                columnPresentInTableCount++;
+                                break;
+                            }
+                        }
+                        if (value == null){
+                            //column exists in table but was not given a value
+                            value = new Token(Token.Type.NULL," ");
+                        }
+                    } else {
+                        //cols are not given
+                        value = vals.get(valueIndex++);
+                    }
 
-                /*Execution logic
-                    lock table
-                    get table file
-                    append
-                    unlock*/
+                    if (value.getType() == Token.Type.NULL){
+                        //no value was given for this column or the value is null
+                        //check that column allows nulls
+                        if (!destination.getAllowNulls()){
+                            throw new InvalidQueryException("Column "+destination.getColName()+" cannot be null");
+                        }
+                    } else {
+                        //check data type is correct for column
+                        if (!DataDictionaryUtils.valueIsOfDataType(value,destination.getDataType())){
+                            throw new InvalidQueryException("Invalid data type for column "+destination.getColName());
+                        }
+                    }
+
+                    // if column is a primary key, cannot be a value that already exists
+                    if (destination.isPrimaryKey()){
+                        //check value doesn't already exist
+                        ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(),tableName,new ArrayList<String>(Arrays.asList(destination.getColName()))).get(destination.getColName());
+                        if (columnValues != null && columnValues.contains(value.getStringValue())){
+                            //value is already present
+                            throw new InvalidQueryException("Primary key constraint fails: "+value+ "is already present in table");
+                        }
+                    }
+
+                    //if column is a foreign key, value must exist in referenced table
+                    if (destination.getForeignKey() != null){
+                        System.out.println(destination.getColName()+" is fk with val "+value.getStringValue());
+                        String refTable = destination.getForeignKey().getReferencedTable();
+                        String refColumn = destination.getForeignKey().getReferencedColumn();
+                        ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(),refTable,new ArrayList<String>(Arrays.asList(refColumn))).get(refColumn);
+                        if (value.getType() != Token.Type.NULL && (columnValues == null || !columnValues.contains(value.getStringValue()))){
+                            //value is not present
+                            throw new InvalidQueryException("Foreign key constraint fails: "+value.getStringValue()+ " not present in referenced column");
+                        }
+                    }
+                    insertData.put(destination.getColName(),value.getStringValue());
+                }
+
+                if (cols != null && !cols.isEmpty() && columnPresentInTableCount != cols.size()){
+                    throw new InvalidQueryException("Columns given are not all present in destination table");
+                }
+
+                System.out.println("Inserting row");
+                TableUtils.insertRow(Context.getDbName(),tableName,insertData);
+                return true;
 
             } else {
                 System.out.println("Table "+tableName+" does not exist in database "+dbName);
@@ -95,6 +105,6 @@ public class InsertQuery {
                 System.out.println("Database " + dbName + " does not exist");
             }
         }
-        return false;
+        throw new InvalidQueryException("Invalid SELECT query");
     }
 }

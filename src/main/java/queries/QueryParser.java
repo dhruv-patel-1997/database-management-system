@@ -8,18 +8,20 @@ import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Token;
 import main.java.parsing.Tokenizer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
 public class QueryParser {
     private Tokenizer tokenizer;
+    boolean isTransaction;
+    boolean commitReached;
+    Queue<Callable> queries;
+    LinkedList<String> tablesToLock;
 
     public QueryParser(Tokenizer tokenizer) {
         this.tokenizer = tokenizer;
@@ -35,37 +37,130 @@ public class QueryParser {
         Token.Type tokenType = token.getType();
         String tokenValue = token.getStringValue();
 
-        switch (tokenType){
-            case USE:
-                use();
+        //Check if user has input a transaction
+        isTransaction = false;
+        commitReached = false;
+        queries = new LinkedList<>();
+        tablesToLock = new LinkedList<>();
+        if (tokenType == Token.Type.START){
+            if (matchesTokenList(Arrays.asList(Token.Type.TRANSACTION, Token.Type.COLON)) != null) {
+                isTransaction = true;
+                token = tokenizer.next();
+                tokenValue = token.getStringValue();
+                tokenType = token.getType();
+            } else {
+                throw new InvalidQueryException("Invalid syntax: "+token.getStringValue());
+            }
+        }
+
+        do {
+            System.out.println("parsing query: "+tokenType);
+            switch (tokenType) {
+                case COMMIT:
+                    commitReached = commit();
+                    break;
+                case USE:
+                    use();
+                    break;
+                case CREATE:
+                    create();
+                    break;
+                case DROP:
+                    drop();
+                    break;
+                case INSERT:
+                    insert();
+                    break;
+                case UPDATE:
+                    //validate query
+                    break;
+                case ALTER:
+                    alter();
+                    break;
+                case SELECT:
+                    select();
+                    break;
+                case TRUNCATE:
+                    truncate();
+                    break;
+                case ERD:
+                    generateErd(Context.getDbName());
+                    break;
+                default:
+                    throw new InvalidQueryException("Invalid syntax: " + tokenValue);
+            }
+            if (isTransaction) {
+                token = tokenizer.next();
+                if (token != null) {
+                    tokenValue = token.getStringValue();
+                    tokenType = token.getType();
+                }
+            }
+        } while (isTransaction && !commitReached);
+
+        //get new transaction ID
+        Context.incrTransactionId();
+
+        //Lock tables
+        HashMap<String,String> backup = new HashMap<>();
+        for (String table: tablesToLock){
+            if (DataDictionaryUtils.tableDictionaryExists(Context.getDbName(),table)) {
+                DataDictionaryUtils.lockTable(Context.getDbName(), table);
+
+                //make back ups of affected tables
+                StringBuilder tableBackup = new StringBuilder();
+                StringBuilder ddBackUp = new StringBuilder();
+                File file = new File(Context.getDbPath() + table + ".txt");
+                Scanner sc = new Scanner(file);
+                while (sc.hasNext()) {
+                    tableBackup.append(sc.nextLine()).append("\n");
+                }
+                file = new File(Context.getDbPath() + "dd_" + table + ".txt");
+                sc = new Scanner(file);
+                while (sc.hasNext()) {
+                    ddBackUp.append(sc.nextLine()).append("\n");
+                }
+                sc.close();
+                backup.put(Context.getDbPath() + table + ".txt", tableBackup.toString());
+                backup.put(Context.getDbPath() + "dd_" + table + ".txt", ddBackUp.toString());
+            }
+        }
+
+        //Run queries
+        System.out.println("executing transaction: ");
+        //TODO: log transaction
+        for (Callable query: queries){
+            try {
+                query.call();
+            } catch (Exception e){
+                //make sure callable throws exception on failure
+                //if query failed, need to restore backup
+                for (Map.Entry<String, String> entry : backup.entrySet()) {
+                    //replace files
+                    String content = entry.getValue();
+                    File file = new File(entry.getKey());
+                    FileWriter fw = new FileWriter(file);
+                    fw.write(content);
+                }
                 break;
-            case CREATE:
-                create();
-                break;
-            case DROP:
-                drop();
-                break;
-            case INSERT:
-                insert();
-                break;
-            case UPDATE:
-                //validate query
-                break;
-            case ALTER:
-                //validate query
-                alter();
-                break;
-            case SELECT:
-                select();
-                break;
-            case TRUNCATE:
-                truncate();
-                break;
-            case ERD:
-                generateErd(Context.getDbName());
-                break;
-            default:
-                throw new InvalidQueryException("Invalid syntax: "+tokenValue);
+            }
+        }
+
+        for (String table: tablesToLock){
+            DataDictionaryUtils.unlockTable(Context.getDbName(),table);
+        }
+
+        //SQL dump for whole transaction
+        generateDump(Context.getDbName(),tokenizer.getInput()+"\n");
+
+    }
+
+    private boolean commit() throws InvalidQueryException {
+        Token token = tokenizer.next();
+        if (token != null && token.getType() == Token.Type.SEMICOLON && tokenizer.next() == null) {
+            return true;
+        } else {
+            throw new InvalidQueryException("Invalid syntax after COMMIT");
         }
     }
 
@@ -88,25 +183,36 @@ public class QueryParser {
     }
 
     private void use() throws InvalidQueryException {
+        ArrayList<String> values;
+        if ((values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER,Token.Type.SEMICOLON))) != null){
+            //valid use query that is part of a transaction;
+            queries.add(new Callable() {
+                @Override
+                public Object call() {
+                    //TODO: PUT LOGGING HERE
+                    new UseQuery().useDataBase(values.get(0));
+                    return null;
+                }
+            });
+            return;
+        } else {
+            throw new InvalidQueryException("Invalid syntax for USE query");
+        }
+        /*
         EventLog eventLog=new EventLog();
         Logger eventLogger=eventLog.setLogger();
         GeneralLog generalLog=new GeneralLog();
         Logger generalLogger=generalLog.setLogger();
         generalLogger.info("User: "+ Context.getUserName()+" At the start of use database query");
         LocalTime start=LocalTime.now();
-        ArrayList<String> values;
-        if ((values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER,Token.Type.SEMICOLON))) != null && tokenizer.next() == null){
-            UseQuery query = new UseQuery();
-            query.useDataBase(values.get(0));
             LocalTime end=LocalTime.now();
             int diff= end.getNano()-start.getNano();
             eventLogger.info("User " +Context.getUserName()+ " using database "+values.get(0));
             generalLogger.info("Database status at the end of use query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
             generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for use query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
             System.out.println("using database "+values.get(0));
-        } else {
-            throw new InvalidQueryException("Invalid syntax for USE query");
-        }
+
+         */
     }
 
 
@@ -422,7 +528,7 @@ public class QueryParser {
                 throw new InvalidQueryException("Could not delete database");
             }
         } else {
-            throw new InvalidQueryException("Invalid Syntax for CREATE DATABASE query");
+            throw new InvalidQueryException("Invalid Syntax for DROP DATABASE query");
         }
     }
 
@@ -450,7 +556,7 @@ public class QueryParser {
                 System.out.println("Dropped table successful");
             }
         } else {
-            throw new InvalidQueryException("Invalid Syntax for CREATE DATABASE query");
+            throw new InvalidQueryException("Invalid Syntax for DROP TABLE query");
         }
     }
 
@@ -469,16 +575,20 @@ public class QueryParser {
         EventLog eventLog=new EventLog();
 
         ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
-        if (values != null && tokenizer.next() == null) {
+        if (values != null) {
             String dbName = values.get(0);
             //SUCCESSFUL QUERY
-            CreateQuery query = new CreateQuery();
-            query.createDatabase(dbName);
-
-            generateDump(dbName,tokenizer.getInput()+"\n");
-
-            Logger eventLogger=eventLog.setLogger();
-            eventLogger.info("User "+Context.getUserName()+ " created database "+dbName);
+            queries.add(new Callable() {
+                @Override
+                public Object call() {
+                    CreateQuery query = new CreateQuery();
+                    query.createDatabase(dbName);
+                    Logger eventLogger=eventLog.setLogger();
+                    eventLogger.info("User "+Context.getUserName()+ " created database "+dbName);
+                    return null;
+                }
+            });
+            //generateDump(dbName,tokenizer.getInput()+"\n");
         } else {
             throw new InvalidQueryException("Invalid Syntax for CREATE DATABASE query");
         }
@@ -571,6 +681,8 @@ public class QueryParser {
                             Token.Type.OPEN, Token.Type.IDENTIFIER, Token.Type.CLOSED))) != null) {
                         //key declaration is syntactically correct, add to list
                         foreignKeys.add(new ForeignKey(values.get(2), values.get(5), values.get(7)));
+                        //add referenced table to list of tablesToLock
+                        tablesToLock.add(values.get(5));
                     } else {
                         throw new InvalidQueryException("Invalid foreign key syntax");                       }
                 } else {
@@ -585,17 +697,24 @@ public class QueryParser {
         }
 
         if (token != null && token.getType() == Token.Type.CLOSED
-                && (token = tokenizer.next()) != null && token.getType() == Token.Type.SEMICOLON && tokenizer.next() == null) {
+                && (token = tokenizer.next()) != null && token.getType() == Token.Type.SEMICOLON) {
             //SUCCESSFUL QUERY
-            generateDump(Context.getDbName(),tokenizer.getInput()+"\n");
-            CreateQuery query = new CreateQuery();
-            query.createTable(tableName, columns, primaryKeys, foreignKeys);
+            //generateDump(Context.getDbName(),tokenizer.getInput()+"\n");
+            queries.add(new Callable() {
+                @Override
+                public Object call() throws IOException, LockTimeOutException {
+                    CreateQuery query = new CreateQuery();
+                    query.createTable(tableName, columns, primaryKeys, foreignKeys);
+                    return null;
+                }
+            });
+
         } else {
             throw new InvalidQueryException("Invalid syntax");
         }
     }
 
-    private void insert() throws InvalidQueryException, LockTimeOutException {
+    private void insert() throws InvalidQueryException, LockTimeOutException, FileNotFoundException {
         Token token;
         ArrayList<String> stringValues = matchesTokenList(Arrays.asList(Token.Type.INTO, Token.Type.IDENTIFIER));
         if (stringValues == null) {
@@ -655,12 +774,23 @@ public class QueryParser {
 
             //If columns listed, make sure column count matches values count
             if (cols.isEmpty() || cols.size() == vals.size()){
-                if ((token = tokenizer.next()) != null && token.getType() == Token.Type.SEMICOLON && tokenizer.next() == null){
+                if ((token = tokenizer.next()) != null && token.getType() == Token.Type.SEMICOLON){
                     //SUCCESSFUL QUERY
-                    generateDump(Context.getDbName(),tokenizer.getInput()+"\n");
-                    InsertQuery query = new InsertQuery();
-                    System.out.println("Insert into table "+tableName);
-                    query.insert(tableName, cols,vals);
+
+                    //generateDump(Context.getDbName(),tokenizer.getInput()+"\n");
+
+                    //add callable to query queue and table to tablestoLock
+                    tablesToLock.add(tableName);
+                    queries.add(new Callable() {
+                        @Override
+                        public Object call() throws LockTimeOutException, IOException, InvalidQueryException {
+                            //TODO: ADD LOGGING
+                            InsertQuery query = new InsertQuery();
+                            query.insert(tableName, cols,vals);
+                            return null;
+                        }
+                    });
+
                 } else {
                     throw new InvalidQueryException("Invalid syntax");
                 }

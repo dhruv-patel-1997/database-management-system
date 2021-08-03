@@ -49,6 +49,9 @@ public class Tokenizer {
             case ';':
                 start++;
                 return new Token(Token.Type.SEMICOLON, ";");
+            case ':':
+                start++;
+                return new Token(Token.Type.COLON,":");
             case '*':
                 start++;
                 return new Token(Token.Type.STAR, "*");
