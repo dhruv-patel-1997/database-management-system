@@ -39,7 +39,11 @@ public class CreateQueryTest {
 
     @Test
     public void createDatabaseAlreadyExistsTest(){
-        assertFalse(cq.createDatabase(dbName));
+        try {
+            assertFalse(cq.createDatabase(dbName));
+        } catch (InvalidQueryException exception) {
+            exception.printStackTrace();
+        }
     }
 
     @Test

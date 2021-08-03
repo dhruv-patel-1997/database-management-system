@@ -80,9 +80,6 @@ public class QueryParser {
                 case SELECT:
                     select();
                     break;
-                case TRUNCATE:
-                    truncate();
-                    break;
                 case ERD:
                     generateErd(Context.getDbName());
                     break;
@@ -151,8 +148,9 @@ public class QueryParser {
         }
 
         //SQL dump for whole transaction
-        generateDump(Context.getDbName(),tokenizer.getInput()+"\n");
-
+        if(tokenType.equals(Token.Type.CREATE) || tokenType.equals(Token.Type.INSERT) || tokenType.equals(Token.Type.ALTER) || tokenType.equals(Token.Type.UPDATE)){
+            generateDump(Context.getDbName(),tokenizer.getInput()+"\n");
+        }
     }
 
     private boolean commit() throws InvalidQueryException {
@@ -190,11 +188,14 @@ public class QueryParser {
                 @Override
                 public Object call() {
                     //TODO: PUT LOGGING HERE
-                    new UseQuery().useDataBase(values.get(0));
+                    try {
+                        new UseQuery().useDataBase(values.get(0));
+                    } catch (InvalidQueryException exception) {
+                        exception.printStackTrace();
+                    }
                     return null;
                 }
             });
-            return;
         } else {
             throw new InvalidQueryException("Invalid syntax for USE query");
         }
@@ -390,8 +391,14 @@ public class QueryParser {
                             token = tokenizer.next();
                             if (token != null && token.getType() == Token.Type.SEMICOLON) {
                                 //Successful
-                                addAlterQuery.addColumn(tableName,columnName,"VARCHAR "+ values.get(1));
-                                System.out.println("Alter query executed successfully");
+                                queries.add(new Callable() {
+                                    @Override
+                                    public Object call() throws IOException, LockTimeOutException {
+                                        addAlterQuery.addColumn(tableName,columnName,"VARCHAR "+ values.get(1));
+                                        System.out.println("Alter query executed successfully");
+                                        return null;
+                                    }
+                                });
                             } else {
                                 throw new InvalidQueryException("Invalid syntax for ALTER query");
                             }
@@ -457,8 +464,14 @@ public class QueryParser {
                     //Successful
                     DropAlterQuery dropAlterQuery=new DropAlterQuery();
                     String columnName = token.getStringValue();
-                    dropAlterQuery.dropColumn(tableName,columnName);
-                    System.out.println("Alter query executed successfully");
+                    queries.add(new Callable() {
+                        @Override
+                        public Object call() throws IOException, LockTimeOutException {
+                            dropAlterQuery.dropColumn(tableName,columnName);
+                            System.out.println("Alter query executed successfully");
+                            return null;
+                        }
+                    });
                 }
                 else{
                     throw new InvalidQueryException("Invalid syntax for ALTER query");
@@ -472,17 +485,6 @@ public class QueryParser {
             e.printStackTrace();
         }
 
-    }
-
-    private void truncate() throws InvalidQueryException{
-        ArrayList<String> values;
-        if ((values = matchesTokenList(Arrays.asList(Token.Type.TABLE,Token.Type.IDENTIFIER,Token.Type.SEMICOLON))) != null && tokenizer.next() == null){
-            UseQuery query = new UseQuery();
-            query.useDataBase(values.get(1));
-            System.out.println("truncate table "+values.get(0));
-        } else {
-            throw new InvalidQueryException("Invalid syntax for USE query");
-        }
     }
 
     private void drop() throws InvalidQueryException{
@@ -500,34 +502,39 @@ public class QueryParser {
     }
 
     private void dropDatabase() throws InvalidQueryException{
-        GeneralLog generalLog=new GeneralLog();
-        EventLog eventLog=new EventLog();
-        Logger general=generalLog.setLogger();
-        Logger eventLogger=eventLog.setLogger();
+        try {
+            GeneralLog generalLog = new GeneralLog();
+            EventLog eventLog = new EventLog();
+            Logger general = generalLog.setLogger();
+            Logger eventLogger = eventLog.setLogger();
 
-        ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
-        if (values != null && tokenizer.next() == null) {
-            String dbName = values.get(0);
-            //SUCCESSFUL QUERY
-            LocalTime start=LocalTime.now();
+            ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER, Token.Type.SEMICOLON));
+            if (values != null && tokenizer.next() == null) {
+                String dbName = values.get(0);
+                //SUCCESSFUL QUERY
+                LocalTime start = LocalTime.now();
 
-            DropQuery query=new DropQuery();
+                general.info("User: " + Context.getUserName() + " At the start of drop query");
+                general.info("Database status at the start of drop query: " + TableUtils.getGeneralLogTableInfo(dbName) + "\n");
 
-            general.info("User: "+Context.getUserName()+" At the start of drop query");
-            general.info("Database status at the start of drop query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
-
-            if(query.dropDatabase(dbName)){
-                LocalTime end=LocalTime.now();
-                int diff=end.getNano()-start.getNano();
-                general.info("Database status at the end of drop query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
-                general.info("User: "+Context.getUserName()+"\nAt the end of drop query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
-                eventLogger.info("User "+Context.getUserName() + " deleted database "+dbName);
-                System.out.println("Database deleted successfully");
+                queries.add(new Callable() {
+                    @Override
+                    public Object call() throws IOException, LockTimeOutException, InvalidQueryException {
+                        DropQuery query = new DropQuery();
+                        query.dropDatabase(dbName);
+                        LocalTime end = LocalTime.now();
+                        int diff = end.getNano() - start.getNano();
+                        general.info("Database status at the end of drop query: " + TableUtils.getGeneralLogTableInfo(dbName) + "\n");
+                        general.info("User: " + Context.getUserName() + "\nAt the end of drop query" + "\n" + "Execution Time of query: " + diff + " nanoseconds");
+                        eventLogger.info("User " + Context.getUserName() + " deleted database " + dbName);
+                        System.out.println("Database deleted successfully");
+                        return null;
+                    }
+                });
+            } else {
+                throw new InvalidQueryException("Invalid Syntax for DROP DATABASE query");
             }
-            else{
-                throw new InvalidQueryException("Could not delete database");
-            }
-        } else {
+        }catch (InvalidQueryException exception){
             throw new InvalidQueryException("Invalid Syntax for DROP DATABASE query");
         }
     }
@@ -545,16 +552,21 @@ public class QueryParser {
             if(Context.getDbName()==null){
                 throw new InvalidQueryException("Please select database first");
             }
-            else{
-                generalLogger.info("User: "+Context.getUserName()+" At the start of drop query");
-                generalLogger.info("Database status at the start of drop query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
-                query.dropTable(Context.getDbName(),tableName);
-                query.ddDropTable(Context.getDbName(),tableName);
-                LocalTime end=LocalTime.now();
-                int diff=end.getNano()-start.getNano();
-                generalLogger.info("User: "+Context.getUserName()+"\nAt the end of drop query"+"\n"+"Execution Time of query: "+diff+" nanoseconds");
-                System.out.println("Dropped table successful");
-            }
+
+            queries.add(new Callable() {
+                @Override
+                public Object call() throws IOException, LockTimeOutException, InvalidQueryException {
+                    generalLogger.info("User: "+Context.getUserName()+" At the start of drop query");
+                    generalLogger.info("Database status at the start of drop query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+                    query.dropTable(Context.getDbName(),tableName);
+                    query.ddDropTable(Context.getDbName(),tableName);
+                    LocalTime end=LocalTime.now();
+                    int diff=end.getNano()-start.getNano();
+                    generalLogger.info("User: "+Context.getUserName()+"\nAt the end of drop query"+"\n"+"Execution Time of query: "+diff+" nanoseconds");
+                    System.out.println("Dropped table successful");
+                    return null;
+                }
+            });
         } else {
             throw new InvalidQueryException("Invalid Syntax for DROP TABLE query");
         }
@@ -582,7 +594,11 @@ public class QueryParser {
                 @Override
                 public Object call() {
                     CreateQuery query = new CreateQuery();
-                    query.createDatabase(dbName);
+                    try {
+                        query.createDatabase(dbName);
+                    } catch (InvalidQueryException exception) {
+                        exception.printStackTrace();
+                    }
                     Logger eventLogger=eventLog.setLogger();
                     eventLogger.info("User "+Context.getUserName()+ " created database "+dbName);
                     return null;
@@ -823,8 +839,8 @@ public class QueryParser {
                         String key = entry.getKey();
                         Column value = entry.getValue();
                         if (value.getForeignKey() != null) {
-                            myWriter.write("Table " + t + " references " + value.getForeignKey().getReferencedTable() + " having primary key " + value.getForeignKey().getReferencedColumn()+"\n\n");
-                            System.out.println("Table " + t + " references " + value.getForeignKey().getReferencedTable() + " having primary key " + value.getForeignKey().getReferencedColumn());
+                            myWriter.write("Table " + t + " having column "+value.getColName()+ " references " + value.getForeignKey().getReferencedTable() + " having primary key " + value.getForeignKey().getReferencedColumn()+"\n\n");
+                            System.out.println("Table " + t + " having column "+value.getColName()+ value.getForeignKey().getReferencedTable() + " having primary key " + value.getForeignKey().getReferencedColumn());
                         }
                     }
                 }

@@ -1,13 +1,17 @@
 package main.java.queries;
 
 import Utilities.Context;
+import main.java.logs.GeneralLog;
+import main.java.parsing.InvalidQueryException;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class CreateQuery {
     public boolean createTable(String tableName, LinkedHashMap<String,Column> columns, List<PrimaryKey> primaryKeys, List<ForeignKey> foreignKeys)
@@ -15,6 +19,7 @@ public class CreateQuery {
         //db must set and table can't already exist
         String dbName = Context.getDbName();
         if (dbName != null && databaseExists(dbName)){
+
             if (!tableExists(dbName,tableName)){
                 //foreign key column, referenced table and reference column must exist
                 for (ForeignKey fk : foreignKeys){
@@ -50,7 +55,25 @@ public class CreateQuery {
                         columns.get(colName).setAsPrimaryKey(true);
                     }
                 }
+                GeneralLog generalLog=new GeneralLog();
+                Logger generalLogger=generalLog.setLogger();
+                LocalTime start=LocalTime.now();
+                generalLogger.info("User: "+ Context.getUserName()+" At the start of create table for create query");
+                try {
+                    generalLogger.info("Database status at the start of create query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+                } catch (InvalidQueryException exception) {
+                    exception.printStackTrace();
+                }
 
+
+                LocalTime end=LocalTime.now();
+                int diff=end.getNano()-start.getNano();
+                try {
+                    generalLogger.info("Database status at the end of create query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+                } catch (InvalidQueryException exception) {
+                    exception.printStackTrace();
+                }
+                generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for create query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
                 //Query can be executed!
                 createTable(tableName, new ArrayList<>(columns.values()));
                 return true;
@@ -81,10 +104,20 @@ public class CreateQuery {
         DataDictionaryUtils.create(Context.getDbName(),tableName,columns);
     }
 
-    public boolean createDatabase(String dbName) {
+    public boolean createDatabase(String dbName) throws InvalidQueryException {
+
         //database can't be null and can't be present already
         File db = new File("Databases/"+dbName+"/");
         if (!db.exists()){
+            GeneralLog generalLog=new GeneralLog();
+            Logger generalLogger=generalLog.setLogger();
+            LocalTime start=LocalTime.now();
+            generalLogger.info("User: "+ Context.getUserName()+" At the start of creating database for create query");
+            generalLogger.info("Database status at the start of create query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+            LocalTime end=LocalTime.now();
+            int diff=end.getNano()-start.getNano();
+            generalLogger.info("Database status at the end of create query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+            generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for create query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
             System.out.println("creating database "+dbName);
             db.mkdir();
             return true;
