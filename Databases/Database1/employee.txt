@@ -1,4 +1,5 @@
-empId|ep1|ep2|ep3|ep4|ep9|ep9|ep9|ep10|ep10|
-empName|Leah|Harit|Dhruv|Saurabh|abc|abc|abc|xyz|xyz|
-empSalary|120|120|111|134|150|135|140|151|125|
+empId|ep1|ep16|ep3|ep11|ep5|ep6|ep7|ep8|ep10|
+empIsVaccinated|TRUE|TRUE|TRUE|FALSE|FALSE|FALSE|FALSE|TRUE|TRUE|
+empName|Leah|Harit|Dhruv|Samir|Dwayne|abc|abc|xyz|xyz|
+empSalary|120|120|111|130|150|135|140|200|200|
 empAddress|Halifax|Ahmedabad|Halifax|Culcutta|New York|New York|New York|Chicago| |

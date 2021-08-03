@@ -8,7 +8,7 @@ public class Token {
         IDENTIFIER, STRING, COMMA, PERIOD, INT, INTLITERAL, DECIMAL, DECIMALLITERAL, BOOLEAN, BOOLEANLITERAL, SEMICOLON, OPEN, CLOSED, STAR, EQUAL,
         USE, CREATE, DROP, DATABASE, TABLE, PRIMARY, FOREIGN, KEY, REFERENCES, NOT, NULL, SELECT, FROM, WHERE,LESS,GREATER,
         INSERT, INTO, VALUES, ALTER, UPDATE, ADD, DELETE, VARCHAR, TEXT, TRUNCATE, MODIFY, COLUMN, ERD, MYSQLDUMP, COLON, START,
-        TRANSACTION, COMMIT
+        TRANSACTION, COMMIT, SET
     }
 
     private static HashMap<String,Type> types = initKeywords();
@@ -74,6 +74,7 @@ public class Token {
         types.put("START", Type.START);
         types.put("TRANSACTION", Type.TRANSACTION);
         types.put("COMMIT", Type.COMMIT);
+        types.put("SET",Type.SET);
         return types;
     }
 }

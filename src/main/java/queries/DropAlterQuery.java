@@ -31,7 +31,7 @@ public class DropAlterQuery {
             } catch (LockTimeOutException e) {
                 e.printStackTrace();
             }
-        } catch (IOException e) {
+        } catch (IOException | LockTimeOutException e) {
             e.printStackTrace();
         }
 
