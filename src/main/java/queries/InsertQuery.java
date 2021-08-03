@@ -1,14 +1,15 @@
 package main.java.queries;
 import Utilities.Context;
+import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Token;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 public class InsertQuery {
 
-    public boolean insert(String tableName, List<String> cols, List<Token> vals) throws LockTimeOutException, FileNotFoundException {
+    public boolean insert(String tableName, List<String> cols, List<Token> vals) throws LockTimeOutException, IOException, InvalidQueryException {
         //db must set
         String dbName = Context.getDbName();
         if (dbName != null && (new File(Context.getDbPath())).isDirectory()){
@@ -18,8 +19,7 @@ public class InsertQuery {
                 if (cols == null || cols.isEmpty()){
                     //if no columns given then value count must equal column count in table
                     if (vals.size() != destinationColumns.size()){
-                        System.out.println("Number of values does not match number of columns in destination table");
-                        return false;
+                        throw new InvalidQueryException("Number of values does not match number of columns in destination table");
                     }
                 }
 
@@ -54,14 +54,12 @@ public class InsertQuery {
                         //no value was given for this column or the value is null
                         //check that column allows nulls
                         if (!destination.getAllowNulls()){
-                            System.out.println("Column "+destination.getColName()+" cannot be null");
-                            return false;
+                            throw new InvalidQueryException("Column "+destination.getColName()+" cannot be null");
                         }
                     } else {
                         //check data type is correct for column
                         if (!DataDictionaryUtils.valueIsOfDataType(value,destination.getDataType())){
-                            System.out.println("Invalid data type for column "+destination.getColName());
-                            return false;
+                            throw new InvalidQueryException("Invalid data type for column "+destination.getColName());
                         }
                     }
 
@@ -71,8 +69,7 @@ public class InsertQuery {
                         ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(),tableName,new ArrayList<String>(Arrays.asList(destination.getColName()))).get(destination.getColName());
                         if (columnValues != null && columnValues.contains(value.getStringValue())){
                             //value is already present
-                            System.out.println("Primary key constraint fails: "+value+ "is already present in table");
-                            return false;
+                            throw new InvalidQueryException("Primary key constraint fails: "+value+ "is already present in table");
                         }
                     }
 
@@ -84,16 +81,14 @@ public class InsertQuery {
                         ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(),refTable,new ArrayList<String>(Arrays.asList(refColumn))).get(refColumn);
                         if (value.getType() != Token.Type.NULL && (columnValues == null || !columnValues.contains(value.getStringValue()))){
                             //value is not present
-                            System.out.println("Foreign key constraint fails: "+value.getStringValue()+ " not present in referenced column");
-                            return false;
+                            throw new InvalidQueryException("Foreign key constraint fails: "+value.getStringValue()+ " not present in referenced column");
                         }
                     }
                     insertData.put(destination.getColName(),value.getStringValue());
                 }
 
                 if (cols != null && !cols.isEmpty() && columnPresentInTableCount != cols.size()){
-                    System.out.println("Columns given are not all present in destination table");
-                    return false;
+                    throw new InvalidQueryException("Columns given are not all present in destination table");
                 }
 
                 System.out.println("Inserting row");
@@ -110,6 +105,6 @@ public class InsertQuery {
                 System.out.println("Database " + dbName + " does not exist");
             }
         }
-        return false;
+        throw new InvalidQueryException("Invalid SELECT query");
     }
 }

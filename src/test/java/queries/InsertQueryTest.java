@@ -1,6 +1,7 @@
 package test.java.queries;
 
 import Utilities.Context;
+import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Token;
 import main.java.queries.*;
 import org.junit.jupiter.api.*;
@@ -24,7 +25,7 @@ public class InsertQueryTest {
             new Token(Token.Type.STRING,"\"val\""));
 
     @BeforeEach
-    public void init() throws IOException, LockTimeOutException {
+    public void init() throws IOException, LockTimeOutException, InvalidQueryException {
         new CreateQuery().createDatabase(dbName);
         Context.setDbName(dbName);
 
@@ -64,38 +65,38 @@ public class InsertQueryTest {
     }
 
     @Test
-    public void insertNoColsSuccess() throws FileNotFoundException, LockTimeOutException {
+    public void insertNoColsSuccess() throws IOException, LockTimeOutException, InvalidQueryException {
         assertTrue(query.insert(tableName,null,sampleVals));
         HashMap<String, ArrayList<String>> values = TableUtils.getColumns(dbName,tableName);
         assertTrue(values!=null && !values.isEmpty());
     }
 
     @Test
-    public void insertWithColsSuccess() throws FileNotFoundException, LockTimeOutException {
+    public void insertWithColsSuccess() throws IOException, LockTimeOutException, InvalidQueryException {
         assertTrue(query.insert(tableName,colNames,sampleVals));
     }
 
     @Test
-    public void invalidTable() throws FileNotFoundException, LockTimeOutException {
+    public void invalidTable() throws IOException, LockTimeOutException, InvalidQueryException {
         assertFalse(query.insert("notatable",null,sampleVals));
     }
 
     @Test
-    public void noColsTooManyValues() throws FileNotFoundException, LockTimeOutException {
+    public void noColsTooManyValues() throws IOException, LockTimeOutException, InvalidQueryException {
         List<Token> tooManyVals = new ArrayList<>(sampleVals);
         tooManyVals.add(new Token(Token.Type.NULL,"NULL"));
         assertFalse(query.insert(tableName,null,tooManyVals));
     }
 
     @Test
-    public void noColsNotEnoughValues() throws FileNotFoundException, LockTimeOutException {
+    public void noColsNotEnoughValues() throws IOException, LockTimeOutException, InvalidQueryException {
         List<Token> notEnoughVals = new ArrayList<>(sampleVals);
         notEnoughVals.remove(0);
         assertFalse(query.insert(tableName,null,notEnoughVals));
     }
 
     @Test
-    public void noValueGivenColDoesNotAllowNulls() throws FileNotFoundException, LockTimeOutException {
+    public void noValueGivenColDoesNotAllowNulls() throws IOException, LockTimeOutException, InvalidQueryException {
         List<String> cols = Arrays.asList("col2");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.INTLITERAL,"10"));
@@ -103,7 +104,7 @@ public class InsertQueryTest {
     }
 
     @Test
-    public void noValueGivenColAllowsNulls() throws FileNotFoundException, LockTimeOutException {
+    public void noValueGivenColAllowsNulls() throws IOException, LockTimeOutException, InvalidQueryException {
         List<String> cols = Arrays.asList("col1","col2");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.STRING,"\"val\""));
@@ -112,7 +113,7 @@ public class InsertQueryTest {
     }
 
     @Test
-    public void insertNullColAllowsNulls() throws FileNotFoundException, LockTimeOutException {
+    public void insertNullColAllowsNulls() throws IOException, LockTimeOutException, InvalidQueryException {
         List<String> cols = Arrays.asList("col1","col2","col3");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.STRING,"\"val\""));
@@ -122,7 +123,7 @@ public class InsertQueryTest {
     }
 
     @Test
-    public void insertNullColDoesntAllowsNulls() throws FileNotFoundException, LockTimeOutException {
+    public void insertNullColDoesntAllowsNulls() throws IOException, LockTimeOutException, InvalidQueryException {
         List<String> cols = Arrays.asList("col1","col2");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.NULL,"NULL"));
@@ -131,7 +132,7 @@ public class InsertQueryTest {
     }
 
     @Test
-    public void invalidDataType() throws FileNotFoundException, LockTimeOutException {
+    public void invalidDataType() throws IOException, LockTimeOutException, InvalidQueryException {
         List<String> cols = Arrays.asList("col1","col2");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.STRING,"\"val\""));
@@ -140,18 +141,18 @@ public class InsertQueryTest {
     }
 
     @Test
-    public void primaryKeyValuesAlreadyPresent() throws FileNotFoundException, LockTimeOutException {
+    public void primaryKeyValuesAlreadyPresent() throws IOException, LockTimeOutException, InvalidQueryException {
         query.insert(tableName,colNames,sampleVals);
         assertFalse(query.insert(tableName,colNames,sampleVals));
     }
 
     @Test
-    public void primaryKeyValueNotAlreadyPresent() throws FileNotFoundException, LockTimeOutException {
+    public void primaryKeyValueNotAlreadyPresent() throws IOException, LockTimeOutException, InvalidQueryException {
         assertTrue(query.insert(tableName,colNames,sampleVals));
     }
 
     @Test
-    public void primaryKeyValueIsNull() throws FileNotFoundException, LockTimeOutException {
+    public void primaryKeyValueIsNull() throws IOException, LockTimeOutException, InvalidQueryException {
         List<String> cols = Collections.singletonList("col1");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.STRING,"\"val\""));
@@ -159,7 +160,7 @@ public class InsertQueryTest {
     }
 
     @Test
-    public void foreignKeyValueNotInRefColumn() throws FileNotFoundException, LockTimeOutException {
+    public void foreignKeyValueNotInRefColumn() throws IOException, LockTimeOutException, InvalidQueryException {
         List<String> cols = Arrays.asList("col1","col2","col5");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.STRING,"\"val\""));
@@ -169,7 +170,7 @@ public class InsertQueryTest {
     }
 
     @Test
-    public void foreignKeyValueIsInRefColumn() throws FileNotFoundException, LockTimeOutException {
+    public void foreignKeyValueIsInRefColumn() throws IOException, LockTimeOutException, InvalidQueryException {
         List<String> cols = Arrays.asList("col1","col2","col5");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.STRING,"\"val\""));

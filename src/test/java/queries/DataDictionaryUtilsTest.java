@@ -10,6 +10,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,9 +67,11 @@ public class DataDictionaryUtilsTest {
         try {
             HashMap<String,Column> columnHashMap = DataDictionaryUtils.getColumns(dbName,tableName);
             assertTrue(columnHashMap.containsKey("C1")&&columnHashMap.containsKey("C2")&&columnHashMap.containsKey("C3"));
-        } catch (LockTimeOutException e) {
+        } catch (LockTimeOutException | FileNotFoundException e) {
             e.printStackTrace();
             fail();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -129,7 +132,7 @@ public class DataDictionaryUtilsTest {
     }
 
     @Test
-    public void lockTableTest() throws LockTimeOutException {
+    public void lockTableTest() throws LockTimeOutException, IOException {
         DataDictionaryUtils.lockTable(dbName,tableName);
         Context.incrTransactionId();
         assertThrows(LockTimeOutException.class, new Executable() {
@@ -141,7 +144,7 @@ public class DataDictionaryUtilsTest {
     }
 
     @Test
-    public void lockLockedTableTest() throws LockTimeOutException {
+    public void lockLockedTableTest() throws LockTimeOutException, IOException {
         DataDictionaryUtils.lockTable(dbName,tableName);
         Context.incrTransactionId();
         assertThrows(LockTimeOutException.class, new Executable() {
@@ -159,14 +162,16 @@ public class DataDictionaryUtilsTest {
             DataDictionaryUtils.lockTable(dbName,tableName);
             DataDictionaryUtils.unlockTable(dbName,tableName);
             DataDictionaryUtils.lockTable(dbName,tableName);
-        } catch (LockTimeOutException e) {
+        } catch (LockTimeOutException | FileNotFoundException e) {
             e.printStackTrace();
             fail();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     @Test
-    public void getColumnsFromLockedTableTest() throws LockTimeOutException {
+    public void getColumnsFromLockedTableTest() throws LockTimeOutException, IOException {
         DataDictionaryUtils.lockTable(dbName,tableName);
         Context.incrTransactionId();
         assertThrows(LockTimeOutException.class, new Executable() {
@@ -178,7 +183,7 @@ public class DataDictionaryUtilsTest {
     }
 
     @Test
-    public void addColumnToLockedTableTest() throws LockTimeOutException {
+    public void addColumnToLockedTableTest() throws LockTimeOutException, IOException {
         DataDictionaryUtils.lockTable(dbName,tableName);
         Context.incrTransactionId();
         Column column = new Column("colAdded4","TEXT");
@@ -205,7 +210,7 @@ public class DataDictionaryUtilsTest {
     }
 
     @Test
-    public void dropLockedTableTest() throws LockTimeOutException {
+    public void dropLockedTableTest() throws LockTimeOutException, IOException {
         DataDictionaryUtils.lockTable(dbName,tableName);
         Context.incrTransactionId();
         assertThrows(LockTimeOutException.class, new Executable() {

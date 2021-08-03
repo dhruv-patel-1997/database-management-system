@@ -60,8 +60,6 @@ public class Context {
   }
 
   public static void incrTransactionId(){
-    System.out.println(transactionNum);
     transactionNum = Thread.currentThread().getId() + "-" + LocalDateTime.now().toString();
-
   }
 }
