@@ -56,6 +56,6 @@ public class Column {
         this.colName=getColName();
         this.foreignKey=getForeignKey();
         this.allowNulls=getAllowNulls();
-        this.privateKey=isPrivateKey();
+        this.primaryKey=isPrimaryKey();
     }
 }
