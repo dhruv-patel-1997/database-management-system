@@ -12,7 +12,6 @@ public class QueryClass {
         Scanner sc = new Scanner(System.in);
         uname = sc.next();
         try {
-
             File file = new File("Databases/Users/" + uname + ".txt"); //gets the file into file object.
             if (file.exists()) {
                 System.out.println("Username already exist, try something else");
