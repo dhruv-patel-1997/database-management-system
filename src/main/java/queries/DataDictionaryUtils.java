@@ -1,6 +1,5 @@
 package main.java.queries;
 
-import main.java.Context;
 import main.java.parsing.Token;
 
 import java.io.File;

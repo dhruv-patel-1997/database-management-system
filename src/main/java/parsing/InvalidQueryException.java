@@ -1,9 +1,7 @@
 package main.java.parsing;
 
-import main.java.Context;
+import Utilities.Context;
 import main.java.logs.EventLog;
-
-import java.util.ConcurrentModificationException;
 
 public class InvalidQueryException extends Exception {
     public InvalidQueryException(String message){
