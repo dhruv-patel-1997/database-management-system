@@ -1,12 +1,14 @@
 package Utilities;
 
 import java.io.File;
+import java.time.LocalDateTime;
 
 public class Context {
 
   private static String dbName;
   private static String dbPath;
   private static String userName;
+  private static String transactionNum;
 
   public static String getDbPath() {
     return dbPath;
@@ -51,5 +53,15 @@ public class Context {
     userName = null;
     dbPath = null;
     dbName = null;
+  }
+
+  public static String getTransactionId() {
+    return userName+transactionNum;
+  }
+
+  public static void incrTransactionId(){
+    System.out.println(transactionNum);
+    transactionNum = Thread.currentThread().getId() + "-" + LocalDateTime.now().toString();
+
   }
 }

@@ -15,7 +15,7 @@ public class TokenizerDemo {
             if ((c = inputReader.read()) == ';'){
                 end = true;
             }
-            if (c == ':') {
+            if (c == '#') {
                 //canceled query
                 return;
             }
@@ -30,6 +30,7 @@ public class TokenizerDemo {
         query.append((char)c);
 
         Tokenizer tokenizer = new Tokenizer(query);
+        System.out.println(query);
         Token t;
 
         //prints type and value of each token entered

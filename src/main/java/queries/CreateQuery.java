@@ -3,6 +3,7 @@ package main.java.queries;
 import Utilities.Context;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -31,7 +32,7 @@ public class CreateQuery {
                     Column referencedColumn = fkTable.get(fkCol);
                     String referenceDataType = referencedColumn.getDataType();
                     String thisDataType = columns.get(fk.getColname()).getDataType();
-                    if (!referencedColumn.isPrivateKey()||!DataDictionaryUtils.equalsDataType(thisDataType,referenceDataType)){
+                    if (!referencedColumn.isPrimaryKey()||!DataDictionaryUtils.equalsDataType(thisDataType,referenceDataType)){
                         System.out.println("foreign key constraint fails");
                         return false;
                     }
@@ -46,7 +47,7 @@ public class CreateQuery {
                             return false;
                         }
                         //add primary key to column
-                        columns.get(colName).setAsPrivateKey(true);
+                        columns.get(colName).setAsPrimaryKey(true);
                     }
                 }
 
@@ -66,10 +67,17 @@ public class CreateQuery {
         return false;
     }
 
-    private void createTable(String tableName,List<Column> columns) throws IOException, LockTimeOutException {
+    private void createTable(String tableName,List<Column> columns) throws IOException {
         System.out.println("creating table "+tableName);
-        File table = new File(Context.getDbPath()+tableName+".txt");
+        File table = new File("temp");
         table.createNewFile();
+        //print column names| order doesn't matter
+        FileWriter fw = new FileWriter(table);
+        for (Column c: columns){
+            fw.write(c.getColName()+"|\n");
+        }
+        table.renameTo(new File(Context.getDbPath() + tableName + ".txt"));
+        fw.close();
         DataDictionaryUtils.create(Context.getDbName(),tableName,columns);
     }
 

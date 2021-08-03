@@ -35,37 +35,85 @@ public class QueryParser {
         Token.Type tokenType = token.getType();
         String tokenValue = token.getStringValue();
 
-        switch (tokenType){
-            case USE:
-                use();
-                break;
-            case CREATE:
-                create();
-                break;
-            case DROP:
-                drop();
-                break;
-            case INSERT:
-                insert();
-                break;
-            case UPDATE:
-                //validate query
-                break;
-            case ALTER:
-                //validate query
-                alter();
-                break;
-            case SELECT:
-                select();
-                break;
-            case TRUNCATE:
-                truncate();
-                break;
-            case ERD:
-                generateErd(Context.getDbName());
-                break;
-            default:
-                throw new InvalidQueryException("Invalid syntax: "+tokenValue);
+        //Check if user has input a transaction
+        boolean isTransaction = false;
+        boolean commitReached = false;
+        Queue<Runnable> queries = new LinkedList<>();
+        LinkedList<String> tablesToLock = new LinkedList<>();
+        if (tokenType == Token.Type.START){
+            if (matchesTokenList(Arrays.asList(Token.Type.TRANSACTION, Token.Type.COLON)) != null) {
+                isTransaction = true;
+                token = tokenizer.next();
+                tokenValue = token.getStringValue();
+                tokenType = token.getType();
+            } else {
+                throw new InvalidQueryException("Invalid syntax: "+token.getStringValue());
+            }
+        }
+
+        do {
+            System.out.println("parsing query: "+tokenType);
+            switch (tokenType) {
+                case COMMIT:
+                    commitReached = commit();
+                    break;
+                case USE:
+                    use();
+                    break;
+                case CREATE:
+                    create();
+                    break;
+                case DROP:
+                    drop();
+                    break;
+                case INSERT:
+                    insert();
+                    break;
+                case UPDATE:
+                    //validate query
+                    break;
+                case ALTER:
+                    //validate query
+                    alter();
+                    break;
+                case SELECT:
+                    select();
+                    break;
+                case TRUNCATE:
+                    truncate();
+                    break;
+                case ERD:
+                    generateErd(Context.getDbName());
+                    break;
+                default:
+                    throw new InvalidQueryException("Invalid syntax: " + tokenValue);
+            }
+            if (isTransaction) {
+                token = tokenizer.next();
+                tokenValue = token.getStringValue();
+                tokenType = token.getType();
+            }
+        } while (isTransaction && !commitReached);
+
+        if (isTransaction) {
+            System.out.println("executing transaction: ");
+            //get new transactionId
+            //lock tables
+            //back up state of tables
+            //execute transactions
+            //if fail then restore backups
+            //unlock tables
+            //log transaction
+        }
+    }
+
+    private boolean commit() throws InvalidQueryException {
+        Token token = tokenizer.next();
+        if (token != null && token.getType() == Token.Type.SEMICOLON && tokenizer.next() == null) {
+            return true;
+        } else {
+            throw new InvalidQueryException("Invalid syntax after COMMIT");
+
         }
     }
 
@@ -595,7 +643,7 @@ public class QueryParser {
         }
     }
 
-    private void insert() throws InvalidQueryException, LockTimeOutException {
+    private void insert() throws InvalidQueryException, LockTimeOutException, FileNotFoundException {
         Token token;
         ArrayList<String> stringValues = matchesTokenList(Arrays.asList(Token.Type.INTO, Token.Type.IDENTIFIER));
         if (stringValues == null) {
@@ -657,10 +705,13 @@ public class QueryParser {
             if (cols.isEmpty() || cols.size() == vals.size()){
                 if ((token = tokenizer.next()) != null && token.getType() == Token.Type.SEMICOLON && tokenizer.next() == null){
                     //SUCCESSFUL QUERY
+
                     generateDump(Context.getDbName(),tokenizer.getInput()+"\n");
+
+                    DataDictionaryUtils.lockTable(Context.getDbName(),tableName);
                     InsertQuery query = new InsertQuery();
-                    System.out.println("Insert into table "+tableName);
                     query.insert(tableName, cols,vals);
+                    DataDictionaryUtils.unlockTable(Context.getDbName(),tableName);
                 } else {
                     throw new InvalidQueryException("Invalid syntax");
                 }

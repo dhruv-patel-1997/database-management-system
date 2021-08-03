@@ -63,6 +63,6 @@ public class CreateQueryTest {
 
     @Test
     public void createTableAlreadyExistsTest() throws IOException, LockTimeOutException {
-        assertFalse(cq.createTable(tbname,null,null,null));
+        assertFalse(cq.createTable(tbname, null, null, null));
     }
 }
