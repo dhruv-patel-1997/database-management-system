@@ -142,6 +142,7 @@ public class QueryParser {
                     File file = new File(entry.getKey());
                     FileWriter fw = new FileWriter(file);
                     fw.write(content);
+                    fw.close();
                 }
                 throw new InvalidQueryException("Transaction failed, database restored to prior state");
             }
@@ -415,7 +416,7 @@ public class QueryParser {
             //Checks the data type compatibility for the columns which we are updating
             LinkedHashMap<String, Column> columnData = DataDictionaryUtils.getColumns(Context.getDbName(), tableName);
             for(int i = 0; i < columnName.size(); i++) {
-                if(columnData.get(columnName) != null) {
+                if(columnData.get(columnName.get(i)) != null) {
                     if(! columnData.get(columnName.get(i)).getDataType().equals(columnType.get(i)))
                         throw new InvalidQueryException("Invalid data type for column: " + columnName.get(i) + " it should be: "
                                 + columnData.get(columnName.get(i)).getDataType() + " You have passed: "

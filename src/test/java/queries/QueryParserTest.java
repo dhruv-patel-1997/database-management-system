@@ -1,12 +1,13 @@
 package test.java.queries;
 
 import Utilities.Context;
-import main.java.parsing.InvalidQueryException;
+import Utilities.DataDictionaryUtils;
+import Utilities.TableUtils;
+import main.java.exceptions.InvalidQueryException;
+import main.java.exceptions.LockTimeOutException;
+import main.java.parsing.QueryParser;
 import main.java.parsing.Tokenizer;
-import main.java.queries.DataDictionaryUtils;
-import main.java.queries.LockTimeOutException;
-import main.java.queries.QueryParser;
-import main.java.queries.TableUtils;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,7 +75,7 @@ public class QueryParserTest {
     @Test
     public void transactionQueryInvalidQueryTableDoesntExistFails() throws IOException, InvalidQueryException, LockTimeOutException {
         String input = "Start transaction; insert into Persons values (100,\"\",\"\",\"\",\"\");" +
-                "update notATable set PersonID = 101 where PersonID = 0;" +
+                "insert into notATable values (1);" +
                 "commit;";
         QueryParser parser = new QueryParser(new Tokenizer(input));
         try {
@@ -87,7 +88,6 @@ public class QueryParserTest {
             assertFalse(columns.get("PersonID").contains("100"));
             assertTrue(columns.get("PersonID").contains("0"));
         }
-        fail();//check that message shows commit was reverted
     }
 
     @Test
@@ -116,7 +116,7 @@ public class QueryParserTest {
     public void transactionQueryWithCreateTableFails() throws IOException, LockTimeOutException {
         String input = "Start transaction; insert into Persons values (100,\"\",\"\",\"\",\"\");" +
                 "create table t (col int);" +
-                "update notATable set PersonID = 101 where PersonID = 0;" +
+                "insert into notATable values (1);" +
                 "commit;";
         QueryParser parser = new QueryParser(new Tokenizer(input));
         try {
@@ -133,13 +133,13 @@ public class QueryParserTest {
             assertFalse(new File("Databasese/parseTestDB/dd_t.txt").exists());
         }
     }
-
+/*
     @Test
     public void transactionQueryWithCreateDatabaseFails() throws LockTimeOutException, IOException {
         String input = "Start transaction; insert into Persons values (100,\"\",\"\",\"\",\"\");" +
                 "update Persons set PersonID = 101 where PersonID = 0;" +
                 "create database parseTestDB2;" +
-                "update notATable set PersonID = 101 where PersonID = 0;" +
+                "insert into notATable values (1);" +
                 "commit;";
         QueryParser parser = new QueryParser(new Tokenizer(input));
         try {
@@ -156,24 +156,20 @@ public class QueryParserTest {
             assertFalse(columns.get("PersonID").contains("100"));
             assertTrue(columns.get("PersonID").contains("0"));
             assertFalse(new File("Databases/parseTestDB2").exists());
+
         }
-    }
+    }*/
 
     @Test
-    public void successfulTransaction(){
+    public void successfulTransaction() throws IOException, LockTimeOutException, InvalidQueryException {
         //all tables are open, all transaction operations are performed successfully
         String input = "Start transaction; insert into Persons values (100,\"\",\"\",\"\",\"\");" +
                 "update Persons set PersonID = 101 where PersonID = 100;" +
                 "commit;";
         QueryParser parser = new QueryParser(new Tokenizer(input));
-        try {
-            parser.parse();
-            HashMap<String, ArrayList<String>> columns = TableUtils.getColumns(dbName,"Persons", new ArrayList<String>(Arrays.asList("PersonID")));
-            assertTrue(columns.get("PersonID").contains("101"));
-            assertTrue(!columns.get("PersonID").contains("100"));
-        } catch (InvalidQueryException | IOException | LockTimeOutException e) {
-            e.printStackTrace();
-            fail();
-        }
+        parser.parse();
+        HashMap<String, ArrayList<String>> columns = TableUtils.getColumns(dbName,"Persons", new ArrayList<String>(Arrays.asList("PersonID")));
+        assertTrue(columns.get("PersonID").contains("101"));
+        assertTrue(!columns.get("PersonID").contains("100"));
     }
 }

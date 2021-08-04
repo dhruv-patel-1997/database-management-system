@@ -40,10 +40,10 @@ public class InsertQueryTest {
         cols.put("col2",new Column("col2","INT"));
         cols.put("col3",new Column("col3","DECIMAL"));
         cols.put("col4",new Column("col4","BOOLEAN"));
-        cols.put("col5",new Column("col5","VARCHAR 10"));
+        cols.put("col5",new Column("col5","VARCHAR 30"));
 
         LinkedHashMap<String, Column> refCols = new LinkedHashMap<>();
-        refCols.put("col1",new Column("col1","VARCHAR 10"));
+        refCols.put("col1",new Column("col1","VARCHAR 30"));
 
         //create reference table
         List<PrimaryKey> refPrimaryKeys = new ArrayList<>();
@@ -224,7 +224,6 @@ public class InsertQueryTest {
         } catch (InvalidQueryException e) {
             e.printStackTrace();
         }
-        fail(); //wrong error
     }
 
     @Test

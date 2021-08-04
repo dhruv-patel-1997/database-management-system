@@ -103,13 +103,11 @@ public class CreateQuery {
         System.out.println("creating table "+tableName);
         File table = new File(Context.getDbPath() + tableName + ".txt");
         table.createNewFile();
-        //print column names| order doesn't matter
+        //print column names, order doesn't matter
         FileWriter fw = new FileWriter(table);
         for (Column c: columns){
             fw.write(c.getColName()+"|\n");
         }
-//        table.renameTo(new File(Context.getDbPath() + tableName + ".txt"));
-//        table.createNewFile();
         fw.close();
         DataDictionaryUtils.create(Context.getDbName(),tableName,columns);
         if (lockAfterCreate) {
