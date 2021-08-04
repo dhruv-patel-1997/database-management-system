@@ -115,7 +115,7 @@ public class TableUtils {
         for (Map.Entry mapElement : totalColumn.entrySet()) {
           String key = (String) mapElement.getKey();
           if(!totalColumn.get(key).isEmpty())
-            return totalColumn.get(key).get(0).length();
+            return totalColumn.get(key).size();
           else
             return 0;
         }
@@ -198,15 +198,15 @@ public class TableUtils {
 
   public static void addEmptyColumnData(String tableName,String colName){
     try{
-    int rows=getRows(Context.getDbName(),tableName);
-    StringBuilder sbf = new StringBuilder("");
-    sbf.append(colName+"|");
-    for(int i=0;i<rows-1;i++){
-      sbf.append("|");
-    }
-    FileWriter myWriter = new FileWriter("Databases/" + Context.getDbName() + "/" + tableName + ".txt");
+      int rowCount = getRows(Context.getDbName(),tableName);
+      StringBuilder sbf = new StringBuilder();
+      sbf.append(colName).append("|");
+      sbf.append(" |".repeat(rowCount));
+      sbf.append("\n");
+      FileWriter myWriter = new FileWriter("Databases/" + Context.getDbName() + "/" + tableName + ".txt",true);
 
-      myWriter.write(sbf.toString());
+      myWriter.append(sbf.toString());
+      myWriter.close();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -334,5 +334,4 @@ public class TableUtils {
   //  DataDictionaryUtils.unlockTable(dbName,tableName);
     return true;
   }
-
 }
