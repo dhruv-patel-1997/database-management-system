@@ -50,3 +50,4 @@ start transaction: update employee set empId='ep16' where empName='Harit';select
 use Database1;
 use Database1;
 start transaction: update employee set empId='ep16' where empName='Harit';select * from employee where empName='Harit';select * from employee;update employee set empName='Dwayne' where empId='ep5';select empName,empId from employee where empId='ep5';commit;
+update employee set empName='Harit1' where empName='Harit';
