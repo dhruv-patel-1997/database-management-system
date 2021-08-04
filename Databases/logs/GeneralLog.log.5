@@ -1,23 +1,3 @@
-Aug 03, 2021 10:39:05 PM main.java.logs.QueryLog setLogger
-INFO: In Query log
-Aug 03, 2021 10:39:05 PM main.java.QueryClass getQueries
-INFO: User Name: harit_patwa
-Query: update employee set empSalary=200 where empId='ep10';
-Aug 03, 2021 10:39:19 PM main.java.logs.QueryLog setLogger
-INFO: In Query log
-Aug 03, 2021 10:39:19 PM main.java.QueryClass getQueries
-INFO: User Name: harit_patwa
-Query: select * from employee;
-Aug 04, 2021 1:21:49 AM main.java.logs.QueryLog setLogger
-INFO: In Query log
-Aug 04, 2021 1:21:49 AM main.java.QueryClass getQueries
-INFO: User Name: harit_patwa
-Query: select * from employee where empId='ep11';
-Aug 04, 2021 11:07:49 AM main.java.logs.QueryLog setLogger
-INFO: In Query log
-Aug 04, 2021 11:07:49 AM main.java.QueryClass getQueries
-INFO: User Name: harit_patwa
-Query: 11;
 Aug 04, 2021 11:07:56 AM main.java.queries.SelectQuery showAllForCondition
 INFO: User: harit_patwa Select statement running displaying table 
 Aug 04, 2021 11:07:56 AM main.java.queries.SelectQuery showAllForCondition
@@ -35,6 +15,18 @@ INFO: In Query log
 Aug 04, 2021 11:07:56 AM main.java.QueryClass getQueries
 INFO: User Name: harit_patwa
 Query: select * from employee where empSalary<135;
+Aug 04, 2021 11:14:34 AM main.java.queries.SelectQuery showAllForCondition
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 04, 2021 11:14:34 AM main.java.queries.SelectQuery showAllForCondition
+INFO: Database status at the start of SELECT query: {employee=3}
+
+Aug 04, 2021 11:14:34 AM main.java.queries.SelectQuery showAllForCondition
+INFO: Database status at the end of SELECT query: {employee=3}
+
+Aug 04, 2021 11:14:34 AM main.java.queries.SelectQuery showAllForCondition
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 4001000 nanoseconds
 Aug 04, 2021 11:14:34 AM main.java.logs.QueryLog setLogger
 INFO: In Query log
 Aug 04, 2021 11:14:34 AM main.java.QueryClass getQueries

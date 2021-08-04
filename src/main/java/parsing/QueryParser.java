@@ -232,12 +232,16 @@ public class QueryParser {
             } else {
                 token = tokenizer.next();
                 String tableName = values.get(1);
+                if(!Context.isTableExist(tableName))
+                    throw new InvalidQueryException("Table does not exist: "+tableName);
                 if((token.getType() == Token.Type.SEMICOLON) && Context.isTableExist(tableName)) {
                     tablesToLock.add(tableName);// Parsing ends here
                     queries.add(new Callable() {
                         @Override
-                        public Object call() throws IOException, LockTimeOutException {
-                            showTable(TableUtils.getColumns(Context.getDbName(), tableName));//execution started
+                        public Object call() throws IOException, LockTimeOutException, InvalidQueryException {
+                            SelectQuery selectQuery= new SelectQuery();//execution started
+                            selectQuery.selectForAll(Context.getDbName(), tableName);
+
                             return null;
                         }
                     });
@@ -266,14 +270,18 @@ public class QueryParser {
 
                     }
                     token = tokenizer.next();
+                    LinkedHashMap<String, Column> columnData = DataDictionaryUtils.getColumns(Context.getDbName(), tableName);
+                    if(columnData.get(colName)==null)
+                        throw new InvalidQueryException("Column with given name does not exist: "+colName);
                     if((token.getType() == Token.Type.SEMICOLON) && Context.isTableExist(tableName)) {
                         if(columnValue!=null) {
                             tablesToLock.add(tableName);//Parsing ends here
                             String finalColumnValue = columnValue;
                             queries.add(new Callable() {
                                 @Override
-                                public Object call() throws Exception {//execution starts here
-                                    showTable(TableUtils.getColumnsForEquals(Context.getDbName(), tableName, colName, finalColumnValue, operand));
+                                public Object call() throws IOException, LockTimeOutException, InvalidQueryException {//execution starts here
+                                    SelectQuery selectQuery = new SelectQuery();
+                                    selectQuery.showAllForCondition(Context.getDbName(), tableName, colName, finalColumnValue, operand);
                                     return null;
                                 }
                             });
@@ -296,18 +304,28 @@ public class QueryParser {
                     throw new InvalidQueryException("Invalid syntax for SELECT TABLE query expecting COMMA");
                 token = tokenizer.next();
             }
+
             ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER));
             if(values == null) {
                 throw new InvalidQueryException("Invalid syntax for SELECT TABLE expecting IDENTIFIER");
             }
             String tableName = values.get(0);
+            if(!Context.isTableExist(tableName))
+                throw new InvalidQueryException("Table does not exist: "+tableName);
+            LinkedHashMap<String, Column> columnData = DataDictionaryUtils.getColumns(Context.getDbName(), tableName);
+            for(int i=0;i<columns.size();i++)
+            {
+                if(columnData.get(columns.get(i))==null)
+                    throw new InvalidQueryException("Column does not exist: "+columns.get(i));
+            }
             token = tokenizer.next();
             if((token.getType() == Token.Type.SEMICOLON) && Context.isTableExist(tableName)) {
                 tablesToLock.add(tableName);//Parsing ends here
                 queries.add(new Callable() {
                     @Override
-                    public Object call() throws IOException, LockTimeOutException {//execution starts here
-                        showTable(TableUtils.getColumns(Context.getDbName(), tableName, columns));
+                    public Object call() throws IOException, LockTimeOutException, InvalidQueryException {//execution starts here
+                        SelectQuery selectQuery = new SelectQuery();
+                        selectQuery.showForLimited(Context.getDbName(), tableName, columns);
                         return null;
                     }
                 });
@@ -328,7 +346,6 @@ public class QueryParser {
                 if(token.getType() == Token.Type.STRING) {
                     columnValue = token.getStringValue().substring(1, token.getStringValue().length() - 1);
 
-
                 } else if(token.getType() == Token.Type.INTLITERAL) {
                     columnValue = token.getStringValue();
 
@@ -337,13 +354,16 @@ public class QueryParser {
 
                 }
                 token = tokenizer.next();
+                if(columnData.get(colName)==null)
+                    throw new InvalidQueryException("Column with given name does not exist: "+colName);
                 if((token.getType() == Token.Type.SEMICOLON) && Context.isTableExist(tableName)) {
                     tablesToLock.add(tableName);//parsing ends here
                     String finalColumnValue = columnValue;
                     queries.add(new Callable() {
                         @Override
                         public Object call() throws Exception {//execution starts here
-                            showTable(TableUtils.getLimitedColumnsForEquals(Context.getDbName(), tableName, colName, finalColumnValue, columns, operand));
+                            SelectQuery selectQuery = new SelectQuery();
+                            selectQuery.showForColumnsForCondition(Context.getDbName(), tableName, colName, finalColumnValue, columns, operand);
                             return null;
                         }
                     });
@@ -413,7 +433,7 @@ public class QueryParser {
             //Checks the data type compatibility for the columns which we are updating
             LinkedHashMap<String, Column> columnData = DataDictionaryUtils.getColumns(Context.getDbName(), tableName);
             for(int i = 0; i < columnName.size(); i++) {
-                if(columnData.get(columnName) != null) {
+                if(columnData.get(columnName.get(i)) != null) {
                     if(! columnData.get(columnName.get(i)).getDataType().equals(columnType.get(i)))
                         throw new InvalidQueryException("Invalid data type for column: " + columnName.get(i) + " it should be: "
                                 + columnData.get(columnName.get(i)).getDataType() + " You have passed: "
@@ -472,8 +492,9 @@ public class QueryParser {
                     tablesToLock.add(tableName);//Parsing ends here
                     queries.add(new Callable() {
                         @Override
-                        public Object call() throws IOException, LockTimeOutException {//Execution starts here
-                            TableUtils.updateHashMap(Context.getDbName(), tableName, columnName, columnType, columnValue, colName, colValue);
+                        public Object call() throws IOException, LockTimeOutException, InvalidQueryException {//Execution starts here
+                            UpdateQuery updateQuery = new UpdateQuery();
+                            updateQuery.update(Context.getDbName(), tableName, columnName, columnType, columnValue, colName, colValue);
                             return null;
                         }
                     });
@@ -489,11 +510,6 @@ public class QueryParser {
             throw new InvalidQueryException("Please select Database first");
         }
 
-    }
-    private void showTable(HashMap<String,ArrayList<String>> tableData)
-    {
-        TableMaker tm = new TableMaker();
-        tm.printTable(tableData);
     }
 
 
