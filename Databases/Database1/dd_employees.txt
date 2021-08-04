@@ -1,6 +1,6 @@
 [unlocked]
 empName|VARCHAR 255|true|false|
 empAddress|VARCHAR 255|true|false|
-empId|VARCHAR 255|true|false|
+empId|VARCHAR 255|false|true|
 empSalary|INT|true|false|
-empIsVaccinated|BOOLEAN|true|false|
+empIsVaccinated|BOOLEAN|false|false|

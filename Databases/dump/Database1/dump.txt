@@ -20,3 +20,7 @@ alter table Persons drop column empSalary;
 alter table Persons drop column empSalary;
 
 
+CREATE TABLE employees (    empName varchar(255),    empAddress varchar(255),    empId varchar(255),    empSalary int,    empIsVaccinated boolean NOT NULL,    PRIMARY KEY(empId));
+INSERT INTO employees(empName, empAddress, empId, empSalary, empIsVaccinated)VALUES ('Employee1', 'Address1', 'ep1', 131, true);
+INSERT INTO employees(empName, empAddress, empId, empSalary, empIsVaccinated)VALUES ('Employee2', 'Address2', 'ep2', 132, true);
+INSERT INTO employees(empName, empAddress, empId, empSalary, empIsVaccinated)VALUES ('Employee3', 'Address3', 'ep3', 133, true);
