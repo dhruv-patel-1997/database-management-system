@@ -43,7 +43,7 @@ public class QueryParser {
         queries = new LinkedList<>();
         tablesToLock = new LinkedList<>();
         if (tokenType == Token.Type.START){
-            if (matchesTokenList(Arrays.asList(Token.Type.TRANSACTION, Token.Type.COLON)) != null) {
+            if (matchesTokenList(Arrays.asList(Token.Type.TRANSACTION, Token.Type.SEMICOLON)) != null) {
                 isTransaction = true;
                 token = tokenizer.next();
                 tokenValue = token.getStringValue();
@@ -97,9 +97,7 @@ public class QueryParser {
 
         //get new transaction ID
         Context.incrTransactionId();
-if (isTransaction){
-    System.out.println("test");
-}
+
         //Lock tables
         HashMap<String,String> backup = new HashMap<>();
         for (String table: tablesToLock){
@@ -127,7 +125,6 @@ if (isTransaction){
 
         //Run queries
         System.out.println("executing transaction: ");
-        //TODO: log transaction
         for (Callable query: queries){
             try {
                 query.call();
@@ -141,7 +138,7 @@ if (isTransaction){
                     FileWriter fw = new FileWriter(file);
                     fw.write(content);
                 }
-                break;
+                throw new InvalidQueryException("Transaction failed, database restored to prior state");
             }
         }
 
@@ -361,6 +358,9 @@ if (isTransaction){
         Token token;
         if(Context.getDbName()!=null) {
             ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER));
+            if (values == null) {
+                throw new InvalidQueryException("Invalid syntax for UPDATE query");
+            }
             String tableName = values.get(0);
             token = tokenizer.next();
             if(token != null && token.getType() != Token.Type.SET) {

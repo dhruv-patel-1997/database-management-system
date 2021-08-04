@@ -38,7 +38,7 @@ public class QueryParserTest {
                 "    City varchar(255)\n" +
                 ");"));
         parser.parse();
-        parser = new QueryParser(new Tokenizer("insert into Persons values (0,\"x\",\"x\",\"x\",\"x\");"));
+        parser = new QueryParser(new Tokenizer("insert into Persons values (0,\"\",\"\",\"\",\"\");"));
         parser.parse();
         //create test table and db and use db.
     }
@@ -53,10 +53,41 @@ public class QueryParserTest {
     }
 
     @Test
-    public void transactionQueryInvalidQueryFails(){
-
+    public void transactionQueryInvalidQuerySyntaxFails() throws IOException, LockTimeOutException {
         //transaction interrupted  check original state is restored
-        fail();
+        String input = "Start transaction; insert into Persons values (100,\"\",\"\",\"\",\"\");" +
+                "update Persons set 101 where PersonID 100;" + //invalid update query
+                "commit;";
+        QueryParser parser = new QueryParser(new Tokenizer(input));
+        try {
+            parser.parse();
+            fail();
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+            HashMap<String, ArrayList<String>> columns = TableUtils.getColumns(dbName,"Persons", new ArrayList<String>(Arrays.asList("PersonID")));
+            assertFalse(columns.get("PersonID").contains("101"));
+            assertFalse(columns.get("PersonID").contains("100"));
+            assertTrue(columns.get("PersonID").contains("0"));
+        }
+    }
+
+    @Test
+    public void transactionQueryInvalidQueryTableDoesntExistFails() throws IOException, InvalidQueryException, LockTimeOutException {
+        String input = "Start transaction; insert into Persons values (100,\"\",\"\",\"\",\"\");" +
+                "update notATable set PersonID = 101 where PersonID = 0;" +
+                "commit;";
+        QueryParser parser = new QueryParser(new Tokenizer(input));
+        try {
+            parser.parse();//null pointer need check in update  for if table doesnt exist
+            fail();
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+            HashMap<String, ArrayList<String>> columns = TableUtils.getColumns(dbName,"Persons", new ArrayList<String>(Arrays.asList("PersonID")));
+            assertFalse(columns.get("PersonID").contains("101"));
+            assertFalse(columns.get("PersonID").contains("100"));
+            assertTrue(columns.get("PersonID").contains("0"));
+        }
+        fail();//check that message shows commit was reverted
     }
 
     @Test
@@ -65,7 +96,7 @@ public class QueryParserTest {
         //check nothing has changed
         Context.incrTransactionId();
         DataDictionaryUtils.lockTable(dbName,"Persons");
-        String input = "Start transaction: insert into Persons values (100,\"x\",\"x\",\"x\",\"x\");" +
+        String input = "Start transaction; insert into Persons values (100,\"\",\"\",\"\",\"\");" +
                 "update Persons set PersonID = 101 where PersonID = 0;" +
                 "commit;";
         QueryParser parser = new QueryParser(new Tokenizer(input));
@@ -82,25 +113,56 @@ public class QueryParserTest {
     }
 
     @Test
-    public void transactionQueryWithCreateTableFails(){
-        // table needed by the transaction is already locked, transaction cant execute
-        //check nothing has changed
-        //make sure table has been deleted
-        fail();
+    public void transactionQueryWithCreateTableFails() throws IOException, LockTimeOutException {
+        String input = "Start transaction; insert into Persons values (100,\"\",\"\",\"\",\"\");" +
+                "create table t (col int);" +
+                "update notATable set PersonID = 101 where PersonID = 0;" +
+                "commit;";
+        QueryParser parser = new QueryParser(new Tokenizer(input));
+        try {
+            parser.parse();
+            fail();
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+            //check nothing has changed
+            //make sure table has been deleted
+            HashMap<String, ArrayList<String>> columns = TableUtils.getColumns(dbName,"Persons", new ArrayList<String>(Arrays.asList("PersonID")));
+            assertFalse(columns.get("PersonID").contains("100"));
+            assertTrue(columns.get("PersonID").contains("0"));
+            assertFalse(new File("Databasese/parseTestDB/t.txt").exists());
+            assertFalse(new File("Databasese/parseTestDB/dd_t.txt").exists());
+        }
     }
 
     @Test
-    public void transactionQueryWithCreateDatabaseFails() throws LockTimeOutException, IOException, InvalidQueryException {
-        // table needed by the transaction is already locked, transaction cant execute
-        //check nothing has changed
-        //make sure Database has been deleted
-        fail();
+    public void transactionQueryWithCreateDatabaseFails() throws LockTimeOutException, IOException {
+        String input = "Start transaction; insert into Persons values (100,\"\",\"\",\"\",\"\");" +
+                "update Persons set PersonID = 101 where PersonID = 0;" +
+                "create database parseTestDB2;" +
+                "update notATable set PersonID = 101 where PersonID = 0;" +
+                "commit;";
+        QueryParser parser = new QueryParser(new Tokenizer(input));
+        try {
+            parser.parse();
+            //test failed, remove created db
+            new File("Databases/parseTestDB2").delete();
+            fail(); //database has changed so can't unlock files
+        } catch (InvalidQueryException e) {
+            e.printStackTrace();
+            HashMap<String, ArrayList<String>> columns = TableUtils.getColumns(dbName,"Persons", new ArrayList<String>(Arrays.asList("PersonID")));
+            //check nothing has changed
+            //make sure Database has been deleted
+            assertFalse(columns.get("PersonID").contains("101"));
+            assertFalse(columns.get("PersonID").contains("100"));
+            assertTrue(columns.get("PersonID").contains("0"));
+            assertFalse(new File("Databases/parseTestDB2").exists());
+        }
     }
 
     @Test
     public void successfulTransaction(){
         //all tables are open, all transaction operations are performed successfully
-        String input = "Start transaction: insert into Persons values (100,\"x\",\"x\",\"x\",\"x\");" +
+        String input = "Start transaction; insert into Persons values (100,\"\",\"\",\"\",\"\");" +
                 "update Persons set PersonID = 101 where PersonID = 100;" +
                 "commit;";
         QueryParser parser = new QueryParser(new Tokenizer(input));
@@ -114,7 +176,4 @@ public class QueryParserTest {
             fail();
         }
     }
-
-    //putting a create database or use database in transaction will not work
-    // because we need to know what db the tables belong to in order to lock
 }
