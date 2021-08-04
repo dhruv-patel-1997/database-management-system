@@ -31,3 +31,12 @@ Reason: Invalid syntax: 11
 Aug 04, 2021 11:33:08 AM main.java.exceptions.InvalidQueryException <init>
 INFO: Query Crashed for User: harit_patwa.
 Reason: Invalid SELECT query
+Aug 05, 2021 1:44:57 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Primary key constraint fails: 'ep2'is already present in table
+Aug 05, 2021 1:45:25 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Null values not allowed for column: empIsVaccinated
+Aug 05, 2021 1:45:47 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid data type for column: empIsVaccinated it should be: BOOLEAN You have passed: VARCHAR 255

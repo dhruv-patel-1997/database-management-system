@@ -1,5 +1,5 @@
 empId|'ep1'|'ep2'|'ep3'|
 empIsVaccinated|TRUE|TRUE|TRUE|
-empName|'Harit1'|'Employee2'|'Employee3'|
+empName|'Employee1'|'Employee2'|'Employee3'|
 empSalary|131|132|133|
 empAddress|'Address1'|'Address2'|'Address3'|
