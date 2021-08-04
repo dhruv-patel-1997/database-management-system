@@ -1,3 +1,13 @@
+package main.java;
+
+import Utilities.Context;
+import main.java.QueryEngine;
+import main.java.logs.QueryLog;
+import main.java.parsing.InvalidQueryException;
+import main.java.parsing.Tokenizer;
+import main.java.queries.LockTimeOutException;
+import main.java.queries.QueryParser;
+
 import java.io.*;
 import java.security.MessageDigest;
 import java.util.InputMismatchException;
@@ -263,4 +273,62 @@ public class QueryClass {
             }
         }
     }
+
+    public void getQueries() {
+        boolean loggedIn = true;
+        Scanner sc = new Scanner(System.in);
+        while (loggedIn) {
+            System.out.println("Hello " + Context.getUserName() + ". Please choose: ");
+            System.out.println("1. Enter query");
+            System.out.println("2. Logout");
+            int choice;
+            try {
+                choice = sc.nextInt();
+            } catch (InputMismatchException e) {
+                choice = -1;
+            }
+            sc.nextLine();
+            switch (choice) {
+                case 1:
+                    System.out.println("Enter query: ");
+                    StringBuilder sb = new StringBuilder();
+                    String input;
+                    boolean isTransaction = false;
+
+                    do {
+                        input = sc.nextLine();
+                        sb.append(input);
+                        if (input.toUpperCase().startsWith("START TRANSACTION:")) {
+                            isTransaction = true;
+                        }
+                        if (!isTransaction && input.contains(";")){
+                            break;
+                        }
+                        if (isTransaction && input.toUpperCase().contains("COMMIT;")){
+                            break;
+                        }
+                    } while (sc.hasNext());
+                    QueryParser qp = new QueryParser(new Tokenizer(sb));
+                    try {
+                        qp.parse();
+                    } catch (InvalidQueryException | LockTimeOutException e) {
+                        System.out.println(e.getMessage());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println();
+                    QueryLog queryLog=new QueryLog();
+                    Logger queryLogger=queryLog.setLogger();
+                    queryLogger.info("User Name: "+Context.getUserName() +"\nQuery: "+sb.toString());
+                    break;
+                case 2:
+                    Context.logout();
+                    loggedIn = false;
+                    break;
+                default:
+                    System.out.println("Invalid input, please try again.\n");
+            }
+        }
+    }
+
 }

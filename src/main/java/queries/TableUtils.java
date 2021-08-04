@@ -107,7 +107,10 @@ public class TableUtils {
       if(totalColumn != null){
         for (Map.Entry mapElement : totalColumn.entrySet()) {
           String key = (String) mapElement.getKey();
-          return totalColumn.get(key).get(0).length();
+          if(!totalColumn.get(key).isEmpty())
+            return totalColumn.get(key).get(0).length();
+          else
+            return 0;
         }
       }
       return 0;

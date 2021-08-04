@@ -15,6 +15,11 @@ public class InsertQuery {
     public boolean insert(String tableName, List<String> cols, List<Token> vals) throws LockTimeOutException, IOException, InvalidQueryException {
         //db must set
         String dbName = Context.getDbName();
+        GeneralLog generalLog=new GeneralLog();
+        Logger generalLogger=generalLog.setLogger();
+        LocalTime start=LocalTime.now();
+        generalLogger.info("User: "+ Context.getUserName()+" At the start of insert query");
+        generalLogger.info("Database status at the start of insert query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
         if (dbName != null && (new File(Context.getDbPath())).isDirectory()){
             //table must exist in db
             LinkedHashMap<String,Column> destinationColumns = DataDictionaryUtils.getColumns(dbName,tableName);
@@ -93,11 +98,7 @@ public class InsertQuery {
                 if (cols != null && !cols.isEmpty() && columnPresentInTableCount != cols.size()){
                     throw new InvalidQueryException("Columns given are not all present in destination table");
                 }
-                GeneralLog generalLog=new GeneralLog();
-                Logger generalLogger=generalLog.setLogger();
-                LocalTime start=LocalTime.now();
-                generalLogger.info("User: "+ Context.getUserName()+" At the start of alter query");
-                generalLogger.info("Database status at the start of insert query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+
                 LocalTime end=LocalTime.now();
                 int diff=end.getNano()-start.getNano();
                 generalLogger.info("Database status at the end of insert query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");

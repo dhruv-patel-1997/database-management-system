@@ -832,9 +832,11 @@ public class QueryParser {
                 erd.createNewFile();
                 FileWriter myWriter = new FileWriter("Databases/erd/" + dbName + "/erd.txt");
                 String dd_data = "";
-                for(String s:dd_tables){
-                    s=s.split("\\.")[0];
-                    dd_data+="Table: "+s+"\n"+readAllBytesJava7("Databases/" + dbName + "/" + s + ".txt")+"\n\n";
+                if(!dd_tables.isEmpty()){
+                    for(String s:dd_tables){
+                        s=s.split("\\.")[0];
+                        dd_data+="Table: "+s+"\n"+readAllBytesJava7("Databases/" + dbName + "/" + s + ".txt")+"\n\n";
+                    }
                 }
                 for (String t : tables) {
                     t = t.split("\\.")[0];
