@@ -1,0 +1,44 @@
+Aug 04, 2021 11:44:43 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 04, 2021 11:44:43 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: Database status at the start of SELECT query: {employee=3, employees=5}
+
+Aug 04, 2021 11:44:43 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: Database status at the end of SELECT query: {employee=3, employees=5}
+
+Aug 04, 2021 11:44:43 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 1990600 nanoseconds
+Aug 04, 2021 11:44:43 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 11:44:43 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select empName,empId from employee where empName='Employee1';
+Aug 04, 2021 11:45:39 AM main.java.queries.SelectQuery showForLimited
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 04, 2021 11:45:39 AM main.java.queries.SelectQuery showForLimited
+INFO: Database status at the start of SELECT query: {employee=3, employees=5}
+
+Aug 04, 2021 11:45:39 AM main.java.queries.SelectQuery showForLimited
+INFO: Database status at the end of SELECT query: {employee=3, employees=5}
+
+Aug 04, 2021 11:45:39 AM main.java.queries.SelectQuery showForLimited
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 2000000 nanoseconds
+Aug 04, 2021 11:45:39 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 11:45:39 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select empName from employees;
+Aug 04, 2021 11:46:25 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 11:46:25 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employees where empName=''Employee1'';
+Aug 04, 2021 11:46:42 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 11:46:42 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employees where empName=''Employee1'';

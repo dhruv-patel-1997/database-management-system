@@ -128,6 +128,7 @@ public class QueryParser {
             }
         }
 
+
         //Run queries
         for (Callable query: queries){
             try {
@@ -205,21 +206,6 @@ public class QueryParser {
         } else {
             throw new InvalidQueryException("Invalid syntax for USE query");
         }
-        /*
-        EventLog eventLog=new EventLog();
-        Logger eventLogger=eventLog.setLogger();
-        GeneralLog generalLog=new GeneralLog();
-        Logger generalLogger=generalLog.setLogger();
-        generalLogger.info("User: "+ Context.getUserName()+" At the start of use database query");
-        LocalTime start=LocalTime.now();
-            LocalTime end=LocalTime.now();
-            int diff= end.getNano()-start.getNano();
-            eventLogger.info("User " +Context.getUserName()+ " using database "+values.get(0));
-            generalLogger.info("Database status at the end of use query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
-            generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for use query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
-            System.out.println("using database "+values.get(0));
-
-         */
     }
 
     private void select() throws IOException, LockTimeOutException, InvalidQueryException {
@@ -261,7 +247,7 @@ public class QueryParser {
                     token = tokenizer.next();
                     String columnValue=null;
                     if(token.getType() == Token.Type.STRING) {
-                        columnValue = token.getStringValue().substring(1, token.getStringValue().length() - 1);
+                        columnValue = token.getStringValue();
 
                     } else if(token.getType() == Token.Type.INTLITERAL) {
                         columnValue = token.getStringValue();
@@ -345,7 +331,7 @@ public class QueryParser {
                 token = tokenizer.next();
                 String columnValue=null;
                 if(token.getType() == Token.Type.STRING) {
-                    columnValue = token.getStringValue().substring(1, token.getStringValue().length() - 1);
+                    columnValue = token.getStringValue();
 
                 } else if(token.getType() == Token.Type.INTLITERAL) {
                     columnValue = token.getStringValue();
@@ -408,7 +394,7 @@ public class QueryParser {
                 token = tokenizer.next();
                 if(token.getType() == Token.Type.STRING) {
                     type = "VARCHAR 255";
-                    colValue = token.getStringValue().substring(1, token.getStringValue().length() - 1);
+                    colValue = token.getStringValue();
                 } else if(token.getType() == Token.Type.INTLITERAL) {
                     type = "INT";
                     colValue = token.getStringValue();
@@ -487,7 +473,7 @@ public class QueryParser {
                 colValue = token.getStringValue();
                 // condition is for string
             } else if(token.getType() == Token.Type.STRING) {
-                colValue = token.getStringValue().substring(1, token.getStringValue().length() - 1);
+                colValue = token.getStringValue();
             } else {
                 throw new InvalidQueryException("Invalid syntax for UPDATE TABLE query");
             }
@@ -639,8 +625,8 @@ public class QueryParser {
                     queries.add(new Callable() {
                         @Override
                         public Object call() throws IOException, LockTimeOutException {
-                            dropAlterQuery.dropColumn(tableName,columnName);
-                            System.out.println("Alter query executed successfully");
+                            if(dropAlterQuery.dropColumn(tableName,columnName))
+                                System.out.println("Alter query executed successfully");
                             return null;
                         }
                     });
@@ -654,7 +640,7 @@ public class QueryParser {
             }
 
         } catch (InvalidQueryException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
     }
