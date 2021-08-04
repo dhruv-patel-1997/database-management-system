@@ -129,7 +129,6 @@ public class QueryParser {
         }
 
         //Run queries
-        System.out.println("executing transaction: ");
         for (Callable query: queries){
             try {
                 query.call();
@@ -143,6 +142,9 @@ public class QueryParser {
                     FileWriter fw = new FileWriter(file);
                     fw.write(content);
                     fw.close();
+                }
+                for (String table: tablesToLock){
+                    DataDictionaryUtils.unlockTable(Context.getDbName(),table);
                 }
                 throw new InvalidQueryException("Transaction failed, database restored to prior state");
             }
@@ -192,7 +194,6 @@ public class QueryParser {
             queries.add(new Callable() {
                 @Override
                 public Object call() {
-                    //TODO: PUT LOGGING HERE
                     try {
                         new UseQuery().useDataBase(values.get(0));
                     } catch (InvalidQueryException exception) {
@@ -775,7 +776,6 @@ public class QueryParser {
                     return null;
                 }
             });
-            //generateDump(dbName,tokenizer.getInput()+"\n");
         } else {
             throw new InvalidQueryException("Invalid Syntax for CREATE DATABASE query");
         }
@@ -975,7 +975,6 @@ public class QueryParser {
                     queries.add(new Callable() {
                         @Override
                         public Object call() throws LockTimeOutException, IOException, InvalidQueryException {
-                            //TODO: ADD LOGGING
                             InsertQuery query = new InsertQuery();
                             query.insert(tableName, cols,vals);
                             return null;

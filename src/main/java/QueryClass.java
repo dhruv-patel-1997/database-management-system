@@ -299,7 +299,7 @@ public class QueryClass {
                     do {
                         input = sc.nextLine();
                         sb.append(input);
-                        if (input.toUpperCase().startsWith("START TRANSACTION:")) {
+                        if (input.toUpperCase().startsWith("START TRANSACTION;")) {
                             isTransaction = true;
                         }
                         if (!isTransaction && input.contains(";")){
