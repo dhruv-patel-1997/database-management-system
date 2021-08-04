@@ -9,15 +9,11 @@ import java.time.LocalTime;
 import java.util.logging.Logger;
 
 public class AddAlterQuery {
-    public void addColumn(String tableName,String columnName,String columnType){
+    public void addColumn(String tableName,String columnName,String columnType) throws InvalidQueryException {
         GeneralLog generalLog=new GeneralLog();
         Logger generalLogger=generalLog.setLogger();
         generalLogger.info("User: "+ Context.getUserName()+" At the start of adding column for alter query");
-        try {
-            generalLogger.info("Database status at the start of alter query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
-        } catch (InvalidQueryException e) {
-            e.printStackTrace();
-        }
+        generalLogger.info("Database status at the start of alter query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
         LocalTime start=LocalTime.now();
         try {
             TableUtils.addEmptyColumnData(tableName,columnName);
@@ -29,8 +25,6 @@ public class AddAlterQuery {
                 generalLogger.info("Database status at the end of alter query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
                 generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for alter query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
             } catch (LockTimeOutException e) {
-                e.printStackTrace();
-            } catch (InvalidQueryException e) {
                 e.printStackTrace();
             }
         } catch (IOException e) {

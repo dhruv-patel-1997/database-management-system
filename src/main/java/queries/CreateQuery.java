@@ -41,14 +41,17 @@ public class CreateQuery {
                             || fkTable == null
                             || !fkTable.containsKey(fkCol)){
                         //foreign key doesn't exist
-                        throw new InvalidQueryException("foreign key constraint fails");
+                        System.out.println("foreign key constraint fails");
+                        return false;
+
                     }
                     //referenced column must be primary key and of same data type
                     Column referencedColumn = fkTable.get(fkCol);
                     String referenceDataType = referencedColumn.getDataType();
                     String thisDataType = columns.get(fk.getColname()).getDataType();
                     if (!referencedColumn.isPrimaryKey()||!DataDictionaryUtils.equalsDataType(thisDataType,referenceDataType)){
-                        throw new InvalidQueryException("foreign key constraint fails");
+                        System.out.println("foreign key constraint fails");
+                        return false;
                     }
                     //add foreign key to column
                     columns.get(fk.getColname()).setForeignKey(fk);
@@ -57,7 +60,8 @@ public class CreateQuery {
                 for (PrimaryKey pk : primaryKeys){
                     for (String colName : pk.getColumnNames()){
                         if (!columns.containsKey(colName)){
-                            throw new InvalidQueryException("Primary key column "+colName+" is not declared");
+                            System.out.println("Primary key column "+colName+" is not declared");
+                            return false;
                         }
                         //add primary key to column
                         columns.get(colName).setAsPrimaryKey(true);

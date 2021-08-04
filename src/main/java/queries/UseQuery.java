@@ -15,6 +15,7 @@ public class UseQuery {
         generalLogger.info("Database status at the start of use query: "+TableUtils.getGeneralLogTableInfo(dbName)+"\n");
         LocalTime start=LocalTime.now();
 
+
         if(Context.setDbName(dbName)){
 
             LocalTime end=LocalTime.now();

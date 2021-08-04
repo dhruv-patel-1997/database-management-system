@@ -14,11 +14,11 @@ import java.util.logging.Logger;
 public class DropAlterQuery {
     public void dropColumn(String tableName,String columnName){
         try {
-        GeneralLog generalLog=new GeneralLog();
-        Logger generalLogger=generalLog.setLogger();
-        LocalTime start=LocalTime.now();
-        generalLogger.info("User: "+ Context.getUserName()+" At the start of adding column for alter query");
-        generalLogger.info("Database status at the start of alter query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+            GeneralLog generalLog=new GeneralLog();
+            Logger generalLogger=generalLog.setLogger();
+            LocalTime start=LocalTime.now();
+            generalLogger.info("User: "+ Context.getUserName()+" At the start of adding column for alter query");
+            generalLogger.info("Database status at the start of alter query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
 
             HashMap<String, ArrayList<String>> data=TableUtils.getColumns(Context.getDbName(),tableName);
             data.remove(columnName);
@@ -33,7 +33,7 @@ public class DropAlterQuery {
             } catch (LockTimeOutException e) {
                 e.printStackTrace();
             }
-        } catch (IOException | InvalidQueryException e) {
+        } catch (IOException | InvalidQueryException | LockTimeOutException e) {
             e.printStackTrace();
         }
 
