@@ -537,3 +537,35 @@ select empName,empId from employee where empId='ep5';
 
 commit;
 
+Aug 04, 2021 9:38:45 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 9:38:45 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 04, 2021 9:45:41 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 9:45:41 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update employ3e set empId='100' where empName='Rahul';
+Aug 04, 2021 9:45:59 AM main.java.queries.UseQuery useDataBase
+INFO: User: harit_patwa At the start of use query
+Aug 04, 2021 9:45:59 AM main.java.queries.UseQuery useDataBase
+INFO: Database status at the start of use query: {employee=3}
+
+Aug 04, 2021 9:45:59 AM main.java.queries.UseQuery useDataBase
+INFO: Database status at the end of use query: {employee=3}
+
+Aug 04, 2021 9:45:59 AM main.java.queries.UseQuery useDataBase
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 0 nanoseconds
+Aug 04, 2021 9:45:59 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 9:45:59 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 04, 2021 9:46:07 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 9:46:07 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update employ3e set empId='100' where empName='Rahul';

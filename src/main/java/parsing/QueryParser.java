@@ -404,6 +404,12 @@ public class QueryParser {
                     throw new InvalidQueryException("Invalid syntax for UPDATE TABLE query3");
                 token = tokenizer.next();
             }
+
+            if(!Context.isTableExist(tableName))
+            {
+                throw new InvalidQueryException("Invalid table name, no table exist with given name: "+tableName);
+            }
+
             //Checks the data type compatibility for the columns which we are updating
             LinkedHashMap<String, Column> columnData = DataDictionaryUtils.getColumns(Context.getDbName(), tableName);
             for(int i = 0; i < columnName.size(); i++) {
@@ -459,14 +465,14 @@ public class QueryParser {
             }
             token = tokenizer.next();
             if((token.getType() == Token.Type.SEMICOLON) && Context.isTableExist(tableName)) {
-                tablesToLock.add(tableName);//Parsing ends here
-                queries.add(new Callable() {
-                    @Override
-                    public Object call() throws IOException, LockTimeOutException {//Execution starts here
-                        TableUtils.updateHashMap(Context.getDbName(), tableName, columnName, columnType, columnValue, colName, colValue);
-                        return null;
-                    }
-                });
+                    tablesToLock.add(tableName);//Parsing ends here
+                    queries.add(new Callable() {
+                        @Override
+                        public Object call() throws IOException, LockTimeOutException {//Execution starts here
+                            TableUtils.updateHashMap(Context.getDbName(), tableName, columnName, columnType, columnValue, colName, colValue);
+                            return null;
+                        }
+                    });
 
             }else
             {
@@ -474,6 +480,9 @@ public class QueryParser {
             }
 
 
+        }else
+        {
+            throw new InvalidQueryException("Please select Database first");
         }
 
     }
