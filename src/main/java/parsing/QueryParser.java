@@ -128,8 +128,6 @@ public class QueryParser {
             }
         }
 
-        //Run queries
-        System.out.println("executing transaction: ");
         //TODO: log transaction
         for (Callable query: queries){
             try {
@@ -606,8 +604,8 @@ public class QueryParser {
                     queries.add(new Callable() {
                         @Override
                         public Object call() throws IOException, LockTimeOutException {
-                            dropAlterQuery.dropColumn(tableName,columnName);
-                            System.out.println("Alter query executed successfully");
+                            if(dropAlterQuery.dropColumn(tableName,columnName))
+                                System.out.println("Alter query executed successfully");
                             return null;
                         }
                     });
@@ -621,7 +619,7 @@ public class QueryParser {
             }
 
         } catch (InvalidQueryException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
     }

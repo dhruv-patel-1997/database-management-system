@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 public class DropAlterQuery {
-    public void dropColumn(String tableName,String columnName){
+    public boolean dropColumn(String tableName,String columnName){
         try {
             GeneralLog generalLog=new GeneralLog();
             Logger generalLogger=generalLog.setLogger();
@@ -24,8 +24,14 @@ public class DropAlterQuery {
             generalLogger.info("Database status at the start of alter query: "+ TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
 
             HashMap<String, ArrayList<String>> data=TableUtils.getColumns(Context.getDbName(),tableName);
-            data.remove(columnName);
-            TableUtils.setColumns(data,tableName);
+            if(!data.containsKey(columnName)){
+                System.out.println("No column found of the name "+columnName);
+                return false;
+            }
+            if (data != null) {
+                data.remove(columnName);
+                TableUtils.setColumns(data,tableName);
+            }
             try {
                 DataDictionaryUtils.dropDictionaryColumn(Context.getDbName(),tableName,columnName);
                 LocalTime end=LocalTime.now();
@@ -33,11 +39,14 @@ public class DropAlterQuery {
                 int diff=end.getNano()-start.getNano();
                 generalLogger.info("Database status at the end of alter query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
                 generalLogger.info("User: "+Context.getUserName()+"\nAt the end of drop for alter query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
+                return true;
             } catch (LockTimeOutException e) {
                 e.printStackTrace();
+                return false;
             }
         } catch (IOException | InvalidQueryException | LockTimeOutException e) {
             e.printStackTrace();
+            return false;
         }
 
     }
