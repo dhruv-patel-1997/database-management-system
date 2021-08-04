@@ -1,0 +1,15 @@
+Aug 04, 2021 11:45:39 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 11:45:39 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select empName from employees;
+Aug 04, 2021 11:46:25 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 11:46:25 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employees where empName=''Employee1'';
+Aug 04, 2021 11:46:42 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 11:46:42 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from employees where empName=''Employee1'';

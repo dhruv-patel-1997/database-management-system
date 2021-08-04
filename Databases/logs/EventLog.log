@@ -28,3 +28,6 @@ Reason: Column does not exist: empName
 Aug 04, 2021 11:07:49 AM main.java.exceptions.InvalidQueryException <init>
 INFO: Query Crashed for User: harit_patwa.
 Reason: Invalid syntax: 11
+Aug 04, 2021 11:33:08 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid SELECT query

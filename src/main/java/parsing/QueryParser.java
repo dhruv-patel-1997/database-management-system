@@ -260,7 +260,7 @@ public class QueryParser {
                     token = tokenizer.next();
                     String columnValue=null;
                     if(token.getType() == Token.Type.STRING) {
-                        columnValue = token.getStringValue().substring(1, token.getStringValue().length() - 1);
+                        columnValue = token.getStringValue();
 
                     } else if(token.getType() == Token.Type.INTLITERAL) {
                         columnValue = token.getStringValue();
@@ -344,7 +344,7 @@ public class QueryParser {
                 token = tokenizer.next();
                 String columnValue=null;
                 if(token.getType() == Token.Type.STRING) {
-                    columnValue = token.getStringValue().substring(1, token.getStringValue().length() - 1);
+                    columnValue = token.getStringValue();
 
                 } else if(token.getType() == Token.Type.INTLITERAL) {
                     columnValue = token.getStringValue();
@@ -404,7 +404,7 @@ public class QueryParser {
                 token = tokenizer.next();
                 if(token.getType() == Token.Type.STRING) {
                     type = "VARCHAR 255";
-                    colValue = token.getStringValue().substring(1, token.getStringValue().length() - 1);
+                    colValue = token.getStringValue();
                 } else if(token.getType() == Token.Type.INTLITERAL) {
                     type = "INT";
                     colValue = token.getStringValue();
@@ -483,7 +483,7 @@ public class QueryParser {
                 colValue = token.getStringValue();
                 // condition is for string
             } else if(token.getType() == Token.Type.STRING) {
-                colValue = token.getStringValue().substring(1, token.getStringValue().length() - 1);
+                colValue = token.getStringValue();
             } else {
                 throw new InvalidQueryException("Invalid syntax for UPDATE TABLE query");
             }
