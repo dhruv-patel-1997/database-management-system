@@ -1,0 +1,33 @@
+Aug 04, 2021 9:45:41 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Please select Database first
+Aug 04, 2021 9:46:07 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid table name, no table exist with given name: employ3e
+Aug 04, 2021 9:55:28 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Column does not exist: emplId
+Aug 04, 2021 10:12:28 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Table does not exist: employee
+Aug 04, 2021 10:13:36 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Table does not exist: employee
+Aug 04, 2021 10:21:35 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Column with given name does not exist: empTech
+Aug 04, 2021 10:22:05 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Column does not exist: empTech
+Aug 04, 2021 10:36:31 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Column does not exist: empName
+Aug 04, 2021 10:40:15 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Column does not exist: empName
+Aug 04, 2021 11:07:49 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid syntax: 11
+Aug 04, 2021 11:33:08 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Invalid SELECT query

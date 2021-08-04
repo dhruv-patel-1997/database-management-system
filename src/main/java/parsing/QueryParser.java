@@ -230,12 +230,16 @@ public class QueryParser {
             } else {
                 token = tokenizer.next();
                 String tableName = values.get(1);
+                if(!Context.isTableExist(tableName))
+                    throw new InvalidQueryException("Table does not exist: "+tableName);
                 if((token.getType() == Token.Type.SEMICOLON) && Context.isTableExist(tableName)) {
                     tablesToLock.add(tableName);// Parsing ends here
                     queries.add(new Callable() {
                         @Override
-                        public Object call() throws IOException, LockTimeOutException {
-                            showTable(TableUtils.getColumns(Context.getDbName(), tableName));//execution started
+                        public Object call() throws IOException, LockTimeOutException, InvalidQueryException {
+                            SelectQuery selectQuery= new SelectQuery();//execution started
+                            selectQuery.selectForAll(Context.getDbName(), tableName);
+
                             return null;
                         }
                     });
@@ -254,7 +258,7 @@ public class QueryParser {
                     token = tokenizer.next();
                     String columnValue=null;
                     if(token.getType() == Token.Type.STRING) {
-                        columnValue = token.getStringValue().substring(1, token.getStringValue().length() - 1);
+                        columnValue = token.getStringValue();
 
                     } else if(token.getType() == Token.Type.INTLITERAL) {
                         columnValue = token.getStringValue();
@@ -264,14 +268,18 @@ public class QueryParser {
 
                     }
                     token = tokenizer.next();
+                    LinkedHashMap<String, Column> columnData = DataDictionaryUtils.getColumns(Context.getDbName(), tableName);
+                    if(columnData.get(colName)==null)
+                        throw new InvalidQueryException("Column with given name does not exist: "+colName);
                     if((token.getType() == Token.Type.SEMICOLON) && Context.isTableExist(tableName)) {
                         if(columnValue!=null) {
                             tablesToLock.add(tableName);//Parsing ends here
                             String finalColumnValue = columnValue;
                             queries.add(new Callable() {
                                 @Override
-                                public Object call() throws Exception {//execution starts here
-                                    showTable(TableUtils.getColumnsForEquals(Context.getDbName(), tableName, colName, finalColumnValue, operand));
+                                public Object call() throws IOException, LockTimeOutException, InvalidQueryException {//execution starts here
+                                    SelectQuery selectQuery = new SelectQuery();
+                                    selectQuery.showAllForCondition(Context.getDbName(), tableName, colName, finalColumnValue, operand);
                                     return null;
                                 }
                             });
@@ -294,18 +302,28 @@ public class QueryParser {
                     throw new InvalidQueryException("Invalid syntax for SELECT TABLE query expecting COMMA");
                 token = tokenizer.next();
             }
+
             ArrayList<String> values = matchesTokenList(Arrays.asList(Token.Type.IDENTIFIER));
             if(values == null) {
                 throw new InvalidQueryException("Invalid syntax for SELECT TABLE expecting IDENTIFIER");
             }
             String tableName = values.get(0);
+            if(!Context.isTableExist(tableName))
+                throw new InvalidQueryException("Table does not exist: "+tableName);
+            LinkedHashMap<String, Column> columnData = DataDictionaryUtils.getColumns(Context.getDbName(), tableName);
+            for(int i=0;i<columns.size();i++)
+            {
+                if(columnData.get(columns.get(i))==null)
+                    throw new InvalidQueryException("Column does not exist: "+columns.get(i));
+            }
             token = tokenizer.next();
             if((token.getType() == Token.Type.SEMICOLON) && Context.isTableExist(tableName)) {
                 tablesToLock.add(tableName);//Parsing ends here
                 queries.add(new Callable() {
                     @Override
-                    public Object call() throws IOException, LockTimeOutException {//execution starts here
-                        showTable(TableUtils.getColumns(Context.getDbName(), tableName, columns));
+                    public Object call() throws IOException, LockTimeOutException, InvalidQueryException {//execution starts here
+                        SelectQuery selectQuery = new SelectQuery();
+                        selectQuery.showForLimited(Context.getDbName(), tableName, columns);
                         return null;
                     }
                 });
@@ -324,8 +342,7 @@ public class QueryParser {
                 token = tokenizer.next();
                 String columnValue=null;
                 if(token.getType() == Token.Type.STRING) {
-                    columnValue = token.getStringValue().substring(1, token.getStringValue().length() - 1);
-
+                    columnValue = token.getStringValue();
 
                 } else if(token.getType() == Token.Type.INTLITERAL) {
                     columnValue = token.getStringValue();
@@ -335,13 +352,16 @@ public class QueryParser {
 
                 }
                 token = tokenizer.next();
+                if(columnData.get(colName)==null)
+                    throw new InvalidQueryException("Column with given name does not exist: "+colName);
                 if((token.getType() == Token.Type.SEMICOLON) && Context.isTableExist(tableName)) {
                     tablesToLock.add(tableName);//parsing ends here
                     String finalColumnValue = columnValue;
                     queries.add(new Callable() {
                         @Override
                         public Object call() throws Exception {//execution starts here
-                            showTable(TableUtils.getLimitedColumnsForEquals(Context.getDbName(), tableName, colName, finalColumnValue, columns, operand));
+                            SelectQuery selectQuery = new SelectQuery();
+                            selectQuery.showForColumnsForCondition(Context.getDbName(), tableName, colName, finalColumnValue, columns, operand);
                             return null;
                         }
                     });
@@ -382,7 +402,7 @@ public class QueryParser {
                 token = tokenizer.next();
                 if(token.getType() == Token.Type.STRING) {
                     type = "VARCHAR 255";
-                    colValue = token.getStringValue().substring(1, token.getStringValue().length() - 1);
+                    colValue = token.getStringValue();
                 } else if(token.getType() == Token.Type.INTLITERAL) {
                     type = "INT";
                     colValue = token.getStringValue();
@@ -402,35 +422,45 @@ public class QueryParser {
                     throw new InvalidQueryException("Invalid syntax for UPDATE TABLE query3");
                 token = tokenizer.next();
             }
+
+            if(!Context.isTableExist(tableName))
+            {
+                throw new InvalidQueryException("Invalid table name, no table exist with given name: "+tableName);
+            }
+
             //Checks the data type compatibility for the columns which we are updating
             LinkedHashMap<String, Column> columnData = DataDictionaryUtils.getColumns(Context.getDbName(), tableName);
             for(int i = 0; i < columnName.size(); i++) {
-                if(! columnData.get(columnName.get(i)).getDataType().equals(columnType.get(i)))
-                    throw new InvalidQueryException("Invalid data type for column: " + columnName.get(i) + " it should be: "
-                            + columnData.get(columnName.get(i)).getDataType() + " You have passed: "
-                            + columnType.get(i));
-                //checks primary key constraint
-                if(columnData.get(columnName.get(i)).isPrimaryKey()) {
-                    ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(), tableName, new ArrayList<String>(Arrays.asList(columnName.get(i)))).get(columnName.get(i));
-                    if(columnValues != null && columnValues.contains(columnValue.get(i))) {
-                        //value is already present
-                        throw new InvalidQueryException("Primary key constraint fails: " + columnValue.get(i) + "is already present in table");
-                    }
-                }//checks null key constraint
-                if(! columnData.get(columnName.get(i)).getAllowNulls()) {
-                    if(columnValue.get(i) == null)
-                        throw new InvalidQueryException("Null values not allowed for column: " + columnName.get(i));
-                }//checks foreign key constraint
-                if(columnData.get(columnName.get(i)).getForeignKey() != null) {
-                    System.out.println(columnData.get(columnName.get(i)).getColName() + " is fk with val " + columnValue.get(i));
-                    String refTable = columnData.get(columnName.get(i)).getForeignKey().getReferencedTable();
-                    String refColumn = columnData.get(columnName.get(i)).getForeignKey().getReferencedColumn();
-                    ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(), refTable, new ArrayList<String>(Arrays.asList(refColumn))).get(refColumn);
-                    if((columnValues == null || ! columnValues.contains(columnValue.get(i)))) {
-                        //value is not present
-                        throw new InvalidQueryException("Foreign key constraint fails: " + columnValue.get(i) + " not present in referenced column");
+                if(columnData.get(columnName.get(i)) != null) {
+                    if(! columnData.get(columnName.get(i)).getDataType().equals(columnType.get(i)))
+                        throw new InvalidQueryException("Invalid data type for column: " + columnName.get(i) + " it should be: "
+                                + columnData.get(columnName.get(i)).getDataType() + " You have passed: "
+                                + columnType.get(i));
+                    //checks primary key constraint
+                    if(columnData.get(columnName.get(i)).isPrimaryKey()) {
+                        ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(), tableName, new ArrayList<String>(Arrays.asList(columnName.get(i)))).get(columnName.get(i));
+                        if(columnValues != null && columnValues.contains(columnValue.get(i))) {
+                            //value is already present
+                            throw new InvalidQueryException("Primary key constraint fails: " + columnValue.get(i) + "is already present in table");
+                        }
+                    }//checks null key constraint
+                    if(! columnData.get(columnName.get(i)).getAllowNulls()) {
+                        if(columnValue.get(i) == null)
+                            throw new InvalidQueryException("Null values not allowed for column: " + columnName.get(i));
+                    }//checks foreign key constraint
+                    if(columnData.get(columnName.get(i)).getForeignKey() != null) {
+                        System.out.println(columnData.get(columnName.get(i)).getColName() + " is fk with val " + columnValue.get(i));
+                        String refTable = columnData.get(columnName.get(i)).getForeignKey().getReferencedTable();
+                        String refColumn = columnData.get(columnName.get(i)).getForeignKey().getReferencedColumn();
+                        ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(), refTable, new ArrayList<String>(Arrays.asList(refColumn))).get(refColumn);
+                        if((columnValues == null || ! columnValues.contains(columnValue.get(i)))) {
+                            //value is not present
+                            throw new InvalidQueryException("Foreign key constraint fails: " + columnValue.get(i) + " not present in referenced column");
+                        }
                     }
                 }
+                else
+                    throw new InvalidQueryException("Column does not exist: "+columnName.get(i));
             }
             //Getting condition -> "WHERE A="abc;"
             token = tokenizer.next();
@@ -451,20 +481,21 @@ public class QueryParser {
                 colValue = token.getStringValue();
                 // condition is for string
             } else if(token.getType() == Token.Type.STRING) {
-                colValue = token.getStringValue().substring(1, token.getStringValue().length() - 1);
+                colValue = token.getStringValue();
             } else {
                 throw new InvalidQueryException("Invalid syntax for UPDATE TABLE query");
             }
             token = tokenizer.next();
             if((token.getType() == Token.Type.SEMICOLON) && Context.isTableExist(tableName)) {
-                tablesToLock.add(tableName);//Parsing ends here
-                queries.add(new Callable() {
-                    @Override
-                    public Object call() throws IOException, LockTimeOutException {//Execution starts here
-                        TableUtils.updateHashMap(Context.getDbName(), tableName, columnName, columnType, columnValue, colName, colValue);
-                        return null;
-                    }
-                });
+                    tablesToLock.add(tableName);//Parsing ends here
+                    queries.add(new Callable() {
+                        @Override
+                        public Object call() throws IOException, LockTimeOutException, InvalidQueryException {//Execution starts here
+                            UpdateQuery updateQuery = new UpdateQuery();
+                            updateQuery.update(Context.getDbName(), tableName, columnName, columnType, columnValue, colName, colValue);
+                            return null;
+                        }
+                    });
 
             }else
             {
@@ -472,13 +503,11 @@ public class QueryParser {
             }
 
 
+        }else
+        {
+            throw new InvalidQueryException("Please select Database first");
         }
 
-    }
-    private void showTable(HashMap<String,ArrayList<String>> tableData)
-    {
-        TableMaker tm = new TableMaker();
-        tm.printTable(tableData);
     }
 
 
