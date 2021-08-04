@@ -1,8 +1,7 @@
 import Utilities.Context;
-import main.java.queries.LockTimeOutException;
-import main.java.queries.TableUtils;
+import main.java.exceptions.LockTimeOutException;
+import Utilities.TableUtils;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 

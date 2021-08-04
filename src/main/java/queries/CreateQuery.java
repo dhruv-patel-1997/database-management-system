@@ -1,9 +1,14 @@
 package main.java.queries;
 
 import Utilities.Context;
+import Utilities.DataDictionaryUtils;
+import Utilities.TableUtils;
+import main.java.dataStructures.Column;
+import main.java.dataStructures.ForeignKey;
+import main.java.dataStructures.PrimaryKey;
+import main.java.exceptions.LockTimeOutException;
 import main.java.logs.GeneralLog;
-import main.java.parsing.InvalidQueryException;
-import main.java.parsing.InvalidQueryException;
+import main.java.exceptions.InvalidQueryException;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -15,7 +20,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class CreateQuery {
-    public boolean createTable(String tableName, LinkedHashMap<String,Column> columns, List<PrimaryKey> primaryKeys, List<ForeignKey> foreignKeys,boolean lockAfterCreate)
+    public boolean createTable(String tableName, LinkedHashMap<String, Column> columns, List<PrimaryKey> primaryKeys, List<ForeignKey> foreignKeys, boolean lockAfterCreate)
             throws IOException, LockTimeOutException, InvalidQueryException {
         //db must set and table can't already exist
         String dbName = Context.getDbName();
@@ -25,7 +30,7 @@ public class CreateQuery {
         LocalTime start=LocalTime.now();
         generalLogger.info("User: "+ Context.getUserName()+" At the start of create table for create query");
         try {
-            generalLogger.info("Database status at the start of create query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+            generalLogger.info("Database status at the start of create query: "+ TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
         } catch (InvalidQueryException exception) {
             exception.printStackTrace();
         }

@@ -1,7 +1,7 @@
 package test.java.queries;
 
 
-import main.java.queries.TableUtils;
+import Utilities.TableUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

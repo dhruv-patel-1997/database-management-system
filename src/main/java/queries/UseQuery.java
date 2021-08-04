@@ -1,8 +1,9 @@
 package main.java.queries;
 
 import Utilities.Context;
+import Utilities.TableUtils;
 import main.java.logs.GeneralLog;
-import main.java.parsing.InvalidQueryException;
+import main.java.exceptions.InvalidQueryException;
 
 import java.time.LocalTime;
 import java.util.logging.Logger;
@@ -12,7 +13,7 @@ public class UseQuery {
         GeneralLog generalLog=new GeneralLog();
         Logger generalLogger=generalLog.setLogger();
         generalLogger.info("User: "+ Context.getUserName()+" At the start of use query");
-        generalLogger.info("Database status at the start of use query: "+TableUtils.getGeneralLogTableInfo(dbName)+"\n");
+        generalLogger.info("Database status at the start of use query: "+ TableUtils.getGeneralLogTableInfo(dbName)+"\n");
         LocalTime start=LocalTime.now();
 
 

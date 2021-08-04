@@ -1,4 +1,4 @@
-package main.java.queries;
+package main.java.exceptions;
 
 public class LockTimeOutException extends Exception{
     public LockTimeOutException(){

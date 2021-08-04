@@ -1,12 +1,11 @@
 package main.java;
 
 import Utilities.Context;
-import main.java.QueryEngine;
 import main.java.logs.QueryLog;
-import main.java.parsing.InvalidQueryException;
+import main.java.exceptions.InvalidQueryException;
 import main.java.parsing.Tokenizer;
-import main.java.queries.LockTimeOutException;
-import main.java.queries.QueryParser;
+import main.java.exceptions.LockTimeOutException;
+import main.java.parsing.QueryParser;
 
 import java.io.*;
 import java.security.MessageDigest;

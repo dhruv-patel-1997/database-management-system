@@ -1,8 +1,12 @@
 package main.java.queries;
 
 import Utilities.Context;
+import Utilities.DataDictionaryUtils;
+import Utilities.TableUtils;
+import main.java.dataStructures.Column;
+import main.java.exceptions.LockTimeOutException;
 import main.java.logs.GeneralLog;
-import main.java.parsing.InvalidQueryException;
+import main.java.exceptions.InvalidQueryException;
 
 import java.io.IOException;
 import java.time.LocalTime;
@@ -13,7 +17,7 @@ public class AddAlterQuery {
         GeneralLog generalLog=new GeneralLog();
         Logger generalLogger=generalLog.setLogger();
         generalLogger.info("User: "+ Context.getUserName()+" At the start of adding column for alter query");
-        generalLogger.info("Database status at the start of alter query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+        generalLogger.info("Database status at the start of alter query: "+ TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
         LocalTime start=LocalTime.now();
         try {
             TableUtils.addEmptyColumnData(tableName,columnName);

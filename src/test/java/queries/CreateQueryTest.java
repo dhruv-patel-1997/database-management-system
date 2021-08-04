@@ -1,7 +1,12 @@
 package test.java.queries;
 
 import Utilities.Context;
-import main.java.parsing.InvalidQueryException;
+import Utilities.DataDictionaryUtils;
+import main.java.dataStructures.Column;
+import main.java.dataStructures.ForeignKey;
+import main.java.dataStructures.PrimaryKey;
+import main.java.exceptions.LockTimeOutException;
+import main.java.exceptions.InvalidQueryException;
 import main.java.queries.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

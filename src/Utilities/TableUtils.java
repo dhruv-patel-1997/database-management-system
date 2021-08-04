@@ -1,7 +1,9 @@
-package main.java.queries;
+package Utilities;
 
 import Utilities.Context;
-import main.java.parsing.InvalidQueryException;
+import Utilities.DataDictionaryUtils;
+import main.java.exceptions.LockTimeOutException;
+import main.java.exceptions.InvalidQueryException;
 
 import java.io.File;
 import java.io.FileNotFoundException;

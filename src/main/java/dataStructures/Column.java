@@ -1,4 +1,6 @@
-package main.java.queries;
+package main.java.dataStructures;
+
+import main.java.dataStructures.ForeignKey;
 
 public class Column {
 

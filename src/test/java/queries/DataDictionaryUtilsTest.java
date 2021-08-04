@@ -2,10 +2,10 @@ package test.java.queries;
 
 import Utilities.Context;
 import main.java.parsing.Token;
-import main.java.queries.Column;
-import main.java.queries.DataDictionaryUtils;
-import main.java.queries.ForeignKey;
-import main.java.queries.LockTimeOutException;
+import main.java.dataStructures.Column;
+import Utilities.DataDictionaryUtils;
+import main.java.dataStructures.ForeignKey;
+import main.java.exceptions.LockTimeOutException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 

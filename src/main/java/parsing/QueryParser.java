@@ -1,12 +1,17 @@
-package main.java.queries;
+package main.java.parsing;
 
 import Utilities.Context;
+import Utilities.DataDictionaryUtils;
 import Utilities.TableMaker;
+import Utilities.TableUtils;
+import main.java.dataStructures.Column;
+import main.java.dataStructures.ForeignKey;
+import main.java.dataStructures.PrimaryKey;
+import main.java.exceptions.LockTimeOutException;
 import main.java.logs.EventLog;
 import main.java.logs.GeneralLog;
-import main.java.parsing.InvalidQueryException;
-import main.java.parsing.Token;
-import main.java.parsing.Tokenizer;
+import main.java.exceptions.InvalidQueryException;
+import main.java.queries.*;
 
 import java.io.*;
 import java.nio.file.Files;
