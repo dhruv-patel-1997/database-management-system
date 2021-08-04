@@ -413,32 +413,36 @@ public class QueryParser {
             //Checks the data type compatibility for the columns which we are updating
             LinkedHashMap<String, Column> columnData = DataDictionaryUtils.getColumns(Context.getDbName(), tableName);
             for(int i = 0; i < columnName.size(); i++) {
-                if(! columnData.get(columnName.get(i)).getDataType().equals(columnType.get(i)))
-                    throw new InvalidQueryException("Invalid data type for column: " + columnName.get(i) + " it should be: "
-                            + columnData.get(columnName.get(i)).getDataType() + " You have passed: "
-                            + columnType.get(i));
-                //checks primary key constraint
-                if(columnData.get(columnName.get(i)).isPrimaryKey()) {
-                    ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(), tableName, new ArrayList<String>(Arrays.asList(columnName.get(i)))).get(columnName.get(i));
-                    if(columnValues != null && columnValues.contains(columnValue.get(i))) {
-                        //value is already present
-                        throw new InvalidQueryException("Primary key constraint fails: " + columnValue.get(i) + "is already present in table");
-                    }
-                }//checks null key constraint
-                if(! columnData.get(columnName.get(i)).getAllowNulls()) {
-                    if(columnValue.get(i) == null)
-                        throw new InvalidQueryException("Null values not allowed for column: " + columnName.get(i));
-                }//checks foreign key constraint
-                if(columnData.get(columnName.get(i)).getForeignKey() != null) {
-                    System.out.println(columnData.get(columnName.get(i)).getColName() + " is fk with val " + columnValue.get(i));
-                    String refTable = columnData.get(columnName.get(i)).getForeignKey().getReferencedTable();
-                    String refColumn = columnData.get(columnName.get(i)).getForeignKey().getReferencedColumn();
-                    ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(), refTable, new ArrayList<String>(Arrays.asList(refColumn))).get(refColumn);
-                    if((columnValues == null || ! columnValues.contains(columnValue.get(i)))) {
-                        //value is not present
-                        throw new InvalidQueryException("Foreign key constraint fails: " + columnValue.get(i) + " not present in referenced column");
+                if(columnData.get(columnName) != null) {
+                    if(! columnData.get(columnName.get(i)).getDataType().equals(columnType.get(i)))
+                        throw new InvalidQueryException("Invalid data type for column: " + columnName.get(i) + " it should be: "
+                                + columnData.get(columnName.get(i)).getDataType() + " You have passed: "
+                                + columnType.get(i));
+                    //checks primary key constraint
+                    if(columnData.get(columnName.get(i)).isPrimaryKey()) {
+                        ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(), tableName, new ArrayList<String>(Arrays.asList(columnName.get(i)))).get(columnName.get(i));
+                        if(columnValues != null && columnValues.contains(columnValue.get(i))) {
+                            //value is already present
+                            throw new InvalidQueryException("Primary key constraint fails: " + columnValue.get(i) + "is already present in table");
+                        }
+                    }//checks null key constraint
+                    if(! columnData.get(columnName.get(i)).getAllowNulls()) {
+                        if(columnValue.get(i) == null)
+                            throw new InvalidQueryException("Null values not allowed for column: " + columnName.get(i));
+                    }//checks foreign key constraint
+                    if(columnData.get(columnName.get(i)).getForeignKey() != null) {
+                        System.out.println(columnData.get(columnName.get(i)).getColName() + " is fk with val " + columnValue.get(i));
+                        String refTable = columnData.get(columnName.get(i)).getForeignKey().getReferencedTable();
+                        String refColumn = columnData.get(columnName.get(i)).getForeignKey().getReferencedColumn();
+                        ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(), refTable, new ArrayList<String>(Arrays.asList(refColumn))).get(refColumn);
+                        if((columnValues == null || ! columnValues.contains(columnValue.get(i)))) {
+                            //value is not present
+                            throw new InvalidQueryException("Foreign key constraint fails: " + columnValue.get(i) + " not present in referenced column");
+                        }
                     }
                 }
+                else
+                    throw new InvalidQueryException("Column does not exist: "+columnName.get(i));
             }
             //Getting condition -> "WHERE A="abc;"
             token = tokenizer.next();

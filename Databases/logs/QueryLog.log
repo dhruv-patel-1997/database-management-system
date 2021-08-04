@@ -569,3 +569,18 @@ INFO: In Query log
 Aug 04, 2021 9:46:07 AM main.java.QueryClass getQueries
 INFO: User Name: harit_patwa
 Query: update employ3e set empId='100' where empName='Rahul';
+Aug 04, 2021 9:52:44 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 9:52:44 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 04, 2021 9:54:42 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 9:54:42 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 04, 2021 9:55:28 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 04, 2021 9:55:28 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update employee set emplId=10 where empName='Ebd';

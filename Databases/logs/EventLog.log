@@ -4,3 +4,6 @@ Reason: Please select Database first
 Aug 04, 2021 9:46:07 AM main.java.exceptions.InvalidQueryException <init>
 INFO: Query Crashed for User: harit_patwa.
 Reason: Invalid table name, no table exist with given name: employ3e
+Aug 04, 2021 9:55:28 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: harit_patwa.
+Reason: Column does not exist: emplId
