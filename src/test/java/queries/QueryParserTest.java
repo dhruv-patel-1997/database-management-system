@@ -3,6 +3,7 @@ package test.java.queries;
 import Utilities.Context;
 import main.java.parsing.InvalidQueryException;
 import main.java.parsing.Tokenizer;
+import main.java.queries.DataDictionaryUtils;
 import main.java.queries.LockTimeOutException;
 import main.java.queries.QueryParser;
 import main.java.queries.TableUtils;
@@ -16,8 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class QueryParserTest {
     String dbName = "parseTestDB";
@@ -38,6 +38,8 @@ public class QueryParserTest {
                 "    City varchar(255)\n" +
                 ");"));
         parser.parse();
+        parser = new QueryParser(new Tokenizer("insert into Persons values (0,\"x\",\"x\",\"x\",\"x\");"));
+        parser.parse();
         //create test table and db and use db.
     }
 
@@ -54,12 +56,29 @@ public class QueryParserTest {
     public void transactionQueryInvalidQueryFails(){
 
         //transaction interrupted  check original state is restored
+        fail();
     }
 
     @Test
-    public void transactionQueryLockTimeoutFails(){
+    public void transactionQueryLockTimeoutFails() throws LockTimeOutException, IOException, InvalidQueryException {
         // table needed by the transaction is already locked, transaction cant execute
         //check nothing has changed
+        Context.incrTransactionId();
+        DataDictionaryUtils.lockTable(dbName,"Persons");
+        String input = "Start transaction: insert into Persons values (100,\"x\",\"x\",\"x\",\"x\");" +
+                "update Persons set PersonID = 101 where PersonID = 0;" +
+                "commit;";
+        QueryParser parser = new QueryParser(new Tokenizer(input));
+        try {
+            parser.parse(); //parser will generate a new transaction ID before executing
+            fail();
+        } catch (LockTimeOutException e) {
+            e.printStackTrace();
+            HashMap<String, ArrayList<String>> columns = TableUtils.getColumns(dbName,"Persons", new ArrayList<String>(Arrays.asList("PersonID")));
+            assertFalse(columns.get("PersonID").contains("101"));
+            assertFalse(columns.get("PersonID").contains("100"));
+            assertTrue(columns.get("PersonID").contains("0"));
+        }
     }
 
     @Test
@@ -67,13 +86,15 @@ public class QueryParserTest {
         // table needed by the transaction is already locked, transaction cant execute
         //check nothing has changed
         //make sure table has been deleted
+        fail();
     }
 
     @Test
-    public void transactionQueryWithCreateDatabaseFails(){
+    public void transactionQueryWithCreateDatabaseFails() throws LockTimeOutException, IOException, InvalidQueryException {
         // table needed by the transaction is already locked, transaction cant execute
         //check nothing has changed
         //make sure Database has been deleted
+        fail();
     }
 
     @Test
@@ -86,7 +107,8 @@ public class QueryParserTest {
         try {
             parser.parse();
             HashMap<String, ArrayList<String>> columns = TableUtils.getColumns(dbName,"Persons", new ArrayList<String>(Arrays.asList("PersonID")));
-            assertTrue(columns.get("PersonID").contains("100") && !columns.get("PersonID").contains("101"));
+            assertTrue(columns.get("PersonID").contains("101"));
+            assertTrue(!columns.get("PersonID").contains("100"));
         } catch (InvalidQueryException | IOException | LockTimeOutException e) {
             e.printStackTrace();
             fail();

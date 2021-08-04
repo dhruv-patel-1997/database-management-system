@@ -26,6 +26,7 @@ public class InsertQueryTest {
 
     @BeforeEach
     public void init() throws IOException, LockTimeOutException, InvalidQueryException {
+        Context.setUserName("1");
         new CreateQuery().createDatabase(dbName);
         Context.setDbName(dbName);
 
@@ -74,6 +75,7 @@ public class InsertQueryTest {
     @Test
     public void insertWithColsSuccess() throws IOException, LockTimeOutException, InvalidQueryException {
         assertTrue(query.insert(tableName,colNames,sampleVals));
+        assertTrue(TableUtils.getColumns(dbName,tableName).get("col2").contains("10"));
     }
 
     @Test
@@ -128,8 +130,10 @@ public class InsertQueryTest {
         List<String> cols = Arrays.asList("col1","col2");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.STRING,"\"val\""));
-        vals.add(new Token(Token.Type.INTLITERAL,"10"));
+        vals.add(new Token(Token.Type.INTLITERAL,"11"));
         assertTrue(query.insert(tableName,cols,vals));
+        assertTrue(TableUtils.getColumns(dbName,tableName).get("col2").contains("11"));
+
     }
 
     @Test
@@ -137,9 +141,11 @@ public class InsertQueryTest {
         List<String> cols = Arrays.asList("col1","col2","col3");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.STRING,"\"val\""));
-        vals.add(new Token(Token.Type.INTLITERAL,"10"));
+        vals.add(new Token(Token.Type.INTLITERAL,"11"));
         vals.add(new Token(Token.Type.NULL,"NULL"));
         assertTrue(query.insert(tableName,cols,vals));
+        assertTrue(TableUtils.getColumns(dbName,tableName).get("col2").contains("11"));
+
     }
 
     @Test
@@ -163,7 +169,7 @@ public class InsertQueryTest {
         vals.add(new Token(Token.Type.STRING,"\"val\""));
         vals.add(new Token(Token.Type.STRING,"not a number"));
         try {
-            assertFalse(query.insert(tableName,cols,vals));
+            query.insert(tableName,cols,vals);
             fail();
         } catch (InvalidQueryException e) {
             e.printStackTrace();
@@ -185,6 +191,7 @@ public class InsertQueryTest {
     @Test
     public void primaryKeyValueNotAlreadyPresent() throws IOException, LockTimeOutException, InvalidQueryException {
         assertTrue(query.insert(tableName,colNames,sampleVals));
+        assertTrue(TableUtils.getColumns(dbName,tableName).get("col2").contains("10"));
     }
 
     @Test
@@ -213,6 +220,7 @@ public class InsertQueryTest {
         } catch (InvalidQueryException e) {
             e.printStackTrace();
         }
+        fail(); //wrong error
     }
 
     @Test
@@ -220,9 +228,9 @@ public class InsertQueryTest {
         List<String> cols = Arrays.asList("col1","col2","col5");
         List<Token> vals = new ArrayList<>();
         vals.add(new Token(Token.Type.STRING,"\"val\""));
-        vals.add(new Token(Token.Type.INTLITERAL,"10"));
+        vals.add(new Token(Token.Type.INTLITERAL,"11"));
         vals.add(new Token(Token.Type.STRING,"\"val\""));
         assertTrue(query.insert(tableName,cols,vals));
-        System.out.println("break");
+        assertTrue(TableUtils.getColumns(dbName,tableName).get("col2").contains("11"));
     }
 }

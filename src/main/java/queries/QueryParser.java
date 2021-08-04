@@ -97,7 +97,9 @@ public class QueryParser {
 
         //get new transaction ID
         Context.incrTransactionId();
-
+if (isTransaction){
+    System.out.println("test");
+}
         //Lock tables
         HashMap<String,String> backup = new HashMap<>();
         for (String table: tablesToLock){

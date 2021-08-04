@@ -3,7 +3,6 @@ package main.java.queries;
 import Utilities.Context;
 import main.java.logs.GeneralLog;
 import main.java.parsing.InvalidQueryException;
-import main.java.parsing.InvalidQueryException;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -67,6 +66,8 @@ public class CreateQuery {
                     exception.printStackTrace();
                 }
 
+                //Executing create table
+                createTable(tableName, new ArrayList<>(columns.values()),lockAfterCreate);
 
                 LocalTime end=LocalTime.now();
                 int diff=end.getNano()-start.getNano();
@@ -76,8 +77,6 @@ public class CreateQuery {
                     exception.printStackTrace();
                 }
                 generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for create query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
-                //Query can be executed!
-                createTable(tableName, new ArrayList<>(columns.values()),lockAfterCreate);
                 return true;
             } else {
                 System.out.println("Table already exists in database "+dbName);
@@ -118,14 +117,21 @@ public class CreateQuery {
             Logger generalLogger=generalLog.setLogger();
             LocalTime start=LocalTime.now();
             generalLogger.info("User: "+ Context.getUserName()+" At the start of creating database for create query");
-            generalLogger.info("Database status at the start of create query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+            if (Context.getDbName()==null){
+                generalLogger.info("Database status at the start of create query: Database has not been assigned \n");
+            } else {
+                generalLogger.info("Database status at the start of create query: " + TableUtils.getGeneralLogTableInfo(Context.getDbName()) + "\n");
+            }
+
+            //Creating database and assigning it to use
+            db.mkdir();
+            Context.setDbName(dbName);
+
             LocalTime end=LocalTime.now();
             int diff=end.getNano()-start.getNano();
             generalLogger.info("Database status at the end of create query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
             generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for create query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
             System.out.println("creating database "+dbName);
-            db.mkdir();
-            Context.setDbName(dbName);
             return true;
         } else {
             throw new InvalidQueryException("Database already exists");

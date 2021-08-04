@@ -23,7 +23,7 @@ public class DataDictionaryUtils {
   public static LinkedHashMap<String, Column> getColumns(String dbName, String tableName) throws LockTimeOutException, IOException {
       File file = new File("Databases/" + dbName + "/dd_" + tableName + ".txt");
       if (file.exists()){
-          lockTable(dbName,tableName);
+          //lockTable(dbName,tableName);
           Scanner sc = null;
           try {
               sc = new Scanner(file);
@@ -58,7 +58,7 @@ public class DataDictionaryUtils {
             columns.put(colName, column);
           }
           sc.close();
-          unlockTable(dbName,tableName);
+         // unlockTable(dbName,tableName);
           return columns;
       }
       return null;
@@ -98,7 +98,7 @@ public class DataDictionaryUtils {
     String fileName = "Databases/" + dbName + "/dd_" + tableName + ".txt";
     File file = new File(fileName);
     if(file.exists()) {
-        lockTable(dbName,tableName);
+        //lockTable(dbName,tableName);
       FileWriter fileWriter = new FileWriter(fileName, true);
 
       StringBuilder stringBuilder = new StringBuilder();
@@ -114,7 +114,7 @@ public class DataDictionaryUtils {
       stringBuilder.append("\n");
       fileWriter.write(stringBuilder.toString());
       fileWriter.close();
-        unlockTable(dbName,tableName);
+       // unlockTable(dbName,tableName);
     } else {
       throw new FileNotFoundException();
     }
@@ -124,7 +124,7 @@ public class DataDictionaryUtils {
     String fileName = "Databases/" + dbName + "/dd_" + tableName + ".txt";
     File file = new File(fileName);
     if(file.exists()) {
-        lockTable(dbName,tableName);
+        //lockTable(dbName,tableName);
       Scanner sc = new Scanner(file);
       StringBuilder stringBuilder = new StringBuilder();
       String row;
@@ -138,7 +138,7 @@ public class DataDictionaryUtils {
       FileWriter fileWriter = new FileWriter(file);
       fileWriter.append(stringBuilder.toString());
       fileWriter.close();
-        unlockTable(dbName,tableName);
+        //unlockTable(dbName,tableName);
     }
   }
 
@@ -146,7 +146,7 @@ public class DataDictionaryUtils {
         String fileName = "Databases/"+dbName+"/dd_"+tableName+".txt";
         File file = new File (fileName);
         if (file.exists()) {
-            lockTable(dbName,tableName);
+            //lockTable(dbName,tableName);
             file.delete();
         }
     }

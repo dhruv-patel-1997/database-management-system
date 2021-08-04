@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 public class InsertQuery {
 
     public boolean insert(String tableName, List<String> cols, List<Token> vals) throws LockTimeOutException, IOException, InvalidQueryException {
+        String message = "";
         //db must set
         String dbName = Context.getDbName();
         if (dbName != null && (new File(Context.getDbPath())).isDirectory()){
@@ -33,7 +34,7 @@ public class InsertQuery {
                 int columnPresentInTableCount = 0;
                 for (Column destination: destinationColumns.values()){
                     Token value = null;
-                    if (cols != null){
+                    if (cols != null && !cols.isEmpty()){
                         //columns are given in query
                         for (int columnIndex = 0; columnIndex < cols.size(); columnIndex++){
                             if (destination.getColName().equalsIgnoreCase(cols.get(columnIndex))){
@@ -72,13 +73,13 @@ public class InsertQuery {
                         ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(),tableName,new ArrayList<String>(Arrays.asList(destination.getColName()))).get(destination.getColName());
                         if (columnValues != null && columnValues.contains(value.getStringValue())){
                             //value is already present
-                            throw new InvalidQueryException("Primary key constraint fails: "+value+ "is already present in table");
+                            throw new InvalidQueryException("Primary key constraint fails: "+value.getStringValue()+ " is already present in table");
                         }
                     }
 
                     //if column is a foreign key, value must exist in referenced table
                     if (destination.getForeignKey() != null){
-                        System.out.println(destination.getColName()+" is fk with val "+value.getStringValue());
+                        //System.out.println(destination.getColName()+" is fk with val "+value.getStringValue());
                         String refTable = destination.getForeignKey().getReferencedTable();
                         String refColumn = destination.getForeignKey().getReferencedColumn();
                         ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(),refTable,new ArrayList<String>(Arrays.asList(refColumn))).get(refColumn);
@@ -96,26 +97,29 @@ public class InsertQuery {
                 GeneralLog generalLog=new GeneralLog();
                 Logger generalLogger=generalLog.setLogger();
                 LocalTime start=LocalTime.now();
-                generalLogger.info("User: "+ Context.getUserName()+" At the start of alter query");
+                generalLogger.info("User: "+ Context.getUserName()+" At the start of insert query");
                 generalLogger.info("Database status at the start of insert query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
+
+                //Executing insert query
+                System.out.println("Inserting row");
+                TableUtils.insertRow(Context.getDbName(),tableName,insertData);
+
                 LocalTime end=LocalTime.now();
                 int diff=end.getNano()-start.getNano();
                 generalLogger.info("Database status at the end of insert query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
                 generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for insert query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
-                System.out.println("Inserting row");
-                TableUtils.insertRow(Context.getDbName(),tableName,insertData);
                 return true;
 
             } else {
-                System.out.println("Table "+tableName+" does not exist in database "+dbName);
+               message = "Table "+tableName+" does not exist in database "+dbName;
             }
         } else {
             if (dbName == null) {
-                System.out.println("No database has been selected, please enter USE query");
+                message = "No database has been selected, please enter USE query";
             } else {
-                System.out.println("Database " + dbName + " does not exist");
+                message = "Database " + dbName + " does not exist";
             }
         }
-        throw new InvalidQueryException("Invalid SELECT query");
+        throw new InvalidQueryException(message);
     }
 }

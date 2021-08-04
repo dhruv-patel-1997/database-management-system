@@ -22,7 +22,7 @@ public class TableUtils {
      return file.exists();
    }*/
   public static HashMap<String, ArrayList<String>> getColumns(String dbName, String tableName, ArrayList<String> columns) throws IOException, LockTimeOutException {
-    DataDictionaryUtils.lockTable(dbName,tableName);
+  //  DataDictionaryUtils.lockTable(dbName,tableName);
     if(Context.setDbName(dbName) && Context.isTableExist(tableName)) {
       File file = new File("Databases/" + dbName + "/" + tableName + ".txt");
       Scanner sc = new Scanner(file);
@@ -45,13 +45,13 @@ public class TableUtils {
 
       }
       sc.close();
-      DataDictionaryUtils.unlockTable(dbName,tableName);
+      //DataDictionaryUtils.unlockTable(dbName,tableName);
       return totalColumn;
     }
     return null;
   }
   public static HashMap<String, ArrayList<String>> getColumns(String dbName, String tableName) throws IOException, LockTimeOutException {
-    DataDictionaryUtils.lockTable(dbName,tableName);
+    //DataDictionaryUtils.lockTable(dbName,tableName);
     if(Context.setDbName(dbName) && Context.isTableExist(tableName)) {
       File file = new File("Databases/" + dbName + "/" + tableName + ".txt");
       Scanner sc = new Scanner(file);
@@ -68,10 +68,10 @@ public class TableUtils {
         totalColumn.put(columnDetails[0], columnList);
       }
       sc.close();
-      DataDictionaryUtils.unlockTable(dbName,tableName);
+   //   DataDictionaryUtils.unlockTable(dbName,tableName);
       return totalColumn;
     }
-    DataDictionaryUtils.unlockTable(dbName,tableName);
+   // DataDictionaryUtils.unlockTable(dbName,tableName);
     return null;
   }
 
@@ -112,6 +112,9 @@ public class TableUtils {
       if(totalColumn != null){
         for (Map.Entry mapElement : totalColumn.entrySet()) {
           String key = (String) mapElement.getKey();
+          if (totalColumn.get(key).isEmpty()){
+            return 0;
+          }
           return totalColumn.get(key).get(0).length();
         }
       }
@@ -156,7 +159,9 @@ public class TableUtils {
 
   private static ArrayList<String> listFilesForFolder(final File folder) {
     ArrayList<String> files=new ArrayList<>();
-    if(folder.listFiles().length!=0){
+    if (folder.listFiles() == null || folder.listFiles().length == 0) {
+      return null;
+    } else {
       for (final File fileEntry : folder.listFiles()) {
         if (fileEntry.isDirectory()) {
           listFilesForFolder(fileEntry);
@@ -166,9 +171,6 @@ public class TableUtils {
           }
         }
       }
-    }
-    else{
-      return null;
     }
     return files;
   }
@@ -312,7 +314,7 @@ public class TableUtils {
 
   }
   public static boolean updateHashMap(String dbName,String tableName,ArrayList<String> columnName,ArrayList<String> columnType,ArrayList<String> columnValue,String colName,String colValue) throws IOException, LockTimeOutException {
-   DataDictionaryUtils.lockTable(dbName,tableName);
+   //DataDictionaryUtils.lockTable(dbName,tableName);
     HashMap<String,ArrayList<String>> tableData = getColumns(dbName,tableName);
     ArrayList<Integer> indexes = new ArrayList<>();
     for(int i=0;i<tableData.get(colName).size();i++)
@@ -327,7 +329,7 @@ public class TableUtils {
       }
     }
     insertTableData(dbName,tableName,tableData);
-    DataDictionaryUtils.unlockTable(dbName,tableName);
+  //  DataDictionaryUtils.unlockTable(dbName,tableName);
     return true;
   }
 
