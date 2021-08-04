@@ -1,7 +1,11 @@
 package main.java.queries;
 import Utilities.Context;
+import Utilities.DataDictionaryUtils;
+import Utilities.TableUtils;
+import main.java.dataStructures.Column;
+import main.java.exceptions.LockTimeOutException;
 import main.java.logs.GeneralLog;
-import main.java.parsing.InvalidQueryException;
+import main.java.exceptions.InvalidQueryException;
 import main.java.parsing.Token;
 
 import java.io.File;
@@ -18,7 +22,7 @@ public class InsertQuery {
         String dbName = Context.getDbName();
         if (dbName != null && (new File(Context.getDbPath())).isDirectory()){
             //table must exist in db
-            LinkedHashMap<String,Column> destinationColumns = DataDictionaryUtils.getColumns(dbName,tableName);
+            LinkedHashMap<String, Column> destinationColumns = DataDictionaryUtils.getColumns(dbName,tableName);
             if (destinationColumns != null){
                 if (cols == null || cols.isEmpty()){
                     //if no columns given then value count must equal column count in table

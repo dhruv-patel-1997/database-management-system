@@ -1,4 +1,4 @@
-package main.java.queries;
+package main.java.dataStructures;
 
 public class ForeignKey {
     private final String colname;

@@ -1,7 +1,9 @@
-package main.java.queries;
+package Utilities;
 
 import Utilities.Context;
-import main.java.parsing.InvalidQueryException;
+import Utilities.DataDictionaryUtils;
+import main.java.exceptions.LockTimeOutException;
+import main.java.exceptions.InvalidQueryException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -112,10 +114,10 @@ public class TableUtils {
       if(totalColumn != null){
         for (Map.Entry mapElement : totalColumn.entrySet()) {
           String key = (String) mapElement.getKey();
-          if (totalColumn.get(key).isEmpty()){
+          if(!totalColumn.get(key).isEmpty())
+            return totalColumn.get(key).get(0).length();
+          else
             return 0;
-          }
-          return totalColumn.get(key).get(0).length();
         }
       }
       return 0;

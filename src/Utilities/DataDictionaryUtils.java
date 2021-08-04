@@ -1,6 +1,9 @@
-package main.java.queries;
+package Utilities;
 
 import Utilities.Context;
+import main.java.dataStructures.Column;
+import main.java.dataStructures.ForeignKey;
+import main.java.exceptions.LockTimeOutException;
 import main.java.parsing.Token;
 
 import java.io.File;

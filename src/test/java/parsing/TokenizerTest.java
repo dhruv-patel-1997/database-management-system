@@ -1,6 +1,6 @@
 package test.java.parsing;
 
-import main.java.parsing.InvalidQueryException;
+import main.java.exceptions.InvalidQueryException;
 import main.java.parsing.Token;
 import main.java.parsing.Tokenizer;
 import org.junit.jupiter.api.Test;

@@ -1,12 +1,17 @@
-package main.java.queries;
+package main.java.parsing;
 
 import Utilities.Context;
+import Utilities.DataDictionaryUtils;
 import Utilities.TableMaker;
+import Utilities.TableUtils;
+import main.java.dataStructures.Column;
+import main.java.dataStructures.ForeignKey;
+import main.java.dataStructures.PrimaryKey;
+import main.java.exceptions.LockTimeOutException;
 import main.java.logs.EventLog;
 import main.java.logs.GeneralLog;
-import main.java.parsing.InvalidQueryException;
-import main.java.parsing.Token;
-import main.java.parsing.Tokenizer;
+import main.java.exceptions.InvalidQueryException;
+import main.java.queries.*;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -401,35 +406,45 @@ public class QueryParser {
                     throw new InvalidQueryException("Invalid syntax for UPDATE TABLE query3");
                 token = tokenizer.next();
             }
+
+            if(!Context.isTableExist(tableName))
+            {
+                throw new InvalidQueryException("Invalid table name, no table exist with given name: "+tableName);
+            }
+
             //Checks the data type compatibility for the columns which we are updating
             LinkedHashMap<String, Column> columnData = DataDictionaryUtils.getColumns(Context.getDbName(), tableName);
             for(int i = 0; i < columnName.size(); i++) {
-                if(! columnData.get(columnName.get(i)).getDataType().equals(columnType.get(i)))
-                    throw new InvalidQueryException("Invalid data type for column: " + columnName.get(i) + " it should be: "
-                            + columnData.get(columnName.get(i)).getDataType() + " You have passed: "
-                            + columnType.get(i));
-                //checks primary key constraint
-                if(columnData.get(columnName.get(i)).isPrimaryKey()) {
-                    ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(), tableName, new ArrayList<String>(Arrays.asList(columnName.get(i)))).get(columnName.get(i));
-                    if(columnValues != null && columnValues.contains(columnValue.get(i))) {
-                        //value is already present
-                        throw new InvalidQueryException("Primary key constraint fails: " + columnValue.get(i) + "is already present in table");
-                    }
-                }//checks null key constraint
-                if(! columnData.get(columnName.get(i)).getAllowNulls()) {
-                    if(columnValue.get(i) == null)
-                        throw new InvalidQueryException("Null values not allowed for column: " + columnName.get(i));
-                }//checks foreign key constraint
-                if(columnData.get(columnName.get(i)).getForeignKey() != null) {
-                    System.out.println(columnData.get(columnName.get(i)).getColName() + " is fk with val " + columnValue.get(i));
-                    String refTable = columnData.get(columnName.get(i)).getForeignKey().getReferencedTable();
-                    String refColumn = columnData.get(columnName.get(i)).getForeignKey().getReferencedColumn();
-                    ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(), refTable, new ArrayList<String>(Arrays.asList(refColumn))).get(refColumn);
-                    if((columnValues == null || ! columnValues.contains(columnValue.get(i)))) {
-                        //value is not present
-                        throw new InvalidQueryException("Foreign key constraint fails: " + columnValue.get(i) + " not present in referenced column");
+                if(columnData.get(columnName) != null) {
+                    if(! columnData.get(columnName.get(i)).getDataType().equals(columnType.get(i)))
+                        throw new InvalidQueryException("Invalid data type for column: " + columnName.get(i) + " it should be: "
+                                + columnData.get(columnName.get(i)).getDataType() + " You have passed: "
+                                + columnType.get(i));
+                    //checks primary key constraint
+                    if(columnData.get(columnName.get(i)).isPrimaryKey()) {
+                        ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(), tableName, new ArrayList<String>(Arrays.asList(columnName.get(i)))).get(columnName.get(i));
+                        if(columnValues != null && columnValues.contains(columnValue.get(i))) {
+                            //value is already present
+                            throw new InvalidQueryException("Primary key constraint fails: " + columnValue.get(i) + "is already present in table");
+                        }
+                    }//checks null key constraint
+                    if(! columnData.get(columnName.get(i)).getAllowNulls()) {
+                        if(columnValue.get(i) == null)
+                            throw new InvalidQueryException("Null values not allowed for column: " + columnName.get(i));
+                    }//checks foreign key constraint
+                    if(columnData.get(columnName.get(i)).getForeignKey() != null) {
+                        System.out.println(columnData.get(columnName.get(i)).getColName() + " is fk with val " + columnValue.get(i));
+                        String refTable = columnData.get(columnName.get(i)).getForeignKey().getReferencedTable();
+                        String refColumn = columnData.get(columnName.get(i)).getForeignKey().getReferencedColumn();
+                        ArrayList<String> columnValues = TableUtils.getColumns(Context.getDbName(), refTable, new ArrayList<String>(Arrays.asList(refColumn))).get(refColumn);
+                        if((columnValues == null || ! columnValues.contains(columnValue.get(i)))) {
+                            //value is not present
+                            throw new InvalidQueryException("Foreign key constraint fails: " + columnValue.get(i) + " not present in referenced column");
+                        }
                     }
                 }
+                else
+                    throw new InvalidQueryException("Column does not exist: "+columnName.get(i));
             }
             //Getting condition -> "WHERE A="abc;"
             token = tokenizer.next();
@@ -456,14 +471,14 @@ public class QueryParser {
             }
             token = tokenizer.next();
             if((token.getType() == Token.Type.SEMICOLON) && Context.isTableExist(tableName)) {
-                tablesToLock.add(tableName);//Parsing ends here
-                queries.add(new Callable() {
-                    @Override
-                    public Object call() throws IOException, LockTimeOutException {//Execution starts here
-                        TableUtils.updateHashMap(Context.getDbName(), tableName, columnName, columnType, columnValue, colName, colValue);
-                        return null;
-                    }
-                });
+                    tablesToLock.add(tableName);//Parsing ends here
+                    queries.add(new Callable() {
+                        @Override
+                        public Object call() throws IOException, LockTimeOutException {//Execution starts here
+                            TableUtils.updateHashMap(Context.getDbName(), tableName, columnName, columnType, columnValue, colName, colValue);
+                            return null;
+                        }
+                    });
 
             }else
             {
@@ -471,6 +486,9 @@ public class QueryParser {
             }
 
 
+        }else
+        {
+            throw new InvalidQueryException("Please select Database first");
         }
 
     }
@@ -968,9 +986,11 @@ public class QueryParser {
                 erd.createNewFile();
                 FileWriter myWriter = new FileWriter("Databases/erd/" + dbName + "/erd.txt");
                 String dd_data = "";
-                for(String s:dd_tables){
-                    s=s.split("\\.")[0];
-                    dd_data+="Table: "+s+"\n"+readAllBytesJava7("Databases/" + dbName + "/" + s + ".txt")+"\n\n";
+                if(!dd_tables.isEmpty()){
+                    for(String s:dd_tables){
+                        s=s.split("\\.")[0];
+                        dd_data+="Table: "+s+"\n"+readAllBytesJava7("Databases/" + dbName + "/" + s + ".txt")+"\n\n";
+                    }
                 }
                 for (String t : tables) {
                     t = t.split("\\.")[0];

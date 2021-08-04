@@ -1,5 +1,7 @@
 package main.java.parsing;
 
+import main.java.exceptions.InvalidQueryException;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

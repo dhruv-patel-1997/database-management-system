@@ -1,22 +1,24 @@
 package main.java.queries;
 
 import Utilities.Context;
+import Utilities.TableUtils;
 import main.java.logs.GeneralLog;
-import main.java.parsing.InvalidQueryException;
+import main.java.exceptions.InvalidQueryException;
 
 import java.time.LocalTime;
 import java.util.logging.Logger;
 
 public class UseQuery {
     public boolean useDataBase(String dbName) throws InvalidQueryException {
+        GeneralLog generalLog=new GeneralLog();
+        Logger generalLogger=generalLog.setLogger();
+        generalLogger.info("User: "+ Context.getUserName()+" At the start of use query");
+        generalLogger.info("Database status at the start of use query: "+ TableUtils.getGeneralLogTableInfo(dbName)+"\n");
+        LocalTime start=LocalTime.now();
 
 
         if(Context.setDbName(dbName)){
-            GeneralLog generalLog=new GeneralLog();
-            Logger generalLogger=generalLog.setLogger();
-            generalLogger.info("User: "+ Context.getUserName()+" At the start of use query");
-            generalLogger.info("Database status at the start of use query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
-            LocalTime start=LocalTime.now();
+
             LocalTime end=LocalTime.now();
             int diff=end.getNano()-start.getNano();
             generalLogger.info("Database status at the end of use query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
