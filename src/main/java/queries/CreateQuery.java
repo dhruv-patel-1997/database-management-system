@@ -13,6 +13,7 @@ import main.java.exceptions.InvalidQueryException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -134,7 +135,7 @@ public class CreateQuery {
             Context.setDbName(dbName);
 
             LocalTime end=LocalTime.now();
-            int diff=end.getNano()-start.getNano();
+            int diff = Duration.between(end,start).getNano();
             generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for create query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
             System.out.println("creating database "+dbName);
             return true;

@@ -51,3 +51,23 @@ INFO: User harit_patwa created database university
 Aug 05, 2021 9:55:20 AM main.java.exceptions.InvalidQueryException <init>
 INFO: Query Crashed for User: harit_patwa.
 Reason: Invalid syntax for SELECT TABLE query expecting FROM and IDENTIFIER
+Aug 05, 2021 7:04:54 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Please select database first.
+Aug 05, 2021 7:04:54 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Query was not successful
+Aug 05, 2021 7:04:54 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Transaction failed, database restored to prior state
+Aug 05, 2021 7:07:26 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Transaction failed, database restored to prior state
+Aug 05, 2021 7:07:53 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Transaction failed, database restored to prior state
+Aug 05, 2021 7:11:13 AM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Invalid syntax for ALTER query
+Aug 05, 2021 7:18:15 AM main.java.parsing.QueryParser$9 call
+INFO: User null deleted database Database1

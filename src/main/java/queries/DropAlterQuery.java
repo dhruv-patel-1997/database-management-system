@@ -9,6 +9,7 @@ import main.java.logs.GeneralLog;
 import main.java.exceptions.InvalidQueryException;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class DropAlterQuery {
                 DataDictionaryUtils.dropDictionaryColumn(Context.getDbName(),tableName,columnName);
                 LocalTime end=LocalTime.now();
 
-                int diff=end.getNano()-start.getNano();
+                int diff = Duration.between(end,start).getNano();
                 generalLogger.info("Database status at the end of alter query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
                 generalLogger.info("User: "+Context.getUserName()+"\nAt the end of drop for alter query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
                 return true;

@@ -24,3 +24,27 @@ CREATE TABLE employees (    empName varchar(255),    empAddress varchar(255),   
 INSERT INTO employees(empName, empAddress, empId, empSalary, empIsVaccinated)VALUES ('Employee1', 'Address1', 'ep1', 131, true);
 INSERT INTO employees(empName, empAddress, empId, empSalary, empIsVaccinated)VALUES ('Employee2', 'Address2', 'ep2', 132, true);
 INSERT INTO employees(empName, empAddress, empId, empSalary, empIsVaccinated)VALUES ('Employee3', 'Address3', 'ep3', 133, true);
+Create table department (
+deptID varchar(255),
+deptName varchar(255),
+primary Key (deptID));
+
+
+insert Into department values ('CSCI', 'computer science');
+
+
+alter table department drop column deptId;
+
+
+alter table department drop column deptName;
+
+
+alter table department add column deptStatus varchar(255);
+
+
+alter table department add deptStatus varchar(255);
+
+
+insert Into department values ('ENG', 'engineering');
+
+

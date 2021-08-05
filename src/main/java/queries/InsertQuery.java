@@ -10,6 +10,7 @@ import main.java.parsing.Token;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.logging.Logger;
@@ -109,7 +110,7 @@ public class InsertQuery {
                 TableUtils.insertRow(Context.getDbName(),tableName,insertData);
 
                 LocalTime end=LocalTime.now();
-                int diff=end.getNano()-start.getNano();
+                int diff = Duration.between(end,start).getNano();
                 generalLogger.info("Database status at the end of insert query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
                 generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for insert query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
                 return true;

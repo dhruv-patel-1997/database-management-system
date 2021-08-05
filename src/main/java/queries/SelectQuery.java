@@ -8,6 +8,7 @@ import main.java.exceptions.LockTimeOutException;
 import main.java.logs.GeneralLog;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class SelectQuery {
     HashMap<String, ArrayList<String>> data =TableUtils.getColumnsForEquals(Context.getDbName(), tableName, colName, finalColumnValue, operand);
 
     LocalTime end=LocalTime.now();
-    int diff=end.getNano()-start.getNano();
+    int diff = Duration.between(end,start).getNano();
     generalLogger.info("Database status at the end of SELECT query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
     generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for SELECT query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
 
@@ -70,7 +71,7 @@ public class SelectQuery {
 
 
     LocalTime end=LocalTime.now();
-    int diff=end.getNano()-start.getNano();
+    int diff = Duration.between(end,start).getNano();
     generalLogger.info("Database status at the end of SELECT query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
     generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for SELECT query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
 
@@ -90,7 +91,7 @@ public class SelectQuery {
     HashMap<String, ArrayList<String>> data = TableUtils.getLimitedColumnsForEquals(Context.getDbName(), tableName, colName, finalColumnValue, columns, operand);
 
     LocalTime end=LocalTime.now();
-    int diff=end.getNano()-start.getNano();
+    int diff = Duration.between(end,start).getNano();
     generalLogger.info("Database status at the end of SELECT query: "+TableUtils.getGeneralLogTableInfo(Context.getDbName())+"\n");
     generalLogger.info("User: "+Context.getUserName()+"\nAt the end of add for SELECT query"+"\n"+"Execution Time of query: "+diff +" nanoseconds");
 

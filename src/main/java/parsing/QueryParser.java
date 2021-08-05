@@ -16,6 +16,7 @@ import main.java.queries.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -663,7 +664,7 @@ public class QueryParser {
                         DropQuery query = new DropQuery();
                         query.dropDatabase(dbName);
                         LocalTime end = LocalTime.now();
-                        int diff = end.getNano() - start.getNano();
+                        int diff = Duration.between(end,start).getNano();
                         general.info("Database status at the end of drop query: " + TableUtils.getGeneralLogTableInfo(dbName) + "\n");
                         general.info("User: " + Context.getUserName() + "\nAt the end of drop query" + "\n" + "Execution Time of query: " + diff + " nanoseconds");
                         eventLogger.info("User " + Context.getUserName() + " deleted database " + dbName);
@@ -701,7 +702,7 @@ public class QueryParser {
                     query.dropTable(Context.getDbName(),tableName);
                     query.ddDropTable(Context.getDbName(),tableName);
                     LocalTime end=LocalTime.now();
-                    int diff=end.getNano()-start.getNano();
+                    int diff = Duration.between(end,start).getNano();
                     generalLogger.info("User: "+Context.getUserName()+"\nAt the end of drop query"+"\n"+"Execution Time of query: "+diff+" nanoseconds");
                     System.out.println("Dropped table successful");
                     return null;

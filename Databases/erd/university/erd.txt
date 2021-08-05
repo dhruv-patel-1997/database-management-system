@@ -1,0 +1,17 @@
+Table student having column deptID references department having primary key deptID
+
+Table: dd_department
+[unlocked]
+deptID|VARCHAR 255|false|true|
+deptName|VARCHAR 255|true|false|
+
+
+Table: dd_student
+[unlocked]
+studentID|INT|false|true|
+deptID|VARCHAR 255|true|false|department deptID
+fname|VARCHAR 255|true|false|
+lname|VARCHAR 255|true|false|
+phoneNum|VARCHAR 255|true|false|
+
+
