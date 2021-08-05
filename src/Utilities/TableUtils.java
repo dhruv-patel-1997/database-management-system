@@ -334,4 +334,55 @@ public class TableUtils {
   //  DataDictionaryUtils.unlockTable(dbName,tableName);
     return true;
   }
+  public static ArrayList<String> getInsertStatements(String dbName) throws IOException, LockTimeOutException {
+    ArrayList<String> tableNames = getTableInDb(dbName);
+    for(int i=0;i<tableNames.size();i++)
+    {
+      tableNames.set(i,tableNames.get(i).substring(0,tableNames.get(i).length()-4));
+    }
+    ArrayList<String> insertStatements = new ArrayList<>();
+    if(tableNames==null)
+      return null;
+    else
+    {
+      for(int tableIndex=0;tableIndex<tableNames.size();tableIndex++)
+      {
+        HashMap<String,ArrayList<String>> tableData = getColumns(dbName,tableNames.get(tableIndex));
+        ArrayList<String> headings = new ArrayList<>();
+        int totalRowSize=0;
+        for(Map.Entry<String, ArrayList<String>> entry: tableData.entrySet()) {
+          headings.add(entry.getKey());
+          if(entry.getValue().size()>totalRowSize)
+            totalRowSize=entry.getValue().size();
+        }
+
+        for(int i=0;i<totalRowSize;i++)
+        {
+          String insertstatement= "INSERT INTO "+tableNames.get(tableIndex)+" (";
+          for(int headingIndex=0;headingIndex<headings.size();headingIndex++)
+          {
+            insertstatement=insertstatement.concat(headings.get(headingIndex));
+            if(headingIndex<headings.size()-1)
+              insertstatement= insertstatement.concat(", ");
+            else
+              insertstatement=insertstatement.concat(")");
+          }
+          insertstatement=insertstatement.concat(" VALUES (");
+          for(int j=0;j<headings.size();j++) {
+            if(tableData.get(headings.get(j)).get(i).equals(" "))
+              insertstatement=insertstatement.concat("NULL");
+            else
+              insertstatement=insertstatement.concat(tableData.get(headings.get(j)).get(i));
+            if(j< headings.size()-1)
+              insertstatement=insertstatement.concat(", ");
+            else
+              insertstatement=insertstatement.concat(")");
+          }
+          insertstatement= insertstatement.concat(";");
+          insertStatements.add(insertstatement);
+        }
+      }
+    }
+    return  insertStatements;
+  }
 }
