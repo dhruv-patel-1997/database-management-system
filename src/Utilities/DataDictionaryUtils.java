@@ -6,10 +6,7 @@ import main.java.dataStructures.ForeignKey;
 import main.java.exceptions.LockTimeOutException;
 import main.java.parsing.Token;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class DataDictionaryUtils {
@@ -306,4 +303,78 @@ public class DataDictionaryUtils {
         }
         return null;
     }
+
+    public static ArrayList<String> generateCreateQueries(String dbName) throws LockTimeOutException, IOException {
+      ArrayList<String> queries = new ArrayList<>();
+      ArrayList<File> dictionaries = getDictionaryFiles(dbName);
+
+        for (File file: dictionaries){
+            String tableName =  file.getName();
+            tableName = tableName.split("\\.")[0];
+            tableName = tableName.split("_")[1];
+
+            LinkedHashMap<String, Column> columns = getColumns(dbName,tableName);
+            StringBuilder query = new StringBuilder();
+            query.append("CREATE TABLE ").append(tableName).append("(\n");
+
+            ArrayList<StringBuilder> lines = new ArrayList<>();
+            for (Map.Entry<String,Column> columnEntry : columns.entrySet()){
+                String colName = columnEntry.getKey();
+                Column column = columnEntry.getValue();
+                String dataType = column.getDataType();
+                if (dataType.startsWith("VARCHAR")){
+                    dataType = "VARCHAR("+dataType.split(" ")[1]+")";
+                }
+
+                boolean allowNulls = column.getAllowNulls();
+                boolean isPrimaryKey = column.isPrimaryKey();
+                ForeignKey fk = column.getForeignKey();
+
+                StringBuilder line = new StringBuilder();
+                line.append(colName).append(" ").append(dataType);
+                if (!allowNulls) {
+                    line.append(" ").append("NOT NULL");
+                }
+
+                lines.add(line);
+
+                if (fk != null){
+                    String refTable = fk.getReferencedTable();
+                    String refColumn = fk.getReferencedColumn();
+                    line = new StringBuilder();
+                    line.append("FOREIGN KEY (").append(colName).append(") REFERENCES ").append(refTable).append(" (").append(refColumn).append(")");
+                    lines.add(line);
+                }
+
+                if (isPrimaryKey){
+                    line = new StringBuilder();
+                    line.append("PRIMARY KEY (").append(colName).append(")");
+                    lines.add(line);
+                }
+            }
+
+            for (int i = 0; i<lines.size(); i++){
+                query.append(lines.get(i));
+                if (i<lines.size()-1){
+                    query.append(",\n");
+                }
+            }
+            query.append(");");
+            queries.add(query.toString());
+        }
+        return queries;
+    }
+
+    public static ArrayList<File> getDictionaryFiles(String dbName){
+        //get dd files
+        ArrayList dictionaries = new ArrayList<>();
+        File dir = new File("Databases/"+dbName);
+        for (File file : dir.listFiles()){
+            if (file.getName().startsWith("dd")){
+                dictionaries.add(file);
+            }
+        }
+        return dictionaries;
+    }
 }
+
