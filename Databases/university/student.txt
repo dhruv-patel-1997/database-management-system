@@ -1,0 +1,5 @@
+studentID|1|2|3|4|5|6|7|8|
+fname|'Leah'|'Dhruv'|'Harit'|'Saurabh'|'Emily'|'Dave'|'Jen'|'Robert'|
+lname|'Isenor'|'Patel'|'Patwa'|'Dey'|'Parker'|'Samuel'|'Mason'|'Smith'|
+deptID|'CSCI'|'CSCI'|'CSCI'|'CSCI'|'ERTH'|'ENG'|'ENG'|'ERTH'|
+phoneNum|'12345678'|'22222222'|'44455566'|'10203040'|'23498722'|'00008787'|'32165487'|'44444444'|

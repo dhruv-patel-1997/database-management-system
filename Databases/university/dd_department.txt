@@ -1,0 +1,3 @@
+[unlocked]
+deptID|VARCHAR 255|false|true|
+deptName|VARCHAR 255|true|false|

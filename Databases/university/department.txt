@@ -1,0 +1,2 @@
+deptName|'computer science'|'engineering'|'earth sciences'|
+deptID|'CSCI'|'ENG'|'ERTH'|

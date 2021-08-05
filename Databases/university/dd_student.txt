@@ -1,0 +1,6 @@
+[unlocked]
+studentID|INT|false|true|
+deptID|VARCHAR 255|true|false|department deptID
+fname|VARCHAR 255|true|false|
+lname|VARCHAR 255|true|false|
+phoneNum|VARCHAR 255|true|false|

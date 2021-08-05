@@ -246,17 +246,7 @@ public class QueryParser {
                             throw new InvalidQueryException("Invalid syntax for SELECT TABLE query expecting '=','<','>'");
                         String operand = token.getStringValue();
                         token = tokenizer.next();
-                        String columnValue = null;
-                        if(token.getType() == Token.Type.STRING) {
-                            columnValue = token.getStringValue();
-
-                        } else if(token.getType() == Token.Type.INTLITERAL) {
-                            columnValue = token.getStringValue();
-
-                        } else if(token.getType() == Token.Type.BOOLEANLITERAL) {
-                            columnValue = token.getStringValue();
-
-                        }
+                        String columnValue = token.getStringValue();
                         token = tokenizer.next();
                         LinkedHashMap<String, Column> columnData = DataDictionaryUtils.getColumns(Context.getDbName(), tableName);
                         if(columnData.get(colName) == null)
@@ -328,17 +318,8 @@ public class QueryParser {
                         throw new InvalidQueryException("Invalid syntax for SELECT TABLE expecting only '=','<','>'");
                     String operand = token.getStringValue();
                     token = tokenizer.next();
-                    String columnValue = null;
-                    if(token.getType() == Token.Type.STRING) {
-                        columnValue = token.getStringValue();
+                    String columnValue = token.getStringValue();
 
-                    } else if(token.getType() == Token.Type.INTLITERAL) {
-                        columnValue = token.getStringValue();
-
-                    } else if(token.getType() == Token.Type.BOOLEANLITERAL) {
-                        columnValue = token.getStringValue();
-
-                    }
                     token = tokenizer.next();
                     if(columnData.get(colName) == null)
                         throw new InvalidQueryException("Column with given name does not exist: " + colName);

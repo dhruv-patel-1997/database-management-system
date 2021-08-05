@@ -975,3 +975,650 @@ INFO: In Query log
 Aug 05, 2021 1:45:47 AM main.java.QueryClass getQueries
 INFO: User Name: harit_patwa
 Query: update employees set empIsVaccinated='stringValue' where empId='ep5';
+Aug 05, 2021 4:32:18 AM main.java.queries.UseQuery useDataBase
+INFO: User: harit_patwa At the start of use query
+Aug 05, 2021 4:32:18 AM main.java.queries.UseQuery useDataBase
+INFO: Database status at the start of use query: {Persons=0, employees=3}
+
+Aug 05, 2021 4:32:18 AM main.java.queries.UseQuery useDataBase
+INFO: Database status at the end of use query: {Persons=0, employees=3}
+
+Aug 05, 2021 4:32:18 AM main.java.queries.UseQuery useDataBase
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 0 nanoseconds
+Aug 05, 2021 4:32:18 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 4:32:18 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 05, 2021 4:35:46 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 4:35:46 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update employees set empAddress='Home' where empId='ep1';
+Aug 05, 2021 4:38:42 AM main.java.queries.UseQuery useDataBase
+INFO: User: harit_patwa At the start of use query
+Aug 05, 2021 4:38:42 AM main.java.queries.UseQuery useDataBase
+INFO: Database status at the start of use query: {Persons=0, employees=3}
+
+Aug 05, 2021 4:38:42 AM main.java.queries.UseQuery useDataBase
+INFO: Database status at the end of use query: {Persons=0, employees=3}
+
+Aug 05, 2021 4:38:42 AM main.java.queries.UseQuery useDataBase
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 0 nanoseconds
+Aug 05, 2021 4:38:42 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 4:38:42 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: use Database1;
+Aug 05, 2021 4:39:03 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 05, 2021 4:39:04 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: Database status at the start of SELECT query: {Persons=0, employees=3}
+
+Aug 05, 2021 4:39:04 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: Database status at the end of SELECT query: {Persons=0, employees=3}
+
+Aug 05, 2021 4:39:04 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 4001500 nanoseconds
+Aug 05, 2021 4:39:04 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 4:39:04 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select empSalary,empName from employees where empSalary<133;
+Aug 05, 2021 4:39:24 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 05, 2021 4:39:24 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: Database status at the start of SELECT query: {Persons=0, employees=3}
+
+Aug 05, 2021 4:39:24 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: Database status at the end of SELECT query: {Persons=0, employees=3}
+
+Aug 05, 2021 4:39:24 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 2001400 nanoseconds
+Aug 05, 2021 4:39:24 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 4:39:24 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select empSalary,empName  from employees   where  empSalary>131;
+Aug 05, 2021 9:53:49 AM main.java.queries.CreateQuery createDatabase
+INFO: User: harit_patwa At the start of creating database for create query
+Aug 05, 2021 9:53:49 AM main.java.queries.CreateQuery createDatabase
+INFO: Database status at the start of create query: Database has not been assigned 
+
+Aug 05, 2021 9:53:49 AM main.java.queries.CreateQuery createDatabase
+INFO: User: harit_patwa
+At the end of add for create query
+Execution Time of query: 20690300 nanoseconds
+Aug 05, 2021 9:53:49 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:53:49 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: Create database university;
+Aug 05, 2021 9:54:01 AM main.java.queries.UseQuery useDataBase
+INFO: User: harit_patwa At the start of use query
+Aug 05, 2021 9:54:01 AM main.java.queries.UseQuery useDataBase
+INFO: Database status at the start of use query: {}
+
+Aug 05, 2021 9:54:01 AM main.java.queries.UseQuery useDataBase
+INFO: Database status at the end of use query: {}
+
+Aug 05, 2021 9:54:01 AM main.java.queries.UseQuery useDataBase
+INFO: User: harit_patwa
+At the end of add for use query
+Execution Time of query: 0 nanoseconds
+Aug 05, 2021 9:54:01 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:54:01 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: Use university;
+Aug 05, 2021 9:54:23 AM main.java.queries.CreateQuery createTable
+INFO: User: harit_patwa At the start of create table for create query
+Aug 05, 2021 9:54:23 AM main.java.queries.CreateQuery createTable
+INFO: Database status at the start of create query: {}
+
+Aug 05, 2021 9:54:23 AM main.java.queries.CreateQuery createTable
+INFO: Database status at the end of create query: {department=0}
+
+Aug 05, 2021 9:54:23 AM main.java.queries.CreateQuery createTable
+INFO: User: harit_patwa
+At the end of add for create query
+Execution Time of query: 12998600 nanoseconds
+Aug 05, 2021 9:54:23 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:54:23 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: Create table department (deptID varchar(255),deptName varchar(255),primary Key (deptID));
+Aug 05, 2021 9:54:37 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa At the start of insert query
+Aug 05, 2021 9:54:37 AM main.java.queries.InsertQuery insert
+INFO: Database status at the start of insert query: {department=0}
+
+Aug 05, 2021 9:54:37 AM main.java.queries.InsertQuery insert
+INFO: Database status at the end of insert query: {department=1}
+
+Aug 05, 2021 9:54:37 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa
+At the end of add for insert query
+Execution Time of query: 16999000 nanoseconds
+Aug 05, 2021 9:54:37 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:54:37 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: insert Into department values ('CSCI', 'computer science');
+Aug 05, 2021 9:54:50 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa At the start of insert query
+Aug 05, 2021 9:54:50 AM main.java.queries.InsertQuery insert
+INFO: Database status at the start of insert query: {department=1}
+
+Aug 05, 2021 9:54:50 AM main.java.queries.InsertQuery insert
+INFO: Database status at the end of insert query: {department=2}
+
+Aug 05, 2021 9:54:50 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa
+At the end of add for insert query
+Execution Time of query: 14003700 nanoseconds
+Aug 05, 2021 9:54:50 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:54:50 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: insert Into department values ('ENG', 'engineering');
+Aug 05, 2021 9:55:03 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa At the start of insert query
+Aug 05, 2021 9:55:03 AM main.java.queries.InsertQuery insert
+INFO: Database status at the start of insert query: {department=2}
+
+Aug 05, 2021 9:55:03 AM main.java.queries.InsertQuery insert
+INFO: Database status at the end of insert query: {department=3}
+
+Aug 05, 2021 9:55:03 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa
+At the end of add for insert query
+Execution Time of query: 9001000 nanoseconds
+Aug 05, 2021 9:55:03 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:55:03 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: insert Into department values ('ERTH', 'earth sciences');
+Aug 05, 2021 9:55:20 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:55:20 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * department;
+Aug 05, 2021 9:55:36 AM main.java.queries.SelectQuery selectForAll
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 05, 2021 9:55:36 AM main.java.queries.SelectQuery selectForAll
+INFO: Database status at the start of SELECT query: {department=3}
+
+Aug 05, 2021 9:55:36 AM main.java.queries.SelectQuery selectForAll
+INFO: Database status at the end of SELECT query: {department=3}
+
+Aug 05, 2021 9:55:36 AM main.java.queries.SelectQuery selectForAll
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 999700 nanoseconds
+Aug 05, 2021 9:55:36 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:55:36 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from department;
+Aug 05, 2021 9:55:58 AM main.java.queries.CreateQuery createTable
+INFO: User: harit_patwa At the start of create table for create query
+Aug 05, 2021 9:55:58 AM main.java.queries.CreateQuery createTable
+INFO: Database status at the start of create query: {department=3}
+
+Aug 05, 2021 9:55:58 AM main.java.queries.CreateQuery createTable
+INFO: Database status at the end of create query: {student=0, department=3}
+
+Aug 05, 2021 9:55:58 AM main.java.queries.CreateQuery createTable
+INFO: User: harit_patwa
+At the end of add for create query
+Execution Time of query: 7999600 nanoseconds
+Aug 05, 2021 9:55:58 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:55:58 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: Create table student (studentID int,deptID varchar(255),fname varchar(255),lname varchar(255),phoneNum varchar(255),primary key (studentID),foreign key (deptID) references department(deptID));
+Aug 05, 2021 9:56:14 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa At the start of insert query
+Aug 05, 2021 9:56:14 AM main.java.queries.InsertQuery insert
+INFO: Database status at the start of insert query: {student=0, department=3}
+
+Aug 05, 2021 9:56:14 AM main.java.queries.InsertQuery insert
+INFO: Database status at the end of insert query: {student=1, department=3}
+
+Aug 05, 2021 9:56:14 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa
+At the end of add for insert query
+Execution Time of query: 7995900 nanoseconds
+Aug 05, 2021 9:56:14 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:56:14 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: insert into student values (1, 'CSCI','Leah', 'Isenor', '12345678');
+Aug 05, 2021 9:56:28 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa At the start of insert query
+Aug 05, 2021 9:56:28 AM main.java.queries.InsertQuery insert
+INFO: Database status at the start of insert query: {student=1, department=3}
+
+Aug 05, 2021 9:56:28 AM main.java.queries.InsertQuery insert
+INFO: Database status at the end of insert query: {student=2, department=3}
+
+Aug 05, 2021 9:56:28 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa
+At the end of add for insert query
+Execution Time of query: 8017800 nanoseconds
+Aug 05, 2021 9:56:28 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:56:28 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: insert into student values (2, 'CSCI','Dhruv', 'Patel', '22222222');
+Aug 05, 2021 9:56:44 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa At the start of insert query
+Aug 05, 2021 9:56:44 AM main.java.queries.InsertQuery insert
+INFO: Database status at the start of insert query: {student=2, department=3}
+
+Aug 05, 2021 9:56:44 AM main.java.queries.InsertQuery insert
+INFO: Database status at the end of insert query: {student=3, department=3}
+
+Aug 05, 2021 9:56:44 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa
+At the end of add for insert query
+Execution Time of query: 7988200 nanoseconds
+Aug 05, 2021 9:56:44 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:56:44 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: insert into student values (3, 'CSCI','Harit', 'Patwa', '44455566');
+Aug 05, 2021 9:56:59 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa At the start of insert query
+Aug 05, 2021 9:56:59 AM main.java.queries.InsertQuery insert
+INFO: Database status at the start of insert query: {student=3, department=3}
+
+Aug 05, 2021 9:56:59 AM main.java.queries.InsertQuery insert
+INFO: Database status at the end of insert query: {student=4, department=3}
+
+Aug 05, 2021 9:56:59 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa
+At the end of add for insert query
+Execution Time of query: 8012000 nanoseconds
+Aug 05, 2021 9:56:59 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:56:59 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: insert into student values (4, 'CSCI','Saurabh', 'Dey', '10203040');
+Aug 05, 2021 9:57:09 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa At the start of insert query
+Aug 05, 2021 9:57:09 AM main.java.queries.InsertQuery insert
+INFO: Database status at the start of insert query: {student=4, department=3}
+
+Aug 05, 2021 9:57:09 AM main.java.queries.InsertQuery insert
+INFO: Database status at the end of insert query: {student=5, department=3}
+
+Aug 05, 2021 9:57:09 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa
+At the end of add for insert query
+Execution Time of query: 7000200 nanoseconds
+Aug 05, 2021 9:57:09 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:57:09 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: insert into student values (5, 'ERTH','Emily', 'Parker', '23498722');
+Aug 05, 2021 9:57:20 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa At the start of insert query
+Aug 05, 2021 9:57:20 AM main.java.queries.InsertQuery insert
+INFO: Database status at the start of insert query: {student=5, department=3}
+
+Aug 05, 2021 9:57:20 AM main.java.queries.InsertQuery insert
+INFO: Database status at the end of insert query: {student=6, department=3}
+
+Aug 05, 2021 9:57:20 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa
+At the end of add for insert query
+Execution Time of query: 7999100 nanoseconds
+Aug 05, 2021 9:57:20 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:57:20 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: insert into student values (6, 'ENG','Dave', 'Samuel', '87878787');
+Aug 05, 2021 9:57:54 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa At the start of insert query
+Aug 05, 2021 9:57:54 AM main.java.queries.InsertQuery insert
+INFO: Database status at the start of insert query: {student=6, department=3}
+
+Aug 05, 2021 9:57:54 AM main.java.queries.InsertQuery insert
+INFO: Database status at the end of insert query: {student=7, department=3}
+
+Aug 05, 2021 9:57:54 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa
+At the end of add for insert query
+Execution Time of query: 8000900 nanoseconds
+Aug 05, 2021 9:57:54 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:57:54 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: insert into student values (7, 'ENG','Jen', 'Mason', '32165487');
+Aug 05, 2021 9:58:22 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa At the start of insert query
+Aug 05, 2021 9:58:22 AM main.java.queries.InsertQuery insert
+INFO: Database status at the start of insert query: {student=7, department=3}
+
+Aug 05, 2021 9:58:22 AM main.java.queries.InsertQuery insert
+INFO: Database status at the end of insert query: {student=8, department=3}
+
+Aug 05, 2021 9:58:22 AM main.java.queries.InsertQuery insert
+INFO: User: harit_patwa
+At the end of add for insert query
+Execution Time of query: 8996600 nanoseconds
+Aug 05, 2021 9:58:22 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:58:22 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: insert into student values (8, 'ERTH','Robert', 'Smith', '44444444');
+Aug 05, 2021 9:58:33 AM main.java.queries.SelectQuery selectForAll
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 05, 2021 9:58:33 AM main.java.queries.SelectQuery selectForAll
+INFO: Database status at the start of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 9:58:33 AM main.java.queries.SelectQuery selectForAll
+INFO: Database status at the end of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 9:58:33 AM main.java.queries.SelectQuery selectForAll
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 0 nanoseconds
+Aug 05, 2021 9:58:33 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 9:58:33 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from student;
+Aug 05, 2021 10:00:55 AM main.java.queries.SelectQuery showForLimited
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 05, 2021 10:00:55 AM main.java.queries.SelectQuery showForLimited
+INFO: Database status at the start of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:00:55 AM main.java.queries.SelectQuery showForLimited
+INFO: Database status at the end of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:00:55 AM main.java.queries.SelectQuery showForLimited
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 988300 nanoseconds
+Aug 05, 2021 10:00:55 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:00:55 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select fname,lname,phoneNum,studentID from student;
+Aug 05, 2021 10:03:30 AM main.java.queries.SelectQuery showAllForCondition
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 05, 2021 10:03:30 AM main.java.queries.SelectQuery showAllForCondition
+INFO: Database status at the start of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:03:30 AM main.java.queries.SelectQuery showAllForCondition
+INFO: Database status at the end of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:03:30 AM main.java.queries.SelectQuery showAllForCondition
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 998400 nanoseconds
+Aug 05, 2021 10:03:30 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:03:30 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from student where studentID=1;
+Aug 05, 2021 10:05:46 AM main.java.queries.SelectQuery showAllForCondition
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 05, 2021 10:05:46 AM main.java.queries.SelectQuery showAllForCondition
+INFO: Database status at the start of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:05:46 AM main.java.queries.SelectQuery showAllForCondition
+INFO: Database status at the end of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:05:46 AM main.java.queries.SelectQuery showAllForCondition
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 1000400 nanoseconds
+Aug 05, 2021 10:05:46 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:05:46 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from student where studentID<5;
+Aug 05, 2021 10:06:50 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 05, 2021 10:06:50 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: Database status at the start of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:06:50 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: Database status at the end of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:06:50 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 1003000 nanoseconds
+Aug 05, 2021 10:06:50 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:06:50 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select fname,phoneNum from student where studentID >4;
+Aug 05, 2021 10:11:10 AM main.java.queries.UpdateQuery update
+INFO: User: harit_patwa Updating the columns for given condition
+Aug 05, 2021 10:11:10 AM main.java.queries.UpdateQuery update
+INFO: Database status at the start of update query: {student=8, department=3}
+
+Aug 05, 2021 10:11:10 AM main.java.queries.UpdateQuery update
+INFO: Database status at the end of update query: {student=8, department=3}
+
+Aug 05, 2021 10:11:10 AM main.java.queries.UpdateQuery update
+INFO: User: harit_patwa
+At the end of add for update query
+Execution Time of query: 999700 nanoseconds
+Aug 05, 2021 10:11:10 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:11:10 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update student set fname='DaveUpdated' where fname='Dave';
+Aug 05, 2021 10:11:23 AM main.java.queries.SelectQuery selectForAll
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 05, 2021 10:11:23 AM main.java.queries.SelectQuery selectForAll
+INFO: Database status at the start of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:11:23 AM main.java.queries.SelectQuery selectForAll
+INFO: Database status at the end of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:11:23 AM main.java.queries.SelectQuery selectForAll
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 989200 nanoseconds
+Aug 05, 2021 10:11:23 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:11:23 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from student;
+Aug 05, 2021 10:12:33 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:12:33 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * fname,lname from student where studentID=6;
+Aug 05, 2021 10:12:54 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 05, 2021 10:12:54 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: Database status at the start of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:12:54 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: Database status at the end of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:12:54 AM main.java.queries.SelectQuery showForColumnsForCondition
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 1001200 nanoseconds
+Aug 05, 2021 10:12:54 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:12:54 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select  fname,lname from student where studentID=6;
+Aug 05, 2021 10:14:53 AM main.java.queries.UpdateQuery update
+INFO: User: harit_patwa Updating the columns for given condition
+Aug 05, 2021 10:14:53 AM main.java.queries.UpdateQuery update
+INFO: Database status at the start of update query: {student=8, department=3}
+
+Aug 05, 2021 10:14:53 AM main.java.queries.UpdateQuery update
+INFO: Database status at the end of update query: {student=8, department=3}
+
+Aug 05, 2021 10:14:53 AM main.java.queries.UpdateQuery update
+INFO: User: harit_patwa
+At the end of add for update query
+Execution Time of query: 1013300 nanoseconds
+Aug 05, 2021 10:14:53 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:14:53 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update student set fname='Dave',phoneNum='00008787' where studentID=6;
+Aug 05, 2021 10:15:08 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:15:08 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from student where studentId=6;
+Aug 05, 2021 10:15:55 AM main.java.queries.SelectQuery showAllForCondition
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 05, 2021 10:15:55 AM main.java.queries.SelectQuery showAllForCondition
+INFO: Database status at the start of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:15:55 AM main.java.queries.SelectQuery showAllForCondition
+INFO: Database status at the end of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:15:55 AM main.java.queries.SelectQuery showAllForCondition
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 1001600 nanoseconds
+Aug 05, 2021 10:15:55 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:15:55 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from student where studentID=6;
+Aug 05, 2021 10:17:36 AM main.java.queries.UpdateQuery update
+INFO: User: harit_patwa Updating the columns for given condition
+Aug 05, 2021 10:17:36 AM main.java.queries.UpdateQuery update
+INFO: Database status at the start of update query: {student=8, department=3}
+
+Aug 05, 2021 10:17:36 AM main.java.queries.UpdateQuery update
+INFO: Database status at the end of update query: {student=8, department=3}
+
+Aug 05, 2021 10:17:36 AM main.java.queries.UpdateQuery update
+INFO: User: harit_patwa
+At the end of add for update query
+Execution Time of query: 1998200 nanoseconds
+Aug 05, 2021 10:17:36 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:17:36 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update student set studentID=20 where studentID=8;
+Aug 05, 2021 10:17:48 AM main.java.queries.SelectQuery showAllForCondition
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 05, 2021 10:17:48 AM main.java.queries.SelectQuery showAllForCondition
+INFO: Database status at the start of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:17:48 AM main.java.queries.SelectQuery showAllForCondition
+INFO: Database status at the end of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:17:48 AM main.java.queries.SelectQuery showAllForCondition
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 1001000 nanoseconds
+Aug 05, 2021 10:17:48 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:17:48 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from student where studentID=20;
+Aug 05, 2021 10:19:29 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:19:29 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update student set studentID='studentHello' where studentID=8;
+Aug 05, 2021 10:21:03 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:21:03 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update student set deptID='FSFI' where studentID=4;  
+Aug 05, 2021 10:25:27 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:25:27 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update student set deptID='ENG' where studentID>6; 
+Aug 05, 2021 10:27:19 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:27:19 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update student set phoneNum='01234564455' where studentID>6;   
+Aug 05, 2021 10:27:44 AM main.java.queries.SelectQuery showAllForCondition
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 05, 2021 10:27:44 AM main.java.queries.SelectQuery showAllForCondition
+INFO: Database status at the start of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:27:44 AM main.java.queries.SelectQuery showAllForCondition
+INFO: Database status at the end of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:27:44 AM main.java.queries.SelectQuery showAllForCondition
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 1000600 nanoseconds
+Aug 05, 2021 10:27:44 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:27:44 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from student where studentID>6;
+Aug 05, 2021 10:28:34 AM main.java.queries.SelectQuery selectForAll
+INFO: User: harit_patwa Select statement running displaying table 
+Aug 05, 2021 10:28:34 AM main.java.queries.SelectQuery selectForAll
+INFO: Database status at the start of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:28:34 AM main.java.queries.SelectQuery selectForAll
+INFO: Database status at the end of SELECT query: {student=8, department=3}
+
+Aug 05, 2021 10:28:34 AM main.java.queries.SelectQuery selectForAll
+INFO: User: harit_patwa
+At the end of add for SELECT query
+Execution Time of query: 986800 nanoseconds
+Aug 05, 2021 10:28:34 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:28:34 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: select * from student;
+Aug 05, 2021 10:29:17 AM main.java.queries.UpdateQuery update
+INFO: User: harit_patwa Updating the columns for given condition
+Aug 05, 2021 10:29:17 AM main.java.queries.UpdateQuery update
+INFO: Database status at the start of update query: {student=8, department=3}
+
+Aug 05, 2021 10:29:17 AM main.java.queries.UpdateQuery update
+INFO: Database status at the end of update query: {student=8, department=3}
+
+Aug 05, 2021 10:29:17 AM main.java.queries.UpdateQuery update
+INFO: User: harit_patwa
+At the end of add for update query
+Execution Time of query: 1998400 nanoseconds
+Aug 05, 2021 10:29:17 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:29:17 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update student set studentID=8 where studentID=20;;
+Aug 05, 2021 10:29:35 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:29:35 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update student set studentID=3 where studentID=8;  
+Aug 05, 2021 10:29:55 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:29:55 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update student set studentID='studentHello' where studentID=8;
+Aug 05, 2021 10:30:19 AM main.java.logs.QueryLog setLogger
+INFO: In Query log
+Aug 05, 2021 10:30:19 AM main.java.QueryClass getQueries
+INFO: User Name: harit_patwa
+Query: update student set deptID='FSFI' where studentID=4; 
