@@ -1,0 +1,30 @@
+Aug 05, 2021 1:05:15 PM main.java.queries.UseQuery useDataBase
+INFO: User: null At the start of use query
+Aug 05, 2021 1:05:16 PM main.java.queries.UseQuery useDataBase
+INFO: User: null
+At the end of add for use query
+Execution Time of query: 999001700 nanoseconds
+Aug 05, 2021 1:06:41 PM main.java.queries.UseQuery useDataBase
+INFO: User: null At the start of use query
+Aug 05, 2021 1:06:41 PM main.java.queries.UseQuery useDataBase
+INFO: User: null
+At the end of add for use query
+Execution Time of query: 0 nanoseconds
+Aug 05, 2021 1:07:36 PM main.java.queries.UseQuery useDataBase
+INFO: User: null At the start of use query
+Aug 05, 2021 1:07:36 PM main.java.queries.UseQuery useDataBase
+INFO: User: null
+At the end of add for use query
+Execution Time of query: 0 nanoseconds
+Aug 05, 2021 1:10:14 PM main.java.queries.UseQuery useDataBase
+INFO: User: null At the start of use query
+Aug 05, 2021 1:10:14 PM main.java.queries.UseQuery useDataBase
+INFO: User: null
+At the end of add for use query
+Execution Time of query: 0 nanoseconds
+Aug 05, 2021 1:14:13 PM main.java.queries.UseQuery useDataBase
+INFO: User: null At the start of use query
+Aug 05, 2021 1:14:13 PM main.java.queries.UseQuery useDataBase
+INFO: User: null
+At the end of add for use query
+Execution Time of query: 0 nanoseconds

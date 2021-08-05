@@ -13,6 +13,7 @@ import main.java.logs.GeneralLog;
 import main.java.exceptions.InvalidQueryException;
 import main.java.queries.*;
 
+import javax.xml.crypto.Data;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -89,6 +90,9 @@ public class QueryParser {
                 case ERD:
                     generateErd(Context.getDbName());
                     break;
+                case MYSQLDUMP:
+                    generateDump(Context.getDbName());
+                    break;
                 default:
                     throw new InvalidQueryException("Invalid syntax: " + tokenValue);
             }
@@ -154,11 +158,6 @@ public class QueryParser {
 
         for (String table: tablesToLock){
             DataDictionaryUtils.unlockTable(Context.getDbName(),table);
-        }
-
-        //SQL dump for whole transaction
-        if(tokenType.equals(Token.Type.CREATE) || tokenType.equals(Token.Type.INSERT) || tokenType.equals(Token.Type.ALTER) || tokenType.equals(Token.Type.UPDATE)){
-            generateDump(Context.getDbName(),tokenizer.getInput()+"\n");
         }
     }
 
@@ -1015,19 +1014,35 @@ public class QueryParser {
         return content;
     }
 
-    private void generateDump(String dbName,String data) throws InvalidQueryException {
+    private void generateDump(String dbName) throws InvalidQueryException {
         try {
+            String dbStatement="create database "+dbName+";";
+            ArrayList<String> createStatements=DataDictionaryUtils.generateCreateQueries(dbName);
+            ArrayList<String> insertsStatements=TableUtils.getInsertStatements(dbName);
+
             if (dbName != null) {
                 File erd = new File("Databases/dump/" + dbName + "/dump.txt");
                 Files.createDirectories(Paths.get("Databases/dump/"+dbName));
                 erd.createNewFile();
-                FileWriter myWriter = new FileWriter("Databases/dump/" + dbName + "/dump.txt",true);
-                myWriter.write(data);
+                FileWriter myWriter = new FileWriter("Databases/dump/" + dbName + "/dump.txt");
+                myWriter.write(dbStatement + System.lineSeparator()+System.lineSeparator());
+                for(String s:createStatements){
+                    myWriter.write(s+System.lineSeparator()+System.lineSeparator());
+                }
+                myWriter.write(System.lineSeparator());
+                if(insertsStatements!=null){
+                    for(String t:insertsStatements){
+                        myWriter.write(t+System.lineSeparator());
+                    }
+                }
+                myWriter.write(System.lineSeparator());
                 myWriter.close();
+                System.out.println("Dump created in "+"Databases/dump/" + dbName + "/dump.txt");
             } else {
                 throw new InvalidQueryException("Please use database first");
             }
-        } catch (IOException e) {
+
+        } catch (IOException | LockTimeOutException e) {
             e.printStackTrace();
         }
     }

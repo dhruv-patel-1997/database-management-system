@@ -1,0 +1,6 @@
+Aug 05, 2021 1:05:23 PM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Invalid syntax: MYSQLDUMP
+Aug 05, 2021 1:07:06 PM main.java.exceptions.InvalidQueryException <init>
+INFO: Query Crashed for User: null.
+Reason: Invalid syntax: MYSQLDUMP

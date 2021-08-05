@@ -1,0 +1,30 @@
+create database university;
+CREATE TABLE department(
+deptID VARCHAR(255) NOT NULL,
+PRIMARY KEY (deptID),
+deptName VARCHAR(255));
+
+CREATE TABLE student(
+studentID INT NOT NULL,
+PRIMARY KEY (studentID),
+deptID VARCHAR(255),
+FOREIGN KEY (deptID) REFERENCES department (deptID),
+fname VARCHAR(255),
+lname VARCHAR(255),
+phoneNum VARCHAR(255));
+
+
+INSERT INTO department (deptName, deptID) VALUES ('computer science', 'CSCI');
+INSERT INTO department (deptName, deptID) VALUES ('engineering', 'ENG');
+INSERT INTO department (deptName, deptID) VALUES ('earth sciences', 'ERTH');
+INSERT INTO department (deptName, deptID) VALUES ('english', 'ENGL');
+INSERT INTO student (studentID, fname, lname, deptID, phoneNum) VALUES (1, 'Leah', 'Isenor', 'CSCI', '12345678');
+INSERT INTO student (studentID, fname, lname, deptID, phoneNum) VALUES (2, 'Dhruv', 'Patel', 'CSCI', '22222222');
+INSERT INTO student (studentID, fname, lname, deptID, phoneNum) VALUES (3, 'Harit', 'Patwa', 'CSCI', '44455566');
+INSERT INTO student (studentID, fname, lname, deptID, phoneNum) VALUES (4, 'Saurabh', 'Dey', 'ENGL', '10203040');
+INSERT INTO student (studentID, fname, lname, deptID, phoneNum) VALUES (5, 'Emily', 'Parker', 'ERTH', '23498722');
+INSERT INTO student (studentID, fname, lname, deptID, phoneNum) VALUES (6, 'Dave', 'Samuel', 'ENG', '00008787');
+INSERT INTO student (studentID, fname, lname, deptID, phoneNum) VALUES (7, 'Jen', 'Mason', 'ENG', '32165487');
+INSERT INTO student (studentID, fname, lname, deptID, phoneNum) VALUES (8, 'Robert', 'Smith', 'ERTH', '44444444');
+INSERT INTO student (studentID, fname, lname, deptID, phoneNum) VALUES (9, 'Sarah', 'Smith', 'ENGL', NULL);
+
